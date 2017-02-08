@@ -5,7 +5,7 @@ ksuto.TOGGLE_ON_OFF = false
 ksuto.TARGET_NEAREST_ENEMY = false
 ksuto.DRIVE_MOD = false
 ksuto.DRIVE_LOOP = false
-ksuto.DEBUG_MOD = true
+ksuto.DEBUG_MOD = false
 
 function ksuto.print(text)
 

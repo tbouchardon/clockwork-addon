@@ -12,25 +12,30 @@ local function commandHandler(msg)
 
     ksuto.printDebug("Command Handler")
 
-    local coordinates = string.match(msg, '%d%d,%d%d-%d%d,%d%d')
+    local coordinates
+    if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d-%d%d,%d%d') end
 
-    if coordinates then
-
-        ksuto.updatePositionFromCoordinates(coordinates)
-
-    elseif (msg == '') then
+    --ksuto.printDebug("msg : " .. msg)
+    if msg == 'toggle' then
 
         if ksuto.TOGGLE_ON_OFF == false then
 
             ksuto.TOGGLE_ON_OFF = true
             ksuto.toggle.texture:SetTexture(1, 1, 1, 1)
+            ksuto.onOff:Hide()
             ksuto.print("Ksuto : On")
+
         else
 
             ksuto.TOGGLE_ON_OFF = false
             ksuto.toggle.texture:SetTexture(0, 0, 0, 1)
+            ksuto.onOff:Show()
             ksuto.print("Ksuto : Off")
         end
+
+    elseif coordinates then
+
+        ksuto.updatePositionFromCoordinates(coordinates)
 
     elseif (msg == 'tne') then
 
@@ -85,12 +90,12 @@ local function commandHandler(msg)
         if ksuto.DRIVE_LOOP == false then
 
             ksuto.DRIVE_LOOP = true
-            ksuto.drive.texture:SetTexture(1, 1, 1, 1)
+            ksuto.driveLoop.texture:SetTexture(1, 1, 1, 1)
             ksuto.print("Ksuto -> Drive Loop : On")
         else
 
             ksuto.DRIVE_LOOP = false
-            ksuto.drive.texture:SetTexture(0, 0, 0, 1)
+            ksuto.driveLoop.texture:SetTexture(0, 0, 0, 1)
             ksuto.print("Ksuto -> Drive Loop : Off")
         end
 
@@ -114,7 +119,7 @@ local function commandHandler(msg)
 
     else
         ksuto.print("------------ KSUTO ------------")
-        ksuto.print("/ksuto             -- Turn Ksuto On [Blush]/Off")
+        ksuto.print("/ksuto toggle      -- Turn Ksuto On [Blush]/Off")
         ksuto.print("/ksuto tne         -- Target Nearest Enemy : On/Off")
         ksuto.print("/ksuto 05,21-63,30 -- Add new waypoint")
         ksuto.print("/ksuto addwp       -- Add new waypoint")
