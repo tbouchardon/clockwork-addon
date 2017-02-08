@@ -1,0 +1,18 @@
+##Interface:11200 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
+
+##Title: Ksuto - SmartCast
+
+##Notes: My Smart Addon
+
+##OptionalDeps: -- Optional dependencies.
+
+##Dependencies:
+
+ksuto.xml
+global.lua
+core.lua
+coords.lua
+keys.lua
+rotations.lua
+debug.lua
+ksuto.lua
