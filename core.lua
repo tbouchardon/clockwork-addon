@@ -32,7 +32,7 @@ end
 
 ksuto.frame:SetScript("OnUpdate", ksuto.frame.onUpdate)
 
-ksuto.blackBackground1 = CreateFrame("FRAME", "ksuto_Background1", ksuto.frame)
+ksuto.blackBackground1 = CreateFrame("FRAME", "ksuto_ksuto.blackBackground1", ksuto.frame)
 ksuto.blackBackground1:SetPoint("CENTER", 0, 0)
 ksuto.blackBackground1:SetWidth(16)
 ksuto.blackBackground1:SetHeight(8)
@@ -50,11 +50,29 @@ ksuto.blackBackground2.texture = ksuto.blackBackground2:CreateTexture("MEDIUM")
 ksuto.blackBackground2.texture:SetAllPoints()
 ksuto.blackBackground2.texture:SetTexture(0, 0, 0, 1)
 
-ksuto.blackBackground3 = CreateFrame("FRAME", "ksuto_Background2", ksuto.frame)
+ksuto.blackBackground3 = CreateFrame("FRAME", "ksuto_Background3", ksuto.frame)
 ksuto.blackBackground3:SetPoint("CENTER", 0, 0)
-ksuto.blackBackground3:SetWidth(15)
-ksuto.blackBackground3:SetHeight(15)
+ksuto.blackBackground3:SetWidth(14)
+ksuto.blackBackground3:SetHeight(14)
 ksuto.blackBackground3:SetFrameStrata("MEDIUM");
 ksuto.blackBackground3.texture = ksuto.blackBackground3:CreateTexture("MEDIUM")
 ksuto.blackBackground3.texture:SetAllPoints()
 ksuto.blackBackground3.texture:SetTexture(0, 0, 0, 1)
+
+ksuto.onOff = CreateFrame("FRAME", "ksuto_onOff", ksuto.frame)
+ksuto.onOff:SetPoint("CENTER", 0, 0)
+ksuto.onOff:SetWidth(16)
+ksuto.onOff:SetHeight(16)
+ksuto.onOff:SetFrameStrata("DIALOG")
+ksuto.onOff.texture = ksuto.onOff:CreateTexture("DIALOG")
+ksuto.onOff.texture:SetAllPoints()
+ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
+
+ksuto.toggle = ksuto.createDot("ksuto_toggle", 2, -13)
+ksuto.targetNearestEnemy = ksuto.createDot("ksuto_targetNearestEnemy", 3, -13)
+ksuto.addWaypoint = ksuto.createDot("ksuto_addWaypoint", 4, -13)
+ksuto.clearWaypoints = ksuto.createDot("ksuto_clearWaypoints", 5, -13)
+ksuto.drive = ksuto.createDot("ksuto_drive", 6, -13)
+ksuto.driveLoop = ksuto.createDot("ksuto_driveLoop", 7, -13)
+ksuto.debug = ksuto.createDot("ksuto_debug", 13, -13)
+if ksuto.DEBUG_MOD then ksuto.debug.texture:SetTexture(1, 0, 0, 1) end
