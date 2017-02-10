@@ -1,3 +1,5 @@
+
+
 function ksuto.listAllSpells()
 
     ksuto.printDebug("ksuto.listAllSpells()")

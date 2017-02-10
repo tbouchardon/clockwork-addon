@@ -13,6 +13,7 @@ global.lua
 core.lua
 coords.lua
 keys.lua
-rotations.lua
+rotations_core.lua
+rotation_warlock.lua
 debug.lua
 ksuto.lua
