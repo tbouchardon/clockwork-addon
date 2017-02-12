@@ -21,17 +21,14 @@ function ksuto.warlockAfflictionRotation()
 
         AttackTarget()
 
-        --        ksuto.shouldHitShiftedKey(ksuto.keyT, not ksuto.unitHasBuff("player", ""))
---        ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.INSPECT) and ksuto.checkDebuffSpellCast("???????")) -- Check Fear
+        ksuto.shouldHitKey(ksuto.keyEq, not ksuto.unitHasBuff("player", "Demon Skin"))
+        --ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.INSPECT) and ksuto.checkDebuffSpellCast("Fear"))
         ksuto.shouldHitKey(ksuto.key5, ksuto.checkDebuffSpellCast("Curse of Agony"))
         ksuto.shouldHitKey(ksuto.key4, ksuto.checkDebuffSpellCast("Corruption"))
         ksuto.shouldHitKey(ksuto.key3, ksuto.checkDebuffSpellCast("Immolate"))
         ksuto.shouldHitKey(ksuto.key2, ksuto.checkTargetDistance(ksuto.FOLLOW)) -- Shadow Bolt as of now
     else
-        ksuto.key5.texture:SetTexture(0, 0, 0, 1)
-        ksuto.key4.texture:SetTexture(0, 0, 0, 1)
-        ksuto.key3.texture:SetTexture(0, 0, 0, 1)
-        ksuto.key2.texture:SetTexture(0, 0, 0, 1)
+        ksuto.resetKeys()
     end
 end
 
