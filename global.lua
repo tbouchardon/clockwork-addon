@@ -3,6 +3,7 @@
 ksuto = {}
 
 ksuto.UPDATE_INTERVAL = 0.25
+ksuto.ADDING_WP = false;
 ksuto.TOGGLE_ON_OFF = false
 ksuto.TARGET_NEAREST_ENEMY = false
 ksuto.DRIVE_MOD = false

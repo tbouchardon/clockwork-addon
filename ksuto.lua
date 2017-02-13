@@ -15,7 +15,7 @@ local function commandHandler(msg)
     ksuto.printDebug("Command Handler")
 
     local coordinates
-    if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d-%d%d,%d%d') end
+    if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d.%d%d,%d%d;') end
 
     --ksuto.printDebug("msg : " .. msg)
     if msg == 'toggle' then
@@ -35,9 +35,16 @@ local function commandHandler(msg)
             ksuto.print("Ksuto : Off")
         end
 
-    elseif coordinates then
+    elseif coordinates ~= nil then
 
-        ksuto.updatePositionFromCoordinates(coordinates)
+        coordinates = ""
+
+        for coords in string.gmatch(msg, '%d%d,%d%d.%d%d,%d%d;') do
+            coordinates = coordinates .. coords
+        end
+
+        ksuto.printDebug(coordinates)
+        ksuto.addWaypointList = coordinates;
 
     elseif (msg == 'tne') then
 
@@ -55,18 +62,20 @@ local function commandHandler(msg)
 
     elseif (msg == 'addwp') then
 
-        ksuto.addWaypoint.texture:SetTexture(1, 1, 1, 1)
         ksuto.print("Ksuto -> Adding Waypoint")
+        ksuto.addWaypoint.texture:SetTexture(1, 1, 1, 1)
+        ksuto.ADDING_WP = true
 
     elseif (msg == 'wpadded') then
 
         ksuto.addWaypoint.texture:SetTexture(0, 0, 0, 1)
+        ksuto.ADDING_WP = false
         ksuto.print("Ksuto -> Waypoint Added")
 
     elseif (msg == 'clearwp') then
 
-        ksuto.clearWaypoints.texture:SetTexture(1, 1, 1, 1)
         ksuto.print("Ksuto -> Clearing Waypoints")
+        ksuto.clearWaypoints.texture:SetTexture(1, 1, 1, 1)
 
     elseif (msg == 'wpcleared') then
 
@@ -121,14 +130,14 @@ local function commandHandler(msg)
 
     else
         ksuto.print("------------ KSUTO ------------")
-        ksuto.print("/ksuto toggle      -- Turn Ksuto On [Blush]/Off")
-        ksuto.print("/ksuto tne         -- Target Nearest Enemy : On/Off")
-        ksuto.print("/ksuto 05,21-63,30 -- Add new waypoint")
-        ksuto.print("/ksuto addwp       -- Add new waypoint")
-        ksuto.print("/ksuto clearwp     -- Clear all waypoints")
-        ksuto.print("/ksuto drive       -- Start Autopilote")
-        ksuto.print("/ksuto loop        -- Loop through waypoints")
-        ksuto.print("/ksuto debug       -- Debug Mod : On/Off")
+        ksuto.print("/ksuto toggle       -- Turn Ksuto On [Blush]/Off")
+        ksuto.print("/ksuto tne          -- Target Nearest Enemy : On/Off")
+        ksuto.print("/ksuto 05,21-63,30; -- Add new waypoint(s)")
+        ksuto.print("/ksuto addwp        -- Add new waypoint")
+        ksuto.print("/ksuto clearwp      -- Clear all waypoints")
+        ksuto.print("/ksuto drive        -- Start Autopilote")
+        ksuto.print("/ksuto loop         -- Loop through waypoints")
+        ksuto.print("/ksuto debug        -- Debug Mod : On/Off")
         if ksuto.DEBUG_MOD then ksuto.print("/ksuto listspells   -- List all spells") end
     end
 end

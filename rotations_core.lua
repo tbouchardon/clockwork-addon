@@ -67,3 +67,21 @@ function ksuto.resetKeys()
     ksuto.key2.texture:SetTexture(0, 0, 0, 1)
     ksuto.key1.texture:SetTexture(0, 0, 0, 1)
 end
+
+function ksuto.healthPercentage(unit)
+
+    local percentage
+
+    percentage = UnitHealth(unit) / UnitHealthMax(unit) * 100
+
+    return percentage
+end
+
+function ksuto.manaPercentage(unit) -- or energy,rage,etc
+
+    local percentage
+
+    percentage = UnitMana(unit) / UnitManaMax(unit) * 100
+
+    return percentage
+end

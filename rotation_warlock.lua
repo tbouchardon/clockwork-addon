@@ -17,12 +17,14 @@ function ksuto.warlockAfflictionRotation()
     if UnitExists("target") and
             not UnitIsDeadOrGhost("target") and
             not UnitIsDeadOrGhost("player")
-            and UnitIsEnemy("player", "target") then
+            and UnitIsEnemy("player", "target")
+            and UnitCanAttack("player", "target")
+            and not UnitIsTapped("target") then
 
         AttackTarget()
 
         ksuto.shouldHitKey(ksuto.keyEq, not ksuto.unitHasBuff("player", "Demon Skin"))
-        --ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.INSPECT) and ksuto.checkDebuffSpellCast("Fear"))
+        ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.INSPECT) and ksuto.checkDebuffSpellCast("Fear"))
         ksuto.shouldHitKey(ksuto.key5, ksuto.checkDebuffSpellCast("Curse of Agony"))
         ksuto.shouldHitKey(ksuto.key4, ksuto.checkDebuffSpellCast("Corruption"))
         ksuto.shouldHitKey(ksuto.key3, ksuto.checkDebuffSpellCast("Immolate"))

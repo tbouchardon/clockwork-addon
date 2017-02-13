@@ -9,16 +9,17 @@ ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
 ksuto.frame.texture:SetTexture(0, 1, 0, 1)
 
-ksuto.lastUpdate = 0
+ksuto.nextUpdate = 0
+ksuto.addWaypointList = nil
+ksuto.waypointListIndex = 0
+
 function ksuto.frame:onUpdate(elapsed)
 
     local now = GetTime()
 
-    if (ksuto.lastUpdate < now) then
+    if (ksuto.nextUpdate < now) then
 
-        --ksuto.printDebug(ksuto.lastUpdate)
-
-        ksuto.mana = UnitMana("player");
+        --ksuto.printDebug(ksuto.nextUpdate)
 
         if (ksuto.TOGGLE_ON_OFF) then
 
@@ -26,7 +27,36 @@ function ksuto.frame:onUpdate(elapsed)
             ksuto.rotation()
         end
 
-        ksuto.lastUpdate = now + ksuto.UPDATE_INTERVAL;
+        if ksuto.addWaypointList ~= nil and
+                ksuto.ADDING_WP == false then
+
+            local index = 0;
+            local finished = true
+
+            for coords in string.gmatch(coordinates, ".-;") do
+
+                if index == ksuto.waypointListIndex then
+
+                    finished = false
+                    ksuto.print("Ksuto -> Adding Waypoint : " .. coords)
+                    ksuto.updatePositionFromCoordinates(coords)
+                    ksuto.addWaypoint.texture:SetTexture(1, 1, 1, 1)
+                    ksuto.ADDING_WP = true;
+                end
+
+                index = index + 1;
+            end
+
+            if (finished) then
+
+                ksuto.addWaypointList = nil
+                ksuto.waypointListIndex = 0
+            end
+
+            ksuto.waypointListIndex = ksuto.waypointListIndex + 1
+        end
+
+        ksuto.nextUpdate = now + ksuto.UPDATE_INTERVAL;
     end
 end
 
