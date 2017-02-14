@@ -15,11 +15,10 @@ function ksuto.rotation()
     end
 end
 
-function ksuto.checkDebuffSpellCast(spell)
+function ksuto.checkDebuffSpellCast(spell, slot)
 
-    if not ksuto.unitHasDebuff("target", spell)
-            and ksuto.checkTargetDistance(ksuto.FOLLOW) then
-        return true
+    if not ksuto.unitHasDebuff("target", spell) then
+        return ksuto.checkActionCast(slot)
     else
         return false
     end
@@ -36,8 +35,8 @@ end
 
 function ksuto.checkActionCast(slot)
 
-    ksuto.printDebug("ActionHasRange(slot) = " .. ActionHasRange(slot))
-    ksuto.printDebug("IsActionInRange(slot) = " .. IsActionInRange(slot))
+    -- ksuto.printDebug("ActionHasRange(slot) = " .. ActionHasRange(slot))
+    -- ksuto.printDebug("IsActionInRange(slot) = " .. IsActionInRange(slot))
 
     local canBeCast
 
@@ -47,9 +46,9 @@ function ksuto.checkActionCast(slot)
 
         local start, duration, enable = GetActionCooldown(slot)
 
-        ksuto.printDebug("GetActionCooldown(slot) start = " .. tostring(start))
-        ksuto.printDebug("GetActionCooldown(slot) duration = " .. tostring(duration))
-        ksuto.printDebug("GetActionCooldown(slot) enable = " .. tostring(enable))
+        -- ksuto.printDebug("GetActionCooldown(slot) start = " .. tostring(start))
+        -- ksuto.printDebug("GetActionCooldown(slot) duration = " .. tostring(duration))
+        -- ksuto.printDebug("GetActionCooldown(slot) enable = " .. tostring(enable))
 
         canBeCast = (start == 0)
     end
@@ -58,8 +57,8 @@ function ksuto.checkActionCast(slot)
 
         local isUsable, notEnoughMana = IsUsableAction(slot)
 
-        ksuto.printDebug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
-        ksuto.printDebug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
+        -- ksuto.printDebug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
+        -- ksuto.printDebug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
 
         canBeCast = (isUsable ~= nil)
     end

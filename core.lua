@@ -21,7 +21,7 @@ function ksuto.frame:onUpdate(elapsed)
 
         --ksuto.printDebug(ksuto.nextUpdate)
 
-        if (ksuto.TOGGLE_ON_OFF) then
+        if (ksuto.TOGGLE_ON_OFF and ksuto.ADDING_WP == false) then
 
             ksuto.updatePositionCoordinates()
             ksuto.rotation()
@@ -33,7 +33,7 @@ function ksuto.frame:onUpdate(elapsed)
             local index = 0;
             local finished = true
 
-            for coords in string.gmatch(coordinates, ".-;") do
+            for coords in string.gfind(ksuto.addWaypointList, ".-;") do
 
                 if index == ksuto.waypointListIndex then
 

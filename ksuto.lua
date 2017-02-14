@@ -39,11 +39,13 @@ local function commandHandler(msg)
 
         coordinates = ""
 
-        for coords in string.gmatch(msg, '%d%d,%d%d.%d%d,%d%d;') do
+        ksuto.printDebug(coordinates)
+        ksuto.printDebug(msg)
+
+        for coords in string.gfind(msg, '%d%d,%d%d.%d%d,%d%d;') do
             coordinates = coordinates .. coords
         end
 
-        ksuto.printDebug(coordinates)
         ksuto.addWaypointList = coordinates;
 
     elseif (msg == 'tne') then
