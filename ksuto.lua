@@ -128,6 +128,10 @@ local function commandHandler(msg)
 
         ksuto.listAllSpells()
 
+    elseif (msg == 'listactions') then
+
+        ksuto.reportActionButtons()
+
     else
         ksuto.print("------------ KSUTO ------------")
         ksuto.print("/ksuto toggle       -- Turn Ksuto On [Blush]/Off")
@@ -139,6 +143,7 @@ local function commandHandler(msg)
         ksuto.print("/ksuto loop         -- Loop through waypoints")
         ksuto.print("/ksuto debug        -- Debug Mod : On/Off")
         if ksuto.DEBUG_MOD then ksuto.print("/ksuto listspells   -- List all spells") end
+        if ksuto.DEBUG_MOD then ksuto.print("/ksuto listactions  -- List all actions slots") end
     end
 end
 

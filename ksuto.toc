@@ -15,5 +15,6 @@ coords.lua
 keys.lua
 rotations_core.lua
 rotation_warlock.lua
+rotation_warrior.lua
 debug.lua
 ksuto.lua

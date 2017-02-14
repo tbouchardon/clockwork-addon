@@ -8,7 +8,7 @@
 
 function ksuto.warlockAfflictionRotation()
 
-    ksuto.printDebug("warlockRotation()")
+    -- ksuto.printDebug("warlockRotation()")
 
     ksuto.updatePositionCoordinates()
 
@@ -23,17 +23,19 @@ function ksuto.warlockAfflictionRotation()
 
         AttackTarget()
 
-        ksuto.shouldHitKey(ksuto.keyEq, not ksuto.unitHasBuff("player", "Demon Skin"))
-        ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.INSPECT) and ksuto.checkDebuffSpellCast("Fear"))
+        --        TODO Check Action Cast
+        ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.TRADE) and ksuto.checkDebuffSpellCast("Fear"))
         ksuto.shouldHitKey(ksuto.key0, UnitIsDeadOrGhost("pet"))
         ksuto.shouldHitKey(ksuto.key9, ksuto.manaPercentage("player") < 50)
         ksuto.shouldHitKey(ksuto.key6, ksuto.healthPercentage("target") < 20 and ksuto.checkDebuffSpellCast("Drain Soul"))
         ksuto.shouldHitKey(ksuto.key5, ksuto.checkDebuffSpellCast("Curse of Agony"))
         ksuto.shouldHitKey(ksuto.key4, ksuto.checkDebuffSpellCast("Corruption"))
         ksuto.shouldHitKey(ksuto.key3, ksuto.checkDebuffSpellCast("Immolate"))
-        -- ksuto.shouldHitKey(ksuto.key1, ksuto.checkTargetDistance(ksuto.FOLLOW)) -- Shadow Bolt as of now
+        ksuto.shouldHitKey(ksuto.key1, ksuto.checkActionCast(1)) -- Shadow Bolt as of now
     else
         ksuto.resetKeys()
+
+        ksuto.shouldHitKey(ksuto.keyEq, not ksuto.unitHasBuff("player", "Demon Skin"))
     end
 end
 

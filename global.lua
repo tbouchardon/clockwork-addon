@@ -23,6 +23,13 @@ function ksuto.printDebug(text)
     end
 end
 
+--function ksuto.toString(value)
+--
+--    if value == nil then return "nil" end
+--    return
+--
+--end
+
 function ksuto.createDot(name, xPos, yPos)
 
     local dotFrame = CreateFrame("FRAME", "ksuto_" .. name, ksuto.frame)
@@ -101,4 +108,25 @@ function ksuto.unitHasBuff(unit, effect)
         index = index + 1;
     end
     return false;
+end
+
+function ksuto.reportActionButtons()
+
+    for actionSlot = 1, 120 do
+
+        local actionText = GetActionText(actionSlot);
+        local actionTexture = GetActionTexture(actionSlot);
+
+        if actionTexture then
+
+            local message = "Slot " .. actionSlot .. " : [" .. actionTexture .. "]";
+
+            if actionText then
+
+                message = message .. " \"" .. actionText .. "\"";
+            end
+
+            ksuto.printDebug(message);
+        end
+    end
 end

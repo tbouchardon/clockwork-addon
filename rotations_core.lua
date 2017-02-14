@@ -1,5 +1,3 @@
-
-
 ksuto.INSPECT = 1 --28 yards
 ksuto.TRADE = 2 --11.11 yards
 ksuto.DUEL = 3 --9.9 yards
@@ -8,7 +6,9 @@ ksuto.FOLLOW = 4 --28 yards
 function ksuto.rotation()
 
     ksuto.printDebug("UnitClass : " .. UnitClass("player"))
-    if UnitClass("player") == "Warlock" then ksuto.warlockAfflictionRotation() end
+    if UnitClass("player") == "Warlock" then ksuto.warlockAfflictionRotation()
+    elseif UnitClass("player") == "Warrior" then ksuto.warriorDefRotation()
+    end
 end
 
 function ksuto.checkDebuffSpellCast(spell)
@@ -30,17 +30,37 @@ function ksuto.checkTargetDistance(distance)
     end
 end
 
-function ksuto.checkSpellRange(slot)
+function ksuto.checkActionCast(slot)
 
-    if ActionHasRange(slot) then
-        if IsActionInRange(slot) then
-            return true
-        else
-            return false
-        end
-    else
-        return false
+    ksuto.printDebug("ActionHasRange(slot) = " .. ActionHasRange(slot))
+    ksuto.printDebug("IsActionInRange(slot) = " .. IsActionInRange(slot))
+
+    local canBeCast
+
+    canBeCast = not ActionHasRange(slot) or (ActionHasRange(slot) and IsActionInRange(slot))
+
+    if canBeCast == true then
+
+        local start, duration, enable = GetActionCooldown(slot)
+
+        ksuto.printDebug("GetActionCooldown(slot) start = " .. tostring(start))
+        ksuto.printDebug("GetActionCooldown(slot) duration = " .. tostring(duration))
+        ksuto.printDebug("GetActionCooldown(slot) enable = " .. tostring(enable))
+
+        canBeCast = (start == 0)
     end
+
+    if canBeCast == true then
+
+        local isUsable, notEnoughMana = IsUsableAction(slot)
+
+        ksuto.printDebug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
+        ksuto.printDebug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
+
+        canBeCast = (isUsable ~= nil)
+    end
+
+    return canBeCast
 end
 
 function ksuto.omgAnAlly()
@@ -77,7 +97,7 @@ function ksuto.healthPercentage(unit)
     return percentage
 end
 
-function ksuto.manaPercentage(unit) -- or energy,rage,etc
+function ksuto.manaPercentage(unit) -- or energy, rage, etc
 
     local percentage
 
