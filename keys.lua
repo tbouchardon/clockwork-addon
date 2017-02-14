@@ -1,4 +1,6 @@
-
+ksuto.keyMaj = ksuto.createDot("ksuto_keyMaj", 2, -2)
+ksuto.keyCtrl = ksuto.createDot("ksuto_keyCtrl", 3, -2)
+ksuto.keyAlt = ksuto.createDot("ksuto_keyAlt", 4, -2)
 
 ksuto.keyT = ksuto.createDot("ksuto_keyT", 6, -3)
 ksuto.keyG = ksuto.createDot("ksuto_keyG", 5, -3)
@@ -18,11 +20,6 @@ ksuto.key4 = ksuto.createDot("ksuto_key4", 5, -4)
 ksuto.key3 = ksuto.createDot("ksuto_key3", 4, -4)
 ksuto.key2 = ksuto.createDot("ksuto_key2", 3, -4)
 ksuto.key1 = ksuto.createDot("ksuto_key1", 2, -4)
-
-
-ksuto.keyMaj = ksuto.createDot("ksuto_keyMaj", 2, -2)
-ksuto.keyCtrl = ksuto.createDot("ksuto_keyCtrl", 3, -2)
-ksuto.keyAlt = ksuto.createDot("ksuto_keyAlt", 4, -2)
 
 function ksuto.shouldHitKey(key, should)
 

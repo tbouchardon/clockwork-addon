@@ -98,6 +98,8 @@ ksuto.onOff.texture = ksuto.onOff:CreateTexture("DIALOG")
 ksuto.onOff.texture:SetAllPoints()
 ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
 
+ksuto.health = ksuto.createDot("ksuto_health", 12, -2)
+ksuto.mana = ksuto.createDot("ksuto_mana", 13, -2)
 ksuto.toggle = ksuto.createDot("ksuto_toggle", 2, -13)
 ksuto.targetNearestEnemy = ksuto.createDot("ksuto_targetNearestEnemy", 3, -13)
 ksuto.addWaypoint = ksuto.createDot("ksuto_addWaypoint", 4, -13)

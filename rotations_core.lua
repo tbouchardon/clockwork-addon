@@ -6,6 +6,10 @@ ksuto.FOLLOW = 4 --28 yards
 function ksuto.rotation()
 
     ksuto.printDebug("UnitClass : " .. UnitClass("player"))
+
+    ksuto.health.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
+    ksuto.mana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("player"), 1)
+
     if UnitClass("player") == "Warlock" then ksuto.warlockAfflictionRotation()
     elseif UnitClass("player") == "Warrior" then ksuto.warriorDefRotation()
     end
