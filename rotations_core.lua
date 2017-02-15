@@ -7,6 +7,9 @@ function ksuto.rotation()
 
     ksuto.printDebug("UnitClass : " .. UnitClass("player"))
 
+    if UnitAffectingCombat("player") then ksuto.inCombat.texture:SetTexture(1, 1, 1, 1)
+    else ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
+    end
     ksuto.health.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
     ksuto.mana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("player"), 1)
 

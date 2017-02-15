@@ -98,6 +98,7 @@ ksuto.onOff.texture = ksuto.onOff:CreateTexture("DIALOG")
 ksuto.onOff.texture:SetAllPoints()
 ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
 
+ksuto.inCombat = ksuto.createDot("ksuto_inCombat", 2, -2)
 ksuto.health = ksuto.createDot("ksuto_health", 12, -2)
 ksuto.mana = ksuto.createDot("ksuto_mana", 13, -2)
 ksuto.toggle = ksuto.createDot("ksuto_toggle", 2, -13)
