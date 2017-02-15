@@ -20,8 +20,12 @@ end
 
 function ksuto.checkDebuffSpellCast(spell, slot)
 
+    if not spell then return false end
+
     if not ksuto.unitHasDebuff("target", spell) then
-        return ksuto.checkActionCast(slot)
+        if slot then return ksuto.checkActionCast(slot)
+        else return true
+        end
     else
         return false
     end
