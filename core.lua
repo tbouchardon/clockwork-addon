@@ -80,7 +80,7 @@ local function resizeAddon(self, event, ...)
 end
 
 ksuto.frame = CreateFrame("FRAME", "ksuto_MainFrame", UIParent)
-ksuto.frame:SetPoint("TOP", 0, -100)
+ksuto.frame:SetPoint("TOPLEFT", 30, -100)
 ksuto.frame:SetFrameStrata("MEDIUM")
 ksuto.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 ksuto.frame:SetScript("OnEvent", resizeAddon);
