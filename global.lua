@@ -1,5 +1,3 @@
-
-
 ksuto = {}
 
 ksuto.UPDATE_INTERVAL = 0.25
@@ -33,9 +31,9 @@ end
 function ksuto.createDot(name, xPos, yPos)
 
     local dotFrame = CreateFrame("FRAME", "ksuto_" .. name, ksuto.frame)
-    dotFrame:SetPoint("TOPLEFT", xPos, yPos)
-    dotFrame:SetWidth(1)
-    dotFrame:SetHeight(1)
+    dotFrame:SetPoint("TOPLEFT", ksuto.scale(xPos), ksuto.scale(yPos))
+    dotFrame:SetWidth(ksuto.scale(1))
+    dotFrame:SetHeight(ksuto.scale(1))
     dotFrame:SetFrameStrata("HIGH");
 
     dotFrame.texture = dotFrame:CreateTexture("HIGH")
