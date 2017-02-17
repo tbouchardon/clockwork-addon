@@ -21,9 +21,9 @@ function ksuto.warlockAfflictionRotation()
 
         -- ksuto.print("UnitCanAttack('player', 'target') : " .. UnitCanAttack("player", "target"))
         -- ksuto.print("UnitIsTapped('target') : " .. UnitIsTapped("target"))
-        -- ksuto.print(tostring(UnitIsUnit("targettarget", "player")))
+        ksuto.print("UnitIsUnit(' pettarget ', ' target ')" .. tostring(UnitIsUnit("pettarget", "target")))
 
-        if UnitIsUnit("player", "targettarget") then ksuto.shouldHitCtrlKey(ksuto.key1, true) end -- Pet Attack
+        if UnitIsUnit("player", "targettarget") and not UnitIsUnit("pettarget", "target") then ksuto.shouldHitCtrlKey(ksuto.key1, true) end -- Pet Attack
         --        AttackTarget()
 
         -- ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.TRADE) and ksuto.checkDebuffSpellCast("Fear"))

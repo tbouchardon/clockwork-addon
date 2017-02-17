@@ -52,15 +52,17 @@ end
 
 function ksuto.shouldHitKey(key, should, slot, modificator)
 
-    if slot then should = ksuto.checkActionCast(slot)
-    elseif not modificator and ksuto.CHECK_ACTIONS_CAST then should = ksuto.checkActionCast(key.slot)
-    elseif modificator == ksuto.SHIFT and ksuto.CHECK_ACTIONS_CAST and key.shiftslot then should = ksuto.checkActionCast(key.shiftslot)
+    if (should == true) then
+        if slot then should = ksuto.checkActionCast(slot)
+        elseif not modificator and ksuto.CHECK_ACTIONS_CAST then should = ksuto.checkActionCast(key.slot)
+        elseif modificator == ksuto.SHIFT and ksuto.CHECK_ACTIONS_CAST and key.shiftslot then should = ksuto.checkActionCast(key.shiftslot)
+        end
     end
 
     if should and not modificator then key.texture:SetTexture(1, 1, 1, 1)
-    elseif should and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)
-    elseif should and modificator == ksuto.CTRL then key.texture:SetTexture(0, 1, 0, 1)
-    elseif should and modificator == ksuto.ALT then key.texture:SetTexture(0, 0, 1, 1)
+    elseif should and modificator == ksuto.SHIFT then ksuto.print("SHIFT") key.texture:SetTexture(1, 0, 0, 1)
+    elseif should and modificator == ksuto.CTRL then ksuto.print("CTRL") key.texture:SetTexture(0, 1, 0, 1)
+    elseif should and modificator == ksuto.ALT then ksuto.print("ALT") key.texture:SetTexture(0, 0, 1, 1)
         return true
     else
         key.texture:SetTexture(0, 0, 0, 1)
@@ -74,6 +76,8 @@ function ksuto.shouldHitShiftKey(key, should, slot)
 end
 
 function ksuto.shouldHitCtrlKey(key, should, slot)
+
+    --    ksuto.print("ksuto.shouldHitCtrlKey" .. tostring(should) .. " " .. tostring(slot))
 
     ksuto.shouldHitKey(key, should, slot, ksuto.CTRL)
 end

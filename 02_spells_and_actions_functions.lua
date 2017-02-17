@@ -1,5 +1,3 @@
-
-
 function ksuto.getBuffName(id)
     KsutoTooltip:SetUnitBuff(id)
     local buffName = tostring(KsutoTooltipTextLeft1:GetText());
@@ -83,8 +81,11 @@ end
 
 function ksuto.dropSpellInBarSlot(spellName, slot)
 
-    local id = findSpell(spellName, BOOKTYPE_SPELL);
-    PickupSpell(spellName)
-    PickupSpell(id, BOOKTYPE_SPELL);
-    PlaceAction(slot)
+    local id = ksuto.findSpell(spellName, BOOKTYPE_SPELL);
+    ksuto.print(tostring(id))
+    --PickupSpell(spellName)
+    if id then
+        PickupSpell(id, BOOKTYPE_SPELL);
+        PlaceAction(slot)
+    end
 end
