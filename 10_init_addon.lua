@@ -8,14 +8,14 @@
 
 local function resizeAddon(self, event, ...)
 
-    ksuto.print("GetCurrentResolution() : " .. tostring(GetCurrentResolution()))
-    ksuto.print("({ GetScreenResolutions() })[GetCurrentResolution()] : " .. tostring(({ GetScreenResolutions() })[GetCurrentResolution()]))
+    ksuto.printDebug("GetCurrentResolution() : " .. tostring(GetCurrentResolution()))
+    ksuto.printDebug("({ GetScreenResolutions() })[GetCurrentResolution()] : " .. tostring(({ GetScreenResolutions() })[GetCurrentResolution()]))
 
     local currentResulution = tostring(({ GetScreenResolutions() })[GetCurrentResolution()])
     local height = string.gsub(currentResulution, "%d+x", "")
 
-    ksuto.print("currentResolution height : " .. height)
-    ksuto.print("GetCVar(uiScale) : " .. GetCVar("uiScale"))
+    ksuto.printDebug("currentResolution height : " .. height)
+    ksuto.printDebug("GetCVar(uiScale) : " .. GetCVar("uiScale"))
 
     ksuto.scaleMultiplicator = (768 / tonumber(height)) / GetCVar("uiScale")
 

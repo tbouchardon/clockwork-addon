@@ -60,9 +60,9 @@ function ksuto.shouldHitKey(key, should, slot, modificator)
     end
 
     if should and not modificator then key.texture:SetTexture(1, 1, 1, 1)
-    elseif should and modificator == ksuto.SHIFT then ksuto.print("SHIFT") key.texture:SetTexture(1, 0, 0, 1)
-    elseif should and modificator == ksuto.CTRL then ksuto.print("CTRL") key.texture:SetTexture(0, 1, 0, 1)
-    elseif should and modificator == ksuto.ALT then ksuto.print("ALT") key.texture:SetTexture(0, 0, 1, 1)
+    elseif should and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)
+    elseif should and modificator == ksuto.CTRL then key.texture:SetTexture(0, 1, 0, 1)
+    elseif should and modificator == ksuto.ALT then key.texture:SetTexture(0, 0, 1, 1)
         return true
     else
         key.texture:SetTexture(0, 0, 0, 1)

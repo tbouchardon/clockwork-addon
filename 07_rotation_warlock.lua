@@ -21,10 +21,11 @@ function ksuto.warlockAfflictionRotation()
 
         -- ksuto.print("UnitCanAttack('player', 'target') : " .. UnitCanAttack("player", "target"))
         -- ksuto.print("UnitIsTapped('target') : " .. UnitIsTapped("target"))
-        ksuto.print("UnitIsUnit(' pettarget ', ' target ')" .. tostring(UnitIsUnit("pettarget", "target")))
+        -- ksuto.print("UnitIsUnit(' pettarget ', ' target ')" .. tostring(UnitIsUnit("pettarget", "target")))
 
-        if UnitIsUnit("player", "targettarget") and not UnitIsUnit("pettarget", "target") then ksuto.shouldHitCtrlKey(ksuto.key1, true) end -- Pet Attack
-        --        AttackTarget()
+        -- AttackTarget()
+
+        -- DEFAULT KEYS
 
         -- ksuto.shouldHitKey(ksuto.keyPar, ksuto.checkTargetDistance(ksuto.TRADE) and ksuto.checkDebuffSpellCast("Fear"))
         ksuto.shouldHitKey(ksuto.key0, not UnitExists("pet") and ksuto.checkActionCast(10))
@@ -34,6 +35,13 @@ function ksuto.warlockAfflictionRotation()
         ksuto.shouldHitKey(ksuto.key4, ksuto.checkDebuffSpellCast("Corruption", 4))
         ksuto.shouldHitKey(ksuto.key3, ksuto.checkDebuffSpellCast("Immolate", 3))
         ksuto.shouldHitKey(ksuto.key1, ksuto.manaPercentage("player") > 50) -- Shadow Bolt as of now
+
+        -- ALT KEYS
+        -- SHIFT KEYS
+        -- CTRL KEYS
+
+        if UnitIsUnit("player", "targettarget") and not UnitIsUnit("pettarget", "target") then ksuto.shouldHitCtrlKey(ksuto.key1, true) end -- Pet Attack
+
     else
         ksuto.resetKeys()
 

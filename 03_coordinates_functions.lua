@@ -321,6 +321,6 @@ function ksuto.updatePositionFromCoordinates(coordinates)
     posX = tonumber(posX)
     posY = tonumber(posY)
 
-    updateLongitude(posX)
-    updateLatitude(posY)
+    ksuto.updateLatitude(posX)
+    ksuto.updateLongitude(posY)
 end
