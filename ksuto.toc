@@ -8,13 +8,15 @@
 
 ##Dependencies:
 
-ksuto.xml
-global.lua
-core.lua
-coords.lua
-keys.lua
-rotations_core.lua
-rotation_warlock.lua
-rotation_warrior.lua
-debug.lua
-ksuto.lua
+00_QR_code.xml
+01_core_functions.lua
+02_spells_and_actions_functions.lua
+03_coordinates_functions.lua
+04_debug_functions.lua
+05_keys_functions.lua
+06_rotations_functions.lua
+07_rotation_warlock.lua
+07_rotation_warrior.lua
+08_command_handler.lua
+09_init_quickbar.lua
+10_init_addon.lua

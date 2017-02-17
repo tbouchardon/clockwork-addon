@@ -1,47 +1,4 @@
-ksuto = {}
 
-ksuto.UPDATE_INTERVAL = 0.2 -- 200ms
-ksuto.ADDING_WP = false;
-ksuto.TOGGLE_ON_OFF = false
-ksuto.TARGET_NEAREST_ENEMY = false
-ksuto.DRIVE_MOD = false
-ksuto.DRIVE_LOOP = false
-ksuto.DEBUG_MOD = false
-
-function ksuto.print(text)
-
-    DEFAULT_CHAT_FRAME:AddMessage(text)
-end
-
-function ksuto.printDebug(text)
-
-    if ksuto.DEBUG_MOD then
-
-        DEFAULT_CHAT_FRAME:AddMessage("Ksuto (Debug) -> " .. text)
-    end
-end
-
---function ksuto.toString(value)
---
---    if value == nil then return "nil" end
---    return
---
---end
-
-function ksuto.createDot(name, xPos, yPos)
-
-    local dotFrame = CreateFrame("FRAME", "ksuto_" .. name, ksuto.frame)
-    dotFrame:SetPoint("TOPLEFT", ksuto.scale(xPos), ksuto.scale(yPos))
-    dotFrame:SetWidth(ksuto.scale(1))
-    dotFrame:SetHeight(ksuto.scale(1))
-    dotFrame:SetFrameStrata("HIGH");
-
-    dotFrame.texture = dotFrame:CreateTexture("HIGH")
-    dotFrame.texture:SetAllPoints()
-    dotFrame.texture:SetTexture(0, 0, 0, 1)
-
-    return dotFrame
-end
 
 function ksuto.getBuffName(id)
     KsutoTooltip:SetUnitBuff(id)
@@ -108,23 +65,26 @@ function ksuto.unitHasBuff(unit, effect)
     return false;
 end
 
-function ksuto.reportActionButtons()
-
-    for actionSlot = 1, 120 do
-
-        local actionText = GetActionText(actionSlot);
-        local actionTexture = GetActionTexture(actionSlot);
-
-        if actionTexture then
-
-            local message = "Slot " .. actionSlot .. " : [" .. actionTexture .. "]";
-
-            if actionText then
-
-                message = message .. " \"" .. actionText .. "\"";
-            end
-
-            ksuto.printDebug(message);
+function ksuto.findSpell(spellName, bookType)
+    local i, s;
+    local found = false;
+    for i = 1, MAX_SKILLLINE_TABS do
+        local name, texture, offset, numSpells = GetSpellTabInfo(i);
+        if (not name) then break; end
+        for s = offset + 1, offset + numSpells do
+            local spell, rank = GetSpellName(s, bookType);
+            if (spell == spellName) then found = true; end
+            if (found and spell ~= spellName) then return s - 1; end
         end
     end
+    if (found) then return s; end
+    return nil;
+end
+
+function ksuto.dropSpellInBarSlot(spellName, slot)
+
+    local id = findSpell(spellName, BOOKTYPE_SPELL);
+    PickupSpell(spellName)
+    PickupSpell(id, BOOKTYPE_SPELL);
+    PlaceAction(slot)
 end

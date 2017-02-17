@@ -1,5 +1,10 @@
-ksuto.scaleMultiplicator = 0
-function ksuto.scale(x) return ksuto.scaleMultiplicator * x end
+--
+-- Created by IntelliJ IDEA.
+-- User: thomas.bouchardon
+-- Date: 17/02/2017
+-- Time: 13:51
+-- To change this template use File | Settings | File Templates.
+--
 
 local function resizeAddon(self, event, ...)
 
@@ -134,3 +139,4 @@ function ksuto.frame:onUpdate(elapsed)
         ksuto.nextUpdate = now + ksuto.UPDATE_INTERVAL;
     end
 end
+

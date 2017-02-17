@@ -79,29 +79,13 @@ function ksuto.checkActionCast(slot)
     return canBeCast
 end
 
-function ksuto.omgAnAlly()
+function ksuto.enemyPlayer()
 
     if UnitIsPlayer("target") then
         return true
     else
         return false
     end
-end
-
-function ksuto.resetKeys()
-
-    ksuto.keyEq.texture:SetTexture(0, 0, 0, 1)
-    ksuto.keyPar.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key0.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key9.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key8.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key7.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key6.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key5.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key4.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key3.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key2.texture:SetTexture(0, 0, 0, 1)
-    ksuto.key1.texture:SetTexture(0, 0, 0, 1)
 end
 
 function ksuto.healthPercentage(unit)
