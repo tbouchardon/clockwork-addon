@@ -27,9 +27,10 @@ function ksuto.checkDebuffSpellCast(spell, slot)
     if not spell then return false end
 
     if not ksuto.unitHasDebuff("target", spell) then
-        if slot ~= nil then return ksuto.checkActionCast(slot)
+        if slot ~= nil then
+            return ksuto.checkActionCast(slot)
         else
-            ksuto.print("No slot !")
+            ksuto.print("Ksuto -> No slot !")
             return true
         end
     else
@@ -53,7 +54,7 @@ function ksuto.checkActionCast(slot)
 
     local canBeCast
 
-    canBeCast = not ActionHasRange(slot) or (ActionHasRange(slot) and IsActionInRange(slot))
+    if ActionHasRange(slot) then canBeCast = IsActionInRange(slot) == 1 end
 
     if canBeCast == true then
 

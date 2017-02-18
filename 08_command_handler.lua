@@ -25,14 +25,14 @@ local function commandHandler(msg)
             ksuto.TOGGLE_ON_OFF = true
             ksuto.toggle.texture:SetTexture(1, 1, 1, 1)
             ksuto.onOff:Hide()
-            ksuto.print("Ksuto : On")
+            ksuto.print("Ksuto -> On")
 
         else
 
             ksuto.TOGGLE_ON_OFF = false
             ksuto.toggle.texture:SetTexture(0, 0, 0, 1)
             ksuto.onOff:Show()
-            ksuto.print("Ksuto : Off")
+            ksuto.print("Ksuto -> Off")
         end
 
     elseif coordinates ~= nil then
