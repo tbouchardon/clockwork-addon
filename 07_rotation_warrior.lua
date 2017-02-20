@@ -8,7 +8,9 @@
 
 function ksuto.warriorDefRotation()
 
-    --    ksuto.printDebug("warriorRotation()")
+    -- ksuto.printDebug("function ksuto.warriorDefRotation(")
+
+    ksuto.printDebug("warriorRotation()")
 
     ksuto.updatePositionCoordinates()
 
@@ -24,21 +26,21 @@ function ksuto.warriorDefRotation()
         AttackTarget()
 
         --Arc
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.checkTargetDistance(ksuto.DUEL))
+        ksuto.shouldHitKey(ksuto.key9, not ksuto.checkTargetDistance(ksuto.DUEL))
         --dot
-        ksuto.shouldHitKey(ksuto.key6, ksuto.manaPercentage("player") > 10 and ksuto.checkDebuffSpellCast("mon dot"))
+        ksuto.shouldHitKey(ksuto.key8, ksuto.manaPercentage("player") > 10 and ksuto.checkDebuffSpellCast("Rend"))
         --bouclier
-        --ksuto.shouldHitKey(ksuto.key5, ksuto.manaPercentage("player") > 5) and not ksuto.unitHasBuff("player", "buff bouclier"))
+        --ksuto.shouldHitKey(ksuto.key5, ksuto.manaPercentage("player") > 10) and not ksuto.unitHasBuff("player", "buff bouclier"))
         --revenche
         --ksuto.shouldHitKey(ksuto.key4, ksuto.manaPercentage("player") > 5))
         --frappe héroïque
-        ksuto.shouldHitKey(ksuto.key3, ksuto.manaPercentage("player") > 20)
+        ksuto.shouldHitKey(ksuto.key5, ksuto.manaPercentage("player") > 20)
         --mon buff
-        ksuto.shouldHitKey(ksuto.key2, ksuto.manaPercentage("player") > 10 and not ksuto.unitHasBuff("player", "buff PA"))
+        ksuto.shouldHitKey(ksuto.key4, ksuto.manaPercentage("player") > 10 and not ksuto.unitHasBuff("player", "Battle Shout"))
     else
         ksuto.resetKeys()
         --regen
-        ksuto.shouldHitKey(ksuto.key1, ksuto.healthPercentage("player") < 30 and not ksuto.unitHasBuff("player", "regen pv"))
+        ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage("player") < 30 and not ksuto.unitHasBuff("player", "regen pv"))
     end
 end
 

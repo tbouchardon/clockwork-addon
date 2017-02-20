@@ -2,6 +2,7 @@ ksuto = {}
 
 ksuto.DEBUG_MOD = false
 ksuto.CHECK_ACTIONS_CAST = true
+ksuto.CASTING = false;
 
 ksuto.UPDATE_INTERVAL = 0.2 -- 200ms
 ksuto.ADDING_WP = false;
@@ -12,10 +13,14 @@ ksuto.DRIVE_LOOP = false
 
 function ksuto.print(text)
 
+    -- ksuto.printDebug("function ksuto.print(" .. tostring(text))
+
     DEFAULT_CHAT_FRAME:AddMessage(text)
 end
 
 function ksuto.createDot(name, xPos, yPos, slot, shiftslot)
+
+    -- ksuto.printDebug("function ksuto.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
 
     local dotFrame = CreateFrame("FRAME", "ksuto_" .. name, ksuto.frame)
     dotFrame:SetPoint("TOPLEFT", ksuto.scale(xPos), ksuto.scale(yPos))
@@ -33,4 +38,9 @@ function ksuto.createDot(name, xPos, yPos, slot, shiftslot)
 end
 
 ksuto.scaleMultiplicator = 0
-function ksuto.scale(x) return ksuto.scaleMultiplicator * x end
+function ksuto.scale(x)
+
+    ksuto.printDebug("function ksuto.scale(" .. tostring(x))
+
+    return ksuto.scaleMultiplicator * x
+end

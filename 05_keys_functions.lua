@@ -4,6 +4,8 @@ ksuto.ALT = 919836
 
 function ksuto.initKeys()
 
+    -- ksuto.printDebug("function ksuto.initKeys(")
+
     --ksuto.keyMaj = ksuto.createDot("ksuto_keyMaj", 2, -2)
     --ksuto.keyCtrl = ksuto.createDot("ksuto_keyCtrl", 3, -2)
     --ksuto.keyAlt = ksuto.createDot("ksuto_keyAlt", 4, -2)
@@ -30,6 +32,8 @@ end
 
 function ksuto.resetKeys()
 
+    -- ksuto.printDebug("function ksuto.resetKeys(")
+
     ksuto.keyT.texture:SetTexture(0, 0, 0, 1)
     ksuto.keyG.texture:SetTexture(0, 0, 0, 1)
     ksuto.keyQ.texture:SetTexture(0, 0, 0, 1)
@@ -52,12 +56,21 @@ end
 
 function ksuto.shouldHitKey(key, should, slot, modificator)
 
+    -- ksuto.printDebug("function ksuto.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
+
+    ksuto.print(tostring(key.slot))
+    ksuto.print(tostring(should))
+    ksuto.print(tostring(slot))
+    ksuto.print(tostring(modificator))
+
     if (should == true) then
         if slot then should = ksuto.checkActionCast(slot)
         elseif not modificator and ksuto.CHECK_ACTIONS_CAST then should = ksuto.checkActionCast(key.slot)
         elseif modificator == ksuto.SHIFT and ksuto.CHECK_ACTIONS_CAST and key.shiftslot then should = ksuto.checkActionCast(key.shiftslot)
         end
     end
+
+    ksuto.print(tostring(should))
 
     if should and not modificator then key.texture:SetTexture(1, 1, 1, 1)
     elseif should and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)
@@ -72,10 +85,14 @@ end
 
 function ksuto.shouldHitShiftKey(key, should, slot)
 
+    -- ksuto.printDebug("function ksuto.shouldHitShiftKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
+
     ksuto.shouldHitKey(key, should, slot, ksuto.SHIFT)
 end
 
 function ksuto.shouldHitCtrlKey(key, should, slot)
+
+    -- ksuto.printDebug("function ksuto.shouldHitCtrlKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
     --    ksuto.print("ksuto.shouldHitCtrlKey" .. tostring(should) .. " " .. tostring(slot))
 
@@ -83,6 +100,8 @@ function ksuto.shouldHitCtrlKey(key, should, slot)
 end
 
 function ksuto.shouldHitAltKey(key, should, slot)
+
+    -- ksuto.printDebug("function ksuto.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
     ksuto.shouldHitKey(key, should, slot, ksuto.ALT)
 end

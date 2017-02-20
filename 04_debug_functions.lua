@@ -1,5 +1,7 @@
 function ksuto.printDebug(text)
 
+    -- ksuto.printDebug("function ksuto.printDebug(" .. tostring(text))
+
     if ksuto.DEBUG_MOD then
 
         DEFAULT_CHAT_FRAME:AddMessage("Ksuto (Debug) -> " .. text)
@@ -7,6 +9,8 @@ function ksuto.printDebug(text)
 end
 
 function ksuto.listAllSpells()
+
+    -- ksuto.printDebug("function ksuto.listAllSpells(")
 
     ksuto.printDebug("ksuto.listAllSpells()")
 
@@ -35,6 +39,8 @@ end
 
 function ksuto.reportActionButtons()
 
+    -- ksuto.printDebug("function ksuto.reportActionButtons(")
+
     for actionSlot = 1, 120 do
 
         local actionText = GetActionText(actionSlot);
@@ -55,6 +61,8 @@ function ksuto.reportActionButtons()
 end
 
 function getCoord()
+
+    -- ksuto.printDebug("function getCoord(")
 
     local posX, posY = GetPlayerMapPosition("player");
 

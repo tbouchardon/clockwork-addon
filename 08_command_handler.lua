@@ -2,6 +2,8 @@
 
 function rotation()
 
+    -- ksuto.printDebug("function rotation(")
+
     ksuto.rotation()
 end
 
@@ -11,6 +13,8 @@ SLASH_KSUTO1 = '/ksuto'
 SLASH_KSUTO2 = '/kto'
 
 local function commandHandler(msg)
+
+    -- ksuto.printDebug("local function commandHandler(" .. tostring(msg))
 
     ksuto.printDebug("Command Handler")
 
@@ -119,6 +123,7 @@ local function commandHandler(msg)
             ksuto.DEBUG_MOD = true
             ksuto.debug.texture:SetTexture(1, 0, 0, 1)
             ksuto.print("Ksuto -> Debug Mod : On")
+            ksuto.printDebug("UnitClass : " .. UnitClass("player"))
         else
 
             ksuto.DEBUG_MOD = false

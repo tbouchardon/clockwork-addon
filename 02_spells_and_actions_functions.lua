@@ -1,4 +1,6 @@
 function ksuto.getBuffName(id)
+
+    -- ksuto.printDebug("function ksuto.getBuffName(" .. tostring(id))
     KsutoTooltip:SetUnitBuff(id)
     local buffName = tostring(KsutoTooltipTextLeft1:GetText());
     if (buffName) then
@@ -8,25 +10,27 @@ function ksuto.getBuffName(id)
 end
 
 function ksuto.unitHasDebuff(unit, effect)
+
+    -- ksuto.printDebug("function ksuto.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1;
     while UnitDebuff(unit, index) do
 
         if ksuto.DEBUG_MOD then
             local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitDebuff(unit, index)
-            if icon then ksuto.printDebug("icon : " .. icon) end
-            if count then ksuto.printDebug("count : " .. count) end
-            if castable then ksuto.printDebug("castable : " .. castable) end
-            if texture then ksuto.printDebug("texture : " .. texture) end
-            if debuffType then ksuto.printDebug("debuffType : " .. debuffType) end
-            if isStealable then ksuto.printDebug("isStealable : " .. isStealable) end
-            if isMine then ksuto.printDebug("isMine : " .. isMine) end
-            if shouldConsolidate then ksuto.printDebug("shouldConsolidate : " .. shouldConsolidate) end
-            if spellId then ksuto.printDebug("spellId : " .. spellId) end
+            --            if icon then ksuto.printDebug("icon : " .. icon) end
+            --            if count then ksuto.printDebug("count : " .. count) end
+            --            if castable then ksuto.printDebug("castable : " .. castable) end
+            --            if texture then ksuto.printDebug("texture : " .. texture) end
+            --            if debuffType then ksuto.printDebug("debuffType : " .. debuffType) end
+            --            if isStealable then ksuto.printDebug("isStealable : " .. isStealable) end
+            --            if isMine then ksuto.printDebug("isMine : " .. isMine) end
+            --            if shouldConsolidate then ksuto.printDebug("shouldConsolidate : " .. shouldConsolidate) end
+            --            if spellId then ksuto.printDebug("spellId : " .. spellId) end
         end
 
         KsutoTooltip:SetUnitDebuff(unit, index);
         local debuffName = tostring(KsutoTooltipTextLeft1:GetText());
-        ksuto.printDebug("debuffName : " .. debuffName)
+        --        ksuto.printDebug("debuffName : " .. debuffName)
         if (string.find(debuffName, effect)) then
             return true;
         end
@@ -36,25 +40,27 @@ function ksuto.unitHasDebuff(unit, effect)
 end
 
 function ksuto.unitHasBuff(unit, effect)
+
+    -- ksuto.printDebug("function ksuto.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1;
     while UnitBuff(unit, index) do
 
         if ksuto.DEBUG_MOD then
             local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitBuff(unit, index)
-            if icon then ksuto.printDebug("icon : " .. icon) end
-            if count then ksuto.printDebug("count : " .. count) end
-            if castable then ksuto.printDebug("castable : " .. castable) end
-            if texture then ksuto.printDebug("texture : " .. texture) end
-            if debuffType then ksuto.printDebug("debuffType : " .. debuffType) end
-            if isStealable then ksuto.printDebug("isStealable : " .. isStealable) end
-            if isMine then ksuto.printDebug("isMine : " .. isMine) end
-            if shouldConsolidate then ksuto.printDebug("shouldConsolidate : " .. shouldConsolidate) end
-            if spellId then ksuto.printDebug("spellId : " .. spellId) end
+            --            if icon then ksuto.printDebug("icon : " .. icon) end
+            --            if count then ksuto.printDebug("count : " .. count) end
+            --            if castable then ksuto.printDebug("castable : " .. castable) end
+            --            if texture then ksuto.printDebug("texture : " .. texture) end
+            --            if debuffType then ksuto.printDebug("debuffType : " .. debuffType) end
+            --            if isStealable then ksuto.printDebug("isStealable : " .. isStealable) end
+            --            if isMine then ksuto.printDebug("isMine : " .. isMine) end
+            --            if shouldConsolidate then ksuto.printDebug("shouldConsolidate : " .. shouldConsolidate) end
+            --            if spellId then ksuto.printDebug("spellId : " .. spellId) end
         end
 
         KsutoTooltip:SetUnitBuff(unit, index);
         local buffName = tostring(KsutoTooltipTextLeft1:GetText());
-        ksuto.printDebug("buffName : " .. buffName)
+        --        ksuto.printDebug("buffName : " .. buffName)
         if (string.find(buffName, effect)) then
             return true;
         end
@@ -64,6 +70,8 @@ function ksuto.unitHasBuff(unit, effect)
 end
 
 function ksuto.findSpell(spellName, bookType)
+
+    -- ksuto.printDebug("function ksuto.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
     local i, s;
     local found = false;
     for i = 1, MAX_SKILLLINE_TABS do
@@ -80,6 +88,8 @@ function ksuto.findSpell(spellName, bookType)
 end
 
 function ksuto.dropSpellInBarSlot(spellName, slot)
+
+    -- ksuto.printDebug("function ksuto.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
 
     local id = ksuto.findSpell(spellName, BOOKTYPE_SPELL);
     ksuto.print(tostring(id))

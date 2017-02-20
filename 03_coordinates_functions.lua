@@ -1,5 +1,7 @@
 function ksuto.initLatitude()
 
+    -- ksuto.printDebug("function ksuto.initLatitude(")
+
     ksuto.coord_lati_1 = ksuto.createDot("coord_lati_1", 13, -8)
     ksuto.coord_lati_2 = ksuto.createDot("coord_lati_2", 12, -8)
     ksuto.coord_lati_4 = ksuto.createDot("coord_lati_4", 11, -8)
@@ -24,6 +26,8 @@ function ksuto.initLatitude()
 end
 
 function ksuto.initLongitude()
+
+    -- ksuto.printDebug("function ksuto.initLongitude(")
 
     ksuto.coord_long_1 = ksuto.createDot("coord_long_1", 13, -11)
     ksuto.coord_long_2 = ksuto.createDot("coord_long_2", 12, -11)
@@ -50,11 +54,15 @@ end
 
 function ksuto.initCoords()
 
+    -- ksuto.printDebug("function ksuto.initCoords(")
+
     ksuto.initLatitude()
     ksuto.initLongitude()
 end
 
 function ksuto.updateLatitude(coordinates)
+
+    -- ksuto.printDebug("function ksuto.updateLatitude(" .. tostring(coordinates))
 
     if coordinates - 524288 >= 0 then
         coordinates = coordinates - 524288;
@@ -179,6 +187,8 @@ end
 
 function ksuto.updateLongitude(coordinates)
 
+    -- ksuto.printDebug("function ksuto.updateLongitude(" .. tostring(coordinates))
+
     if coordinates - 524288 >= 0 then
         coordinates = coordinates - 524288;
         ksuto.coord_long_524288.texture:SetTexture(1, 1, 1, 1)
@@ -302,6 +312,8 @@ end
 
 function ksuto.updatePositionCoordinates()
 
+    -- ksuto.printDebug("function ksuto.updatePositionCoordinates(")
+
     --ksuto.printDebug("ksuto.updatePositionCoordinates()")
 
     local posX, posY = GetPlayerMapPosition("player");
@@ -314,6 +326,8 @@ function ksuto.updatePositionCoordinates()
 end
 
 function ksuto.updatePositionFromCoordinates(coordinates)
+
+    -- ksuto.printDebug("function ksuto.updatePositionFromCoordinates(" .. tostring(coordinates))
 
     local posX = string.sub(coordinates, 1, 2) .. string.sub(coordinates, 4, 5) .. "00"
     local posY = string.sub(coordinates, 7, 8) .. string.sub(coordinates, 10, 11) .. "00"
