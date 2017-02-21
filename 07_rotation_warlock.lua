@@ -63,7 +63,7 @@ function ksuto.warlockAfflictionRotation()
         if (not UnitIsDeadOrGhost("player")) then
             ksuto.printDebug("out of combat rotation")
 
-            ksuto.shouldHitKey(ksuto.keyQ, ksuto.manaPercentage("player") < 25 and ksuto.healthPercentage("player") > 75) -- Life Tap
+            ksuto.shouldHitKey(ksuto.keyQ, ksuto.manaPercentage("player") < 33 and ksuto.healthPercentage("player") > 66) -- Life Tap
 
             ksuto.shouldHitShiftKey(ksuto.keyT, not ksuto.unitHasBuff("player", "Demon Skin"))
             ksuto.shouldHitShiftKey(ksuto.keyG, not UnitExists("pet"))
