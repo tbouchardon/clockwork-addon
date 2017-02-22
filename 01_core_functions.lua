@@ -18,7 +18,7 @@ function ksuto.print(text)
     DEFAULT_CHAT_FRAME:AddMessage(text)
 end
 
-function ksuto.createDot(name, xPos, yPos, slot, shiftslot)
+function ksuto.createDot(name, xPos, yPos, slot, shiftslot, altslot)
 
     -- ksuto.printDebug("function ksuto.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
 
@@ -33,6 +33,7 @@ function ksuto.createDot(name, xPos, yPos, slot, shiftslot)
     dotFrame.texture:SetTexture(0, 0, 0, 1)
     dotFrame.slot = slot;
     dotFrame.shiftslot = shiftslot;
+    dotFrame.altslot = altslot;
 
     return dotFrame
 end

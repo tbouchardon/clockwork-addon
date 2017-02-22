@@ -10,37 +10,29 @@ function ksuto.warriorDefRotation()
 
     -- ksuto.printDebug("function ksuto.warriorDefRotation(")
 
-    ksuto.printDebug("warriorRotation()")
-
     ksuto.updatePositionCoordinates()
 
-    if (ksuto.DEBUG_MOD) then ksuto.unitHasBuff("player", "for debug purpose") end
+    -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
     if UnitExists("target") and
             not UnitIsDeadOrGhost("target") and
             not UnitIsDeadOrGhost("player")
             and UnitIsEnemy("player", "target") then
-        -- and UnitCanAttack("player", "target")
-        -- and not UnitIsTapped("target")
 
         AttackTarget()
 
-        --Arc
-        ksuto.shouldHitKey(ksuto.key9, not ksuto.checkTargetDistance(ksuto.DUEL))
-        --dot
-        ksuto.shouldHitKey(ksuto.key8, ksuto.manaPercentage("player") > 10 and ksuto.checkDebuffSpellCast("Rend"))
-        --bouclier
-        --ksuto.shouldHitKey(ksuto.key5, ksuto.manaPercentage("player") > 10) and not ksuto.unitHasBuff("player", "buff bouclier"))
-        --revenche
-        --ksuto.shouldHitKey(ksuto.key4, ksuto.manaPercentage("player") > 5))
-        --frappe héroïque
-        ksuto.shouldHitKey(ksuto.key5, ksuto.manaPercentage("player") > 20)
-        --mon buff
-        ksuto.shouldHitKey(ksuto.key4, ksuto.manaPercentage("player") > 10 and not ksuto.unitHasBuff("player", "Battle Shout"))
+        ksuto.shouldHitKey(ksuto.key9) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
+        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend")) -- dot
+        --ksuto.shouldHitKey(ksuto.key5, not ksuto.playerHasBuff("buff bouclier")) -- bouclier
+        --ksuto.shouldHitKey(ksuto.key4) -- revenche
+        ksuto.shouldHitKey(ksuto.key5) -- frappe héroïque
+        ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout")) -- mon buff
+
     else
+
         ksuto.resetKeys()
-        --regen
-        ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage("player") < 30 and not ksuto.unitHasBuff("player", "regen pv"))
+
+        ksuto.shouldHitKey(ksuto.key3, ksuto.playerHealthPct() < 30 and not ksuto.playerHasBuff("Food")) -- regen
     end
 end
 

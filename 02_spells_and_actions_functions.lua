@@ -39,6 +39,11 @@ function ksuto.unitHasDebuff(unit, effect)
     return false;
 end
 
+function ksuto.targetHasDebuff(effect)
+
+    return ksuto.unitHasDebuff("target", effect)
+end
+
 function ksuto.unitHasBuff(unit, effect)
 
     -- ksuto.printDebug("function ksuto.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
@@ -67,6 +72,11 @@ function ksuto.unitHasBuff(unit, effect)
         index = index + 1;
     end
     return false;
+end
+
+function ksuto.playerHasBuff(effect)
+
+    return ksuto.unitHasBuff("player", effect)
 end
 
 function ksuto.findSpell(spellName, bookType)
