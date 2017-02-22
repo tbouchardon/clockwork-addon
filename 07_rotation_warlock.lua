@@ -34,7 +34,7 @@ function ksuto.warlockAfflictionRotation()
         ksuto.shouldHitKey(ksuto.key5, not ksuto.targetHasDebuff("Curse of Agony"))
         ksuto.shouldHitKey(ksuto.key4, not ksuto.targetHasDebuff("Corruption"))
         ksuto.shouldHitKey(ksuto.key3, not ksuto.targetHasDebuff("Immolate"))
-        ksuto.shouldHitKey(ksuto.key2, ksuto.ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"))
+        ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"))
         ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 50) -- Shadow Bolt as of now
 
         -- ALT KEYS

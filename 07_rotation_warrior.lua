@@ -24,8 +24,8 @@ function ksuto.warriorDefRotation()
         ksuto.shouldHitKey(ksuto.key9) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
         ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend")) -- dot
         --ksuto.shouldHitKey(ksuto.key5, not ksuto.playerHasBuff("buff bouclier")) -- bouclier
-        --ksuto.shouldHitKey(ksuto.key4) -- revenche
-        ksuto.shouldHitKey(ksuto.key5) -- frappe héroïque
+        --ksuto.shouldHitKey(ksuto.key4) -- revanche
+        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40) -- frappe héroïque
         ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout")) -- mon buff
 
     else
