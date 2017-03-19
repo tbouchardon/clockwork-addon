@@ -77,19 +77,19 @@ function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
             if modificator == ksuto.ALT and key.altslot then condition = ksuto.actionCanBeCast(key.altslot) end
         end
     end
-end
 
--- ksuto.print("should = " .. tostring(should) .. " " .. tostring(modificator))
+    -- ksuto.print("should = " .. tostring(should) .. " " .. tostring(modificator))
 
-if should and not modificator then key.texture:SetTexture(1, 1, 1, 1)
-elseif should and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)
-elseif should and modificator == ksuto.CTRL then key.texture:SetTexture(0, 1, 0, 1)
-elseif should and modificator == ksuto.ALT then key.texture:SetTexture(0, 0, 1, 1)
-    return true
-else
-    --ksuto.print("there")
-    key.texture:SetTexture(0, 0, 0, 1)
-    return false
+    if condition and not modificator then key.texture:SetTexture(1, 1, 1, 1)
+    elseif condition and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)
+    elseif condition and modificator == ksuto.CTRL then key.texture:SetTexture(0, 1, 0, 1)
+    elseif condition and modificator == ksuto.ALT then key.texture:SetTexture(0, 0, 1, 1)
+        return true
+    else
+        --ksuto.print("there")
+        key.texture:SetTexture(0, 0, 0, 1)
+        return false
+    end
 end
 
 function ksuto.shouldHitShiftKey(key, should, slot)
