@@ -8,7 +8,7 @@
 
 function ksuto.warlockAfflictionRotation()
 
-    -- ksuto.printDebug("function ksuto.warlockAfflictionRotation(")
+    ksuto.printDebug("function ksuto.warlockAfflictionRotation(")
 
     ksuto.updatePositionCoordinates()
 
@@ -16,11 +16,7 @@ function ksuto.warlockAfflictionRotation()
 
     -- N'attaquer que si :
 
-    if (UnitExists("target") and
-            not UnitIsDeadOrGhost("target") and
-            not UnitIsDeadOrGhost("player") and -- > La cible ET le joueur sont vivants (>_<)
-            (not UnitIsTapped("target") or (UnitIsTapped("target") and UnitIsTappedByPlayer("target"))) and -- > La cible n'est pas marquée OU est marquée par le joueur.
-            UnitIsEnemy("player", "target")) then -- > La cible est un enemi (rouge uniquement)
+    if (ksuto.unitExistCanAndShouldDie()) then
 
         -- ksuto.print("UnitCanAttack('player', 'target') : " .. tostring(UnitCanAttack("player", "target")))
 

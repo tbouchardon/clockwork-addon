@@ -8,16 +8,13 @@
 
 function ksuto.warriorDefRotation()
 
-    -- ksuto.printDebug("function ksuto.warriorDefRotation(")
+    ksuto.printDebug("function ksuto.warriorDefRotation")
 
     ksuto.updatePositionCoordinates()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if UnitExists("target") and
-            not UnitIsDeadOrGhost("target") and
-            not UnitIsDeadOrGhost("player")
-            and UnitIsEnemy("player", "target") then
+    if (ksuto.unitExistCanAndShouldDie()) then
 
         AttackTarget()
 
@@ -27,6 +24,7 @@ function ksuto.warriorDefRotation()
         --ksuto.shouldHitKey(ksuto.key4) -- revanche
         ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40) -- frappe héroïque
         ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout")) -- mon buff
+        ksuto.shouldHitKey(ksuto.key1, nil, 73) -- Chargeeeeeeeeezzzzzzz !!!!!!!!!
 
     else
 

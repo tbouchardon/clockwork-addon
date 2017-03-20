@@ -73,13 +73,13 @@ end
 
 function ksuto.actionCanBeCast(slot)
 
-    -- ksuto.printDebug("function ksuto.actionCanBeCast(" .. tostring(slot))
+    ksuto.printDebug("function ksuto.actionCanBeCast(" .. tostring(slot))
 
     if (ksuto.CHECK_ACTIONS_CAST == false) then return true end
 
-    --    ksuto.printDebug("slot = " .. tostring(slot))
-    --     ksuto.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
-    --     ksuto.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
+    ksuto.printDebug("slot = " .. tostring(slot))
+    ksuto.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
+    ksuto.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
 
     local canBeCast = true
 
@@ -156,4 +156,12 @@ end
 function ksuto.playerManaPct()
 
     return ksuto.manaPercentage("player")
+end
+
+function ksuto.unitExistCanAndShouldDie()
+    return UnitExists("target") and
+            not UnitIsDeadOrGhost("target") and
+            not UnitIsDeadOrGhost("player") and -- > La cible ET le joueur sont vivants (>_<)
+            (not UnitIsTapped("target") or (UnitIsTapped("target") and UnitIsTappedByPlayer("target"))) and -- > La cible n'est pas marquée OU est marquée par le joueur.
+            UnitIsEnemy("player", "target") -- > La cible est un enemi (rouge uniquement)
 end
