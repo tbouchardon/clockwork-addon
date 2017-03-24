@@ -73,13 +73,13 @@ end
 
 function ksuto.actionCanBeCast(slot)
 
-    ksuto.printDebug("function ksuto.actionCanBeCast(" .. tostring(slot))
+    --    ksuto.printDebug("function ksuto.actionCanBeCast(" .. tostring(slot))
 
     if (ksuto.CHECK_ACTIONS_CAST == false) then return true end
 
-    ksuto.printDebug("slot = " .. tostring(slot))
-    ksuto.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
-    ksuto.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
+    --    ksuto.printDebug("slot = " .. tostring(slot))
+    --    ksuto.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
+    --    ksuto.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
 
     local canBeCast = true
 

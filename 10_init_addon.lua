@@ -165,6 +165,9 @@ ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_START")
 ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_UPDATE")
 ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_STOP")
 
+ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS") -- TODO : Inefficient ?
+
+
 ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
 ksuto.frame.texture:SetTexture(0, 1, 0, 1)

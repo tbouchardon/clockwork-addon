@@ -56,7 +56,7 @@ end
 
 function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
 
-    ksuto.printDebug("function ksuto.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
+    --    ksuto.printDebug("function ksuto.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
     -- ksuto.print("key.slot = " .. tostring(key.slot))
     -- ksuto.print("should = " .. tostring(condition))

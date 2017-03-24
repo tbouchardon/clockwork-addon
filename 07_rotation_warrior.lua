@@ -8,7 +8,7 @@
 
 function ksuto.warriorDefRotation()
 
-    ksuto.printDebug("function ksuto.warriorDefRotation")
+    --    ksuto.printDebug("function ksuto.warriorDefRotation")
 
     ksuto.updatePositionCoordinates()
 
