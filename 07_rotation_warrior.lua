@@ -18,7 +18,12 @@ function ksuto.warriorDefRotation()
 
         AttackTarget()
 
-        ksuto.shouldHitKey(ksuto.key1, nil, 73) -- Chargeeeeeeeeezzzzzzz !!!!!!!!!
+        ksuto.shouldHitKey(ksuto.keyh, nil, 21) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
+        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 77) -- dot
+        --ksuto.shouldHitKey(ksuto.key5, not ksuto.playerHasBuff("buff bouclier")) -- bouclier
+        --ksuto.shouldHitKey(ksuto.key4) -- revanche
+        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 13) -- frappe héroïque
+        ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
 
     else
 
