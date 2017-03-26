@@ -16,14 +16,16 @@ function ksuto.warriorDefRotation()
 
     if (ksuto.unitExistCanAndShouldDie()) then
 
-        AttackTarget()
+        -- AttackTarget()
 
-        ksuto.shouldHitKey(ksuto.keyh, nil, 21) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 77) -- dot
+        ksuto.shouldHitKey(ksuto.keyH, nil, 13) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
+        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 80) -- dot
         --ksuto.shouldHitKey(ksuto.key5, not ksuto.playerHasBuff("buff bouclier")) -- bouclier
         --ksuto.shouldHitKey(ksuto.key4) -- revanche
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 13) -- frappe héroïque
-        ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
+        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 77) -- frappe héroïque
+        ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 76) -- mon buff
+        --ksuto.print(tostring(not IsAutoRepeatAction(73)))
+        ksuto.shouldHitKey(ksuto.key1, not IsAutoRepeatAction(73), 73) -- Attack
 
     else
 

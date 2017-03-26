@@ -65,7 +65,7 @@ function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
 
     if (condition == false) then
         key.texture:SetTexture(0, 0, 0, 1)
-        return
+        return false
     end
 
     if (condition == nil or condition == true) then
