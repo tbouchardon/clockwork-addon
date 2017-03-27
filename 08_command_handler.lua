@@ -43,7 +43,6 @@ local function commandHandler(msg)
 
         coordinates = ""
 
-        ksuto.printDebug(coordinates)
         ksuto.printDebug(msg)
 
         for coords in string.gfind(msg, '%d%d,%d%d.%d%d,%d%d;') do

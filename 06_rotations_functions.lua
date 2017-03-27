@@ -13,8 +13,25 @@ function ksuto.rotation()
         ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
     end
 
-    ksuto.health.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
-    ksuto.mana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("player"), 1)
+    ksuto.playerHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
+    ksuto.playerMana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("player"), 1)
+
+    --    ksuto.print(tostring(ksuto.targetHostile()) .. tostring(ksuto.targetNeutral()))
+
+    if (UnitExists("target") and not UnitIsUnit("player", "target")) then
+        if (ksuto.targetUnfriendly()) then ksuto.targetReaction.texture:SetTexture(1, 0, 0, 1)
+        elseif (ksuto.targetNeutral()) then ksuto.targetReaction.texture:SetTexture(1, 1, 0, 1)
+        elseif (ksuto.targetFriendly()) then ksuto.targetReaction.texture:SetTexture(0, 1, 0, 1)
+        else ksuto.targetReaction.texture:SetTexture(0, 0, 0, 1)
+        end
+
+        ksuto.targetHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("target"), 0, 0, 1)
+        ksuto.targetMana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("target"), 1)
+    else
+        ksuto.targetReaction.texture:SetTexture(0, 0, 0, 1)
+        ksuto.targetHealth.texture:SetTexture(0, 0, 0, 1)
+        ksuto.targetMana.texture:SetTexture(0, 0, 0, 1)
+    end
 
     if ksuto.DRIVE_MOD == true
             and (ksuto.unitHasBuff("player", "Food")
@@ -30,7 +47,7 @@ function ksuto.rotation()
         return;
     end
 
-    -- N'attaquer que si le joueur est hors combat, ou la cible ET le joueur en combat
+    -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
     if (UnitAffectingCombat("player") and UnitAffectingCombat("target")) or
             (not UnitAffectingCombat("player")) then
 
@@ -130,6 +147,8 @@ function ksuto.healthPercentage(unit)
 
     -- ksuto.printDebug("function ksuto.healthPercentage(" .. tostring(unit))
 
+    if (UnitHealth(unit) == 0) then return 0 end
+
     local percentage
 
     percentage = UnitHealth(unit) / UnitHealthMax(unit) * 100
@@ -145,6 +164,8 @@ end
 function ksuto.manaPercentage(unit)
 
     -- ksuto.printDebug("function ksuto.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
+
+    if (UnitMana(unit) == 0) then return 0 end
 
     local percentage
 
@@ -163,5 +184,26 @@ function ksuto.unitExistCanAndShouldDie()
             not UnitIsDeadOrGhost("target") and
             not UnitIsDeadOrGhost("player") and -- > La cible ET le joueur sont vivants (>_<)
             (not UnitIsTapped("target") or (UnitIsTapped("target") and UnitIsTappedByPlayer("target"))) and -- > La cible n'est pas marquée OU est marquée par le joueur.
-            UnitIsEnemy("player", "target") -- > La cible est un enemi (rouge uniquement)
+            (ksuto.targetNeutral() or ksuto.targetUnfriendly()) -- > La cible est un enemi (rouge uniquement)
+end
+
+function ksuto.targetUnfriendly()
+
+    if not UnitExists("target") then return false end
+
+    return UnitReaction("player", "target") < 4
+end
+
+function ksuto.targetNeutral()
+
+    if not UnitExists("target") then return false end
+
+    return UnitReaction("player", "target") == 4
+end
+
+function ksuto.targetFriendly()
+
+    if not UnitExists("target") then return false end
+
+    return UnitReaction("player", "target") > 4
 end

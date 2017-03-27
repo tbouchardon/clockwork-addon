@@ -14,7 +14,7 @@ local function onUpdate()
 
     if (ksuto.nextUpdate < now) then
 
-        --ksuto.printDebug(ksuto.nextUpdate)
+        --        ksuto.printDebug(ksuto.nextUpdate)
 
         if (ksuto.TOGGLE_ON_OFF and ksuto.ADDING_WP == false) then
 
@@ -24,6 +24,8 @@ local function onUpdate()
 
         if ksuto.addWaypointList ~= nil and
                 ksuto.ADDING_WP == false then
+
+            --            ksuto.printDebug("ksuto.addWaypointList ~= nil and ksuto.ADDING_WP == false")
 
             local index = 0;
             local finished = true
@@ -131,8 +133,11 @@ local function onEvent()
         ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
 
         ksuto.inCombat = ksuto.createDot("ksuto_inCombat", 2, -2)
-        ksuto.health = ksuto.createDot("ksuto_health", 12, -2)
-        ksuto.mana = ksuto.createDot("ksuto_mana", 13, -2)
+        ksuto.playerHealth = ksuto.createDot("ksuto_health", 12, -2)
+        ksuto.playerMana = ksuto.createDot("ksuto_mana", 13, -2)
+        ksuto.targetReaction = ksuto.createDot("ksuto_target_reaction", 11, -3)
+        ksuto.targetHealth = ksuto.createDot("ksuto_target_health", 12, -3)
+        ksuto.targetMana = ksuto.createDot("ksuto_target_mana", 13, -3)
         ksuto.toggle = ksuto.createDot("ksuto_toggle", 2, -13)
         ksuto.targetNearestEnemy = ksuto.createDot("ksuto_targetNearestEnemy", 3, -13)
         ksuto.addWaypoint = ksuto.createDot("ksuto_addWaypoint", 4, -13)
@@ -144,6 +149,32 @@ local function onEvent()
 
         ksuto.initKeys()
         ksuto.initCoords()
+    end
+
+    if event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS"
+            or event == "CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS"
+            or event == "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE"
+            or event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE"
+            or event == "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE"
+            or event == "CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE" then
+
+        ksuto.creatureHit = time()
+        ksuto.deltaSelfHitCreatureHit = math.abs(ksuto.creatureHit - ksuto.selfHit)
+    end
+
+    if event == "CHAT_MSG_COMBAT_SELF_HITS"
+            or event == "CHAT_MSG_COMBAT_SELF_MISSES"
+            or event == "CHAT_MSG_SPELL_SELF_DAMAGE"
+            or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" then
+
+        ksuto.selfHit = time()
+        ksuto.deltaSelfHitCreatureHit = math.abs(ksuto.creatureHit - ksuto.selfHit)
+    end
+
+    if (ksuto.deltaSelfHitCreatureHit > 6 and ksuto.deltaSelfHitCreatureHit < 10) then
+        ksuto.creatureHit = time()
+        ksuto.selfHit = time()
+        --        TODO : shouldrotate
     end
 end
 
@@ -165,10 +196,22 @@ ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_START")
 ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_UPDATE")
 ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_STOP")
 
-ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS") -- TODO : Inefficient ?
-
+ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
+ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS")
+ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
+ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
+ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
+ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
+ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
+ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
+ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
 
 ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
 ksuto.frame.texture:SetTexture(0, 1, 0, 1)
+
+ksuto.selfHit = time()
+ksuto.creatureHit = time()
+ksuto.deltaSelfHitCreatureHit = 0
 

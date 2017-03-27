@@ -86,7 +86,6 @@ function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
     elseif condition and modificator == ksuto.ALT then key.texture:SetTexture(0, 0, 1, 1)
         return true
     else
-        --ksuto.print("there")
         key.texture:SetTexture(0, 0, 0, 1)
         return false
     end
