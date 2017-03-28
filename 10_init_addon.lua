@@ -133,11 +133,14 @@ local function onEvent()
         ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
 
         ksuto.inCombat = ksuto.createDot("ksuto_inCombat", 2, -2)
+        ksuto.stepBack = ksuto.createDot("ksuto_stepBack", 3, -2)
+
         ksuto.playerHealth = ksuto.createDot("ksuto_health", 12, -2)
         ksuto.playerMana = ksuto.createDot("ksuto_mana", 13, -2)
         ksuto.targetReaction = ksuto.createDot("ksuto_target_reaction", 11, -3)
         ksuto.targetHealth = ksuto.createDot("ksuto_target_health", 12, -3)
         ksuto.targetMana = ksuto.createDot("ksuto_target_mana", 13, -3)
+
         ksuto.toggle = ksuto.createDot("ksuto_toggle", 2, -13)
         ksuto.targetNearestEnemy = ksuto.createDot("ksuto_targetNearestEnemy", 3, -13)
         ksuto.addWaypoint = ksuto.createDot("ksuto_addWaypoint", 4, -13)
@@ -159,7 +162,7 @@ local function onEvent()
             or event == "CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE" then
 
         ksuto.creatureHit = time()
-        ksuto.deltaSelfHitCreatureHit = math.abs(ksuto.creatureHit - ksuto.selfHit)
+        ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
     end
 
     if event == "CHAT_MSG_COMBAT_SELF_HITS"
@@ -168,13 +171,15 @@ local function onEvent()
             or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" then
 
         ksuto.selfHit = time()
-        ksuto.deltaSelfHitCreatureHit = math.abs(ksuto.creatureHit - ksuto.selfHit)
+        ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
     end
 
-    if (ksuto.deltaSelfHitCreatureHit > 6 and ksuto.deltaSelfHitCreatureHit < 10) then
+    if (ksuto.deltaSelfHitCreatureHit > 6 and ksuto.deltaSelfHitCreatureHit < 10) then -- Si pas tapé depuis 6 secondes, devrait reculer 4 secondes
         ksuto.creatureHit = time()
         ksuto.selfHit = time()
-        --        TODO : shouldrotate
+        ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
+    else
+        ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
     end
 end
 
@@ -211,6 +216,7 @@ ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
 ksuto.frame.texture:SetTexture(0, 1, 0, 1)
 
+ksuto.wasInCombat = false
 ksuto.selfHit = time()
 ksuto.creatureHit = time()
 ksuto.deltaSelfHitCreatureHit = 0

@@ -9,8 +9,12 @@ function ksuto.rotation()
 
     if UnitAffectingCombat("player") then
         ksuto.inCombat.texture:SetTexture(1, 1, 1, 1)
+        ksuto.wasInCombat = true
     else
         ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
+        ksuto.wasInCombat = false
+        --        ksuto.selfHit = 0
+        --        ksuto.creatureHit = 0
     end
 
     ksuto.playerHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
