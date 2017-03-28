@@ -25,7 +25,9 @@ local function onUpdate()
         if ksuto.addWaypointList ~= nil and
                 ksuto.ADDING_WP == false then
 
-            --            ksuto.printDebug("ksuto.addWaypointList ~= nil and ksuto.ADDING_WP == false")
+            --            ksuto.printDebug(tostring(ksuto.addWaypointList))
+            --            ksuto.printDebug(tostring(ksuto.ADDING_WP))
+            --            ksuto.printDebug(tostring(ksuto.waypointListIndex))
 
             local index = 0;
             local finished = true
@@ -44,13 +46,13 @@ local function onUpdate()
                 index = index + 1;
             end
 
+            ksuto.waypointListIndex = ksuto.waypointListIndex + 1
+
             if (finished) then
 
                 ksuto.addWaypointList = nil
                 ksuto.waypointListIndex = 0
             end
-
-            ksuto.waypointListIndex = ksuto.waypointListIndex + 1
         end
 
         ksuto.nextUpdate = now + ksuto.UPDATE_INTERVAL;
@@ -163,20 +165,21 @@ local function onEvent()
 
         ksuto.creatureHit = time()
         ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
+        ksuto.print("creature : " .. tostring(ksuto.deltaSelfHitCreatureHit))
     end
 
     if event == "CHAT_MSG_COMBAT_SELF_HITS"
             or event == "CHAT_MSG_COMBAT_SELF_MISSES"
-            or event == "CHAT_MSG_SPELL_SELF_DAMAGE"
-            or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" then
+            or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
+        --            or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE"
 
         ksuto.selfHit = time()
         ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
+        ksuto.print("self : " .. tostring(ksuto.deltaSelfHitCreatureHit))
     end
 
-    if (ksuto.deltaSelfHitCreatureHit > 6 and ksuto.deltaSelfHitCreatureHit < 10) then -- Si pas tapé depuis 6 secondes, devrait reculer 4 secondes
-        ksuto.creatureHit = time()
-        ksuto.selfHit = time()
+
+    if (ksuto.deltaSelfHitCreatureHit > 6) then -- Si pas tapé depuis 6 secondes
         ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
     else
         ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)

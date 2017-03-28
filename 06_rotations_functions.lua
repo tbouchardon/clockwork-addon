@@ -13,6 +13,8 @@ function ksuto.rotation()
     else
         ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
         ksuto.wasInCombat = false
+        ksuto.creatureHit = time()
+        ksuto.selfHit = time()
         --        ksuto.selfHit = 0
         --        ksuto.creatureHit = 0
     end
