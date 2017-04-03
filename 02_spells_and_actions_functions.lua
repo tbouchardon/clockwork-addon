@@ -46,9 +46,23 @@ function ksuto.targetHasDebuff(effect)
     return ksuto.unitHasDebuff("target", effect)
 end
 
+function ksuto.playerHasAnyBuff()
+
+    local buff, anybuff = ksuto.unitHasBuff("player", "")
+
+    return anybuff
+end
+
 function ksuto.unitHasAnyBuff(unit)
 
     local buff, anybuff = ksuto.unitHasBuff(unit, "")
+
+    return anybuff
+end
+
+function ksuto.playerHasAnyDebuff()
+
+    local buff, anybuff = ksuto.unitHasDebuff("player", "")
 
     return anybuff
 end
