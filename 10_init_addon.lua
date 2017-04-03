@@ -165,7 +165,7 @@ local function onEvent()
 
         ksuto.creatureHit = time()
         ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
-        ksuto.print("creature : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+        ksuto.printDebug("creature : " .. tostring(ksuto.deltaSelfHitCreatureHit))
     end
 
     if event == "CHAT_MSG_COMBAT_SELF_HITS"
@@ -175,7 +175,7 @@ local function onEvent()
 
         ksuto.selfHit = time()
         ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
-        ksuto.print("self : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+        ksuto.printDebug("self : " .. tostring(ksuto.deltaSelfHitCreatureHit))
     end
 
 
