@@ -15,6 +15,8 @@ function ksuto.unitHasDebuff(unit, effect)
     local index = 1;
     while UnitDebuff(unit, index) do
 
+        index = index + 1;
+
         if ksuto.DEBUG_MOD then
             local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitDebuff(unit, index)
             --            if icon then ksuto.printDebug("icon : " .. icon) end
@@ -31,12 +33,12 @@ function ksuto.unitHasDebuff(unit, effect)
         KsutoTooltip:SetUnitDebuff(unit, index);
         local debuffName = tostring(KsutoTooltipTextLeft1:GetText());
         --        ksuto.printDebug("debuffName : " .. debuffName)
+
         if (string.find(debuffName, effect)) then
-            return true;
+            return true, true;
         end
-        index = index + 1;
     end
-    return false;
+    return false, index > 1;
 end
 
 function ksuto.targetHasDebuff(effect)
@@ -44,11 +46,27 @@ function ksuto.targetHasDebuff(effect)
     return ksuto.unitHasDebuff("target", effect)
 end
 
+function ksuto.unitHasAnyBuff(unit)
+
+    local buff, anybuff = ksuto.unitHasBuff(unit, "")
+
+    return anybuff
+end
+
+function ksuto.unitHasAnyDebuff(unit)
+
+    local buff, anybuff = ksuto.unitHasDebuff(unit, "")
+
+    return anybuff
+end
+
 function ksuto.unitHasBuff(unit, effect)
 
     -- ksuto.printDebug("function ksuto.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1;
     while UnitBuff(unit, index) do
+
+        index = index + 1;
 
         if ksuto.DEBUG_MOD then
             local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitBuff(unit, index)
@@ -67,11 +85,11 @@ function ksuto.unitHasBuff(unit, effect)
         local buffName = tostring(KsutoTooltipTextLeft1:GetText());
         --        ksuto.printDebug("buffName : " .. buffName)
         if (string.find(buffName, effect)) then
-            return true;
+            return true, true;
         end
-        index = index + 1;
     end
-    return false;
+
+    return false, index > 1;
 end
 
 function ksuto.playerHasBuff(effect)
