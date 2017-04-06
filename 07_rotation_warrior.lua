@@ -14,7 +14,7 @@ function ksuto.warriorDefRotation()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.unitExistCanAndShouldDie()) and not ksuto.enemyPlayer()) then
+    if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
         ksuto.shouldHitKey(ksuto.keyH, nil, 21) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
         ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 77) -- dot
