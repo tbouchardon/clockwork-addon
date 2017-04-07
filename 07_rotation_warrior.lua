@@ -19,12 +19,12 @@ function ksuto.warriorDefRotation()
         --barre 2, tech toutes postures
         ksuto.shouldHitKey(ksuto.keyH, nil, 13) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
         ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) -- activate Attack
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 15) -- frappe hÈroÔque
-        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Demoralizing Shout"), 23) -- mon debuff
+        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 15) -- frappe h√©ro√Øque
+        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Demoralizing Shout") and ksuto.targetInRange(ksuto.DUEL), 23) -- mon debuff
         ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
         
         --barre 1, posture attaque
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() > 5, 75) -- overpower (/!\ doute sur l'emplacement, ‡ vÈrifier)
+        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() > 5, 75) -- overpower (/!\ doute sur l'emplacement, √† v√©rifier)
         ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 77) -- dot
 
     else
@@ -32,7 +32,7 @@ function ksuto.warriorDefRotation()
         ksuto.resetKeys()
         --barre 3, divers
         ksuto.shouldHitKey(ksuto.key3, ksuto.playerHealthPct() < 30 and not ksuto.playerHasBuff("Food"), 36) -- regen
-        ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() > 31 and ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Bandage") and not ksuto.playerHasAnyDebuff(), 35) -- regen
+        ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() > 31 and ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("First Aid") and not ksuto.playerHasAnyDebuff(), 35) -- regen
     end
 end
 
