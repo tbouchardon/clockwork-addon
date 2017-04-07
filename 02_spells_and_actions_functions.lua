@@ -15,8 +15,6 @@ function ksuto.unitHasDebuff(unit, effect)
     local index = 1;
     while UnitDebuff(unit, index) do
 
-        index = index + 1;
-
         if ksuto.DEBUG_MOD then
             local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitDebuff(unit, index)
             --            if icon then ksuto.printDebug("icon : " .. icon) end
@@ -37,6 +35,8 @@ function ksuto.unitHasDebuff(unit, effect)
         if (string.find(debuffName, effect)) then
             return true, true;
         end
+
+        index = index + 1;
     end
     return false, index > 1;
 end
@@ -80,8 +80,6 @@ function ksuto.unitHasBuff(unit, effect)
     local index = 1;
     while UnitBuff(unit, index) do
 
-        index = index + 1;
-
         if ksuto.DEBUG_MOD then
             local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitBuff(unit, index)
             --            if icon then ksuto.printDebug("icon : " .. icon) end
@@ -101,6 +99,8 @@ function ksuto.unitHasBuff(unit, effect)
         if (string.find(buffName, effect)) then
             return true, true;
         end
+
+        index = index + 1;
     end
 
     return false, index > 1;

@@ -20,7 +20,7 @@ function ksuto.warriorDefRotation()
         ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 77) -- dot
         --ksuto.shouldHitKey(ksuto.key5, not ksuto.playerHasBuff("buff bouclier")) -- bouclier
         --ksuto.shouldHitKey(ksuto.key4) -- revanche
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 13) -- frappe héroïque
+        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 13) -- frappe hÃ©roÃ¯que
         ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() > 5, 78) -- overpower
         ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
         ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Demoralizing Shout"), 75) -- mon debuff
