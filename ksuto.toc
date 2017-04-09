@@ -17,6 +17,7 @@
 06_rotations_functions.lua
 07_rotation_warlock.lua
 07_rotation_warrior.lua
+07_rotation_shaman.lua
 08_command_handler.lua
 09_init_quickbar.lua
 10_init_addon.lua
