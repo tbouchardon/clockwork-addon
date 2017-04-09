@@ -59,6 +59,7 @@ function ksuto.rotation()
 
         if UnitClass("player") == "Warlock" then ksuto.warlockAfflictionRotation()
         elseif UnitClass("player") == "Warrior" then ksuto.warriorDefRotation()
+        elseif UnitClass("player") == "Shaman" then ksuto.shamanHealRotation()
         end
     end
 end
