@@ -16,22 +16,15 @@ function ksuto.shamanHealRotation()
 
     if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
     
-        --barre 2, tech toutes postures
-        ksuto.shouldHitKey(ksuto.keyH, nil, 13) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
-        ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) -- activate Attack
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 15) -- frappe hÃ©roÃ¯que
-        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Demoralizing Shout") and ksuto.targetInRange(ksuto.DUEL), 23) -- mon debuff
-        ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
-        
-        --barre 1, posture attaque
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() > 5, 75) -- overpower (/!\ doute sur l'emplacement, Ã  vÃ©rifier)
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend"), 77) -- dot
+        ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Lightning Shield") and ksuto.playerManaPct() > 30, 25) -- bouclier de foudre (tout en haut barre verticale droite)
+		ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
+		ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 60 and ksuto.targetInRange(ksuto.FOLLOW), 1 )-- chaine éclaire
+        ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') < 98 and not ksuto.targetHasDebuff("Flame Shock"), 3) -- orion de feu
+		ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 60, 65) -- je me soigne (barre d'action bas gauche, 5e icone)
 
     else
 
         ksuto.resetKeys()
-        --barre 3, divers
-        ksuto.shouldHitKey(ksuto.key3, ksuto.playerManaPct() < 30 and not ksuto.playerHasBuff("Drink"), 36) -- regen
-        --ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() > 31 and ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("First Aid") and not ksuto.playerHasAnyDebuff(), 35) -- regen
+        ksuto.shouldHitKey(ksuto.key0, ksuto.playerManaPct() < 30 and not ksuto.playerHasBuff("Drink"), 54) -- regen (barre en bas à droite 6e icone)
     end
 end
