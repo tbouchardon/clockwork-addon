@@ -70,8 +70,11 @@ local function onEvent()
     if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 
         ksuto.CASTING = true
+        ksuto.casting.texture:SetTexture(1, 1, 1, 1)
+
     elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_FAILED" or event == "SPELLCAST_INTERRUPTED" then
         ksuto.CASTING = false
+        ksuto.casting.texture:SetTexture(0, 0, 0, 1)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
@@ -135,7 +138,8 @@ local function onEvent()
         ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
 
         ksuto.inCombat = ksuto.createDot("ksuto_inCombat", 2, -2)
-        ksuto.stepBack = ksuto.createDot("ksuto_stepBack", 3, -2)
+        ksuto.casting = ksuto.createDot("ksuto_casting", 3, -2)
+        ksuto.stepBack = ksuto.createDot("ksuto_stepBack", 4, -2)
 
         ksuto.playerHealth = ksuto.createDot("ksuto_health", 12, -2)
         ksuto.playerMana = ksuto.createDot("ksuto_mana", 13, -2)
