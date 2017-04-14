@@ -9,6 +9,7 @@ function ksuto.getBuffName(id)
     return id
 end
 
+
 function ksuto.unitHasDebuff(unit, effect)
 
     -- ksuto.printDebug("function ksuto.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
