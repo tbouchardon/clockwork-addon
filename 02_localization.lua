@@ -11,19 +11,19 @@ function ksuto.createLocalizedText(english, french)
 
     local localization;
 
-    localization.english = english;
-    localization.french = french;
-
-    function localization.locale()
+    -- localization.english = english;
+    -- localization.french = french;
 
         if GetLocale() == "frFR" then
-            return this.french
+            localization = french;
         else
-            return this.english
+            localization = english;
         end
-    end
 
     return localization
 end
 
-ksuto.lightningShield = ksuto.createLocalizedText("Lightning Shield", "Bouclier de foudre")
+function ksuto.initLocalization()
+
+    ksuto.lightningShield = ksuto.createLocalizedText("Lightning Shield", "Bouclier de foudre")
+end

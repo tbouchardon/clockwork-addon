@@ -66,16 +66,16 @@ local function onEvent(a, b, c, d, f, e, g, h, i, j, k, l, m, n, o, p)
     -- ksuto.printDebug("local function onEvent(")
 
     ksuto.printDebug("event = " .. event)
-    --    ksuto.printDebug(ksuto.lightningShield)
-    if (arg1) then ksuto.printDebug("arg1 = " .. arg1) end
-    if (arg2) then ksuto.printDebug("arg2 = " .. arg2) end
-    if (arg3) then ksuto.printDebug("arg3 = " .. arg3) end
-    if (arg4) then ksuto.printDebug("arg4 = " .. arg4) end
-    if (arg5) then ksuto.printDebug("arg5 = " .. arg5) end
-    if (arg6) then ksuto.printDebug("arg6 = " .. arg6) end
-    if (arg7) then ksuto.printDebug("arg7 = " .. arg7) end
-    if (arg8) then ksuto.printDebug("arg8 = " .. arg8) end
-    if (arg9) then ksuto.printDebug("arg9 = " .. arg9) end
+
+    -- if (arg1) then ksuto.printDebug("arg1 = " .. arg1) end
+    -- if (arg2) then ksuto.printDebug("arg2 = " .. arg2) end
+    -- if (arg3) then ksuto.printDebug("arg3 = " .. arg3) end
+    -- if (arg4) then ksuto.printDebug("arg4 = " .. arg4) end
+    -- if (arg5) then ksuto.printDebug("arg5 = " .. arg5) end
+    -- if (arg6) then ksuto.printDebug("arg6 = " .. arg6) end
+    -- if (arg7) then ksuto.printDebug("arg7 = " .. arg7) end
+    -- if (arg8) then ksuto.printDebug("arg8 = " .. arg8) end
+    -- if (arg9) then ksuto.printDebug("arg9 = " .. arg9) end
 
     if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 
@@ -168,6 +168,7 @@ local function onEvent(a, b, c, d, f, e, g, h, i, j, k, l, m, n, o, p)
 
         ksuto.initKeys()
         ksuto.initCoords()
+        ksuto.initLocalization()
     end
 
     if event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS"
@@ -187,11 +188,11 @@ local function onEvent(a, b, c, d, f, e, g, h, i, j, k, l, m, n, o, p)
             or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
         --            or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE"
 
-
-
-        ksuto.selfHit = time()
-        ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
-        ksuto.printDebug("self : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+        if (not ksuto.isPassiveDamage(arg1)) then
+            ksuto.selfHit = time()
+            ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
+            ksuto.printDebug("self : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+        end
     end
 
 

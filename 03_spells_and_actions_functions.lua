@@ -142,3 +142,8 @@ function ksuto.dropSpellInBarSlot(spellName, slot)
         PlaceAction(slot)
     end
 end
+
+function ksuto.isPassiveDamage(arg1)
+
+    return string.find(arg1, ksuto.lightningShield)
+end
