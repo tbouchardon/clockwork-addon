@@ -61,7 +61,7 @@ end
 
 
 
-local function onEvent(a, b, c, d, f, e, g, h, i, j, k, l, m, n, o, p)
+local function onEvent()
 
     -- ksuto.printDebug("local function onEvent(")
 
@@ -195,8 +195,7 @@ local function onEvent(a, b, c, d, f, e, g, h, i, j, k, l, m, n, o, p)
         end
     end
 
-
-    if (ksuto.deltaSelfHitCreatureHit > 6) then -- Si pas tapé depuis 6 secondes
+    if (UnitAffectingCombat("player") and ksuto.deltaSelfHitCreatureHit > 6) then -- Si pas tapé depuis 6 secondes
         ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
     else
         ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
