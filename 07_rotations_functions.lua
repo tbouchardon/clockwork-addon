@@ -15,8 +15,7 @@ function ksuto.rotation()
         ksuto.wasInCombat = false
         ksuto.creatureHit = time()
         ksuto.selfHit = time()
-        --        ksuto.selfHit = 0
-        --        ksuto.creatureHit = 0
+        ksuto.deltaSelfHitCreatureHit = 0
     end
 
     ksuto.playerHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)

@@ -178,9 +178,11 @@ local function onEvent()
             or event == "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE"
             or event == "CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE" then
 
+        --        if UnitAffectingCombat("player") then
         ksuto.creatureHit = time()
         ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
         ksuto.printDebug("creature : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+        --        end
     end
 
     if event == "CHAT_MSG_COMBAT_SELF_HITS"
@@ -195,7 +197,7 @@ local function onEvent()
         end
     end
 
-    if (UnitAffectingCombat("player") and ksuto.deltaSelfHitCreatureHit > 6) then -- Si pas tapé depuis 6 secondes
+    if ksuto.deltaSelfHitCreatureHit > 6 then -- Si pas tapé depuis 6 secondes
         ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
     else
         ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
