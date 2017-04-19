@@ -40,7 +40,7 @@ function ksuto.warlockAfflictionRotation()
 
         -- CTRL KEYS
 
-        -- Le pet attaque si l'enemi attaque le joueur et est à moins de 9.9 yards
+        -- Le pet attaque SI l'enemi attaque le joueur ET est à moins de 9.9 yards
         if UnitIsUnit("player", "targettarget")
                 and not UnitIsUnit("pettarget", "target")
                 and ksuto.targetInRange(ksuto.DUEL) then ksuto.shouldHitCtrlKey(ksuto.key1)

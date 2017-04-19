@@ -11,11 +11,7 @@ function ksuto.rotation()
         ksuto.inCombat.texture:SetTexture(1, 1, 1, 1)
         ksuto.wasInCombat = true
     else
-        ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
-        ksuto.wasInCombat = false
-        ksuto.creatureHit = time()
-        ksuto.selfHit = time()
-        ksuto.deltaSelfHitCreatureHit = 0
+        ksuto.resetCombat()
     end
 
     ksuto.playerHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
@@ -212,4 +208,13 @@ function ksuto.targetFriendly()
     if not UnitExists("target") then return false end
 
     return UnitReaction("player", "target") > 4
+end
+
+function ksuto.resetCombat()
+
+    ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
+    ksuto.wasInCombat = false
+    ksuto.selfHit = time()
+    ksuto.creatureHit = time()
+    ksuto.deltaSelfHitCreatureHit = 0
 end
