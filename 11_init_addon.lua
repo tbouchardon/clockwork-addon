@@ -88,6 +88,8 @@ function ksuto.playerEnteringWorld()
     ksuto.initKeys()
     ksuto.initCoords()
     ksuto.initLocalization()
+
+    ksuto.resetCombat()
 end
 
 function ksuto.damageDone(arg1)
@@ -250,5 +252,3 @@ ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
 ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
 ksuto.frame.texture:SetTexture(0, 1, 0, 1)
-
-ksuto.resetCombat()
