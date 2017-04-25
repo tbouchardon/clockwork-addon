@@ -224,6 +224,30 @@ function ksuto.resetCombat()
     ksuto.deltaSelfHitCreatureHit = 0
 end
 
+function ksuto.hasMainHandEnchant()
+
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
+
+    -- if hasMainHandEnchant then ksuto.print("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
+    -- if mainHandExpiration then ksuto.print("mainHandExpiration = "..tostring(mainHandExpiration)) end
+    -- if mainHandCharges then ksuto.print("mainHandCharges = "..tostring(mainHandCharges)) end
+    -- if hasOffHandEnchant then ksuto.print("hasOffHandEnchant = "..tostring(hasOffHandEnchant)) end
+    -- if offHandExpiration then ksuto.print("offHandExpiration = "..tostring(offHandExpiration)) end
+    -- if offHandCharges then ksuto.print("offHandCharges = "..tostring(offHandCharges)) end
+    -- if hasThrownEnchant then ksuto.print("hasThrownEnchant = "..tostring(hasThrownEnchant)) end
+    -- if thrownExpiration then ksuto.print("thrownExpiration = "..tostring(thrownExpiration)) end
+    -- if thrownCharges then ksuto.print("thrownCharges = "..tostring(thrownCharges)) end
+
+    return not hasMainHandEnchant == nil
+end
+
+function ksuto.hasOffHandEnchant()
+
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
+
+    return not hasOffHandEnchant == nil
+end
+
 function ksuto.targetPartyMember()
 
     --    TODO : targetPartyMember
