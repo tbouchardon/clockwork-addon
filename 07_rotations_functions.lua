@@ -224,11 +224,6 @@ function ksuto.resetCombat()
     ksuto.deltaSelfHitCreatureHit = 0
 end
 
-function ksuto.targetPartyMember()
-
-    --    TODO : targetPartyMember
-end
-
 ksuto.lowestMemberHealth = 100
 ksuto.lowestMemberHealthIndex = nil
 
