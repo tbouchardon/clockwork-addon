@@ -1,12 +1,70 @@
 <Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://www.blizzard.com/wow/ui/"
-	xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    xmlns="http://www.blizzard.com/wow/ui/"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 	..\FrameXML\UI.xsd">
-	 <GameTooltip name="KsutoTooltip" hidden="true" parent="WorldFrame" inherits="GameTooltipTemplate">
-		<Scripts>
-			<OnLoad>
-				this:SetOwner(WorldFrame, "ANCHOR_NONE");
-			</OnLoad>
-		</Scripts>
-	</GameTooltip>
+    <GameTooltip name="KsutoTooltip"
+                 hidden="true"
+                 parent="WorldFrame"
+                 inherits="GameTooltipTemplate">
+        <Scripts>
+            <OnLoad>
+                    this:SetOwner(WorldFrame, "ANCHOR_NONE");
+            </OnLoad>
+        </Scripts>
+    </GameTooltip>
+
+    <Frame name="MyScriptOptionsFrame"
+           parent="WorldFrame"
+           inherits="BasicFrameTemplate"
+           hidden="false">
+        <Size x="234"
+              y="300"/>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Scripts>
+            <OnLoad>
+                    MyScriptOptionsFrame:Show();
+            </OnLoad>
+        </Scripts>
+        <Layers>
+            <Layer>
+                <Texture>
+                    <Size x="100"
+                          y="100"/>
+                    <Color a="1"
+                           r="1"
+                           g="1"
+                           b="1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="MyScriptOptionsButton"
+                    inherits="GameMenuButtonTemplate"
+                    text="Options">
+                <Size x="70"
+                      y="19"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT"
+                            relativePoint="BOTTOMRIGHT">
+                        <Offset x="-12"
+                                y="16"/>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                            this.tooltip = "Configure My Script";
+                    </OnLoad>
+                    <OnEnter>
+                            GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                            GameTooltip:SetText(this.tooltip);
+                    </OnEnter>
+                    <OnLeave>
+                            GameTooltip:Hide();
+                    </OnLeave>
+                </Scripts>
+            </Button>
+        </Frames>
+    </Frame>
 </Ui>
