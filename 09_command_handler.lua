@@ -20,6 +20,8 @@ local function commandHandler(msg)
 
     local coordinates
     if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d.%d%d,%d%d;') end
+    local spe
+    if msg ~= nil then spe = string.find(msg, 'spe%d') end
 
     --ksuto.printDebug("msg : " .. msg)
     if msg == 'toggle' then
@@ -50,6 +52,14 @@ local function commandHandler(msg)
         end
 
         ksuto.addWaypointList = coordinates;
+
+    elseif spe ~= nil then
+
+        for spe in string.gfind(msg, 'spe%d') do
+            ksuto.spe = tonumber(string.sub(spe, 4, 4))
+        end
+
+        ksuto.printDebug("spe : " .. ksuto.spe)
 
     elseif (msg == 'tne') then
 
@@ -141,6 +151,7 @@ local function commandHandler(msg)
     else
         ksuto.print("------------ KSUTO ------------")
         ksuto.print("/ksuto toggle       -- Turn Ksuto On [Blush]/Off")
+        ksuto.print("/ksuto spe1         -- Select spe (1/2/3)")
         ksuto.print("/ksuto tne          -- Target Nearest Enemy : On/Off")
         ksuto.print("/ksuto 05,21-63,30; -- Add new waypoint(s)")
         ksuto.print("/ksuto addwp        -- Add new waypoint")

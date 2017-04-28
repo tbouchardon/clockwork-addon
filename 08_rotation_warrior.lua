@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function ksuto.warriorDefRotation()
+local function rotation1()
 
     --    ksuto.printDebug("function ksuto.warriorDefRotation")
 
@@ -33,6 +33,20 @@ function ksuto.warriorDefRotation()
         --barre 3, divers
         ksuto.shouldHitKey(ksuto.key3, ksuto.playerHealthPct() < 30 and not ksuto.playerHasBuff("Food"), 36) -- regen
         ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() > 31 and ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("First Aid") and not ksuto.playerHasAnyDebuff(), 35) -- regen
+    end
+end
+
+local function rotation2()
+end
+
+local function rotation3()
+end
+
+function ksuto.warriorRotation()
+
+    if ksuto.spe == 1 then rotation1()
+    elseif ksuto.spe == 2 then rotation2()
+    elseif ksuto.spe == 3 then rotation3()
     end
 end
 

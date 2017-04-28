@@ -3,6 +3,8 @@ ksuto.TRADE = 2 --11.11 yards
 ksuto.DUEL = 3 --9.9 yards
 ksuto.FOLLOW = 4 --28 yards
 
+ksuto.spe = 1
+
 function ksuto.rotation()
 
     -- ksuto.printDebug("function ksuto.rotation(")
@@ -57,9 +59,9 @@ function ksuto.rotation()
     if (UnitAffectingCombat("player") and UnitAffectingCombat("target")) or
             (not UnitAffectingCombat("player")) then
 
-        if UnitClass("player") == "Warlock" then ksuto.warlockAfflictionRotation()
-        elseif UnitClass("player") == "Warrior" then ksuto.warriorDefRotation()
-        elseif UnitClass("player") == "Shaman" then ksuto.shamanHealRotation()
+        if UnitClass("player") == "Warlock" then ksuto.warlockRotation()
+        elseif UnitClass("player") == "Warrior" then ksuto.warriorRotation()
+        elseif UnitClass("player") == "Shaman" then ksuto.shamanRotation()
         end
     end
 end

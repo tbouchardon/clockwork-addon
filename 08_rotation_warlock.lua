@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function ksuto.warlockAfflictionRotation()
+local function rotation1()
 
     ksuto.printDebug("function ksuto.warlockAfflictionRotation(")
 
@@ -60,6 +60,20 @@ function ksuto.warlockAfflictionRotation()
             ksuto.shouldHitShiftKey(ksuto.keyG, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
             ksuto.shouldHitShiftKey(ksuto.keyQ, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food")) -- Manger
         end
+    end
+end
+
+local function rotation2()
+end
+
+local function rotation3()
+end
+
+function ksuto.warlockRotation()
+
+    if ksuto.spe == 1 then rotation1()
+    elseif ksuto.spe == 2 then rotation2()
+    elseif ksuto.spe == 3 then rotation3()
     end
 end
 

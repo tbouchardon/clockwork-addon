@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function ksuto.shamanHealRotation()
+local function rotation1()
 
     --    ksuto.printDebug("function ksuto.shamanHealRotation")
 
@@ -30,5 +30,19 @@ function ksuto.shamanHealRotation()
 
         ksuto.resetKeys()
         ksuto.shouldHitKey(ksuto.key0, ksuto.playerManaPct() < 30 and not ksuto.playerHasBuff("Drink"), 54) -- regen (barre en bas à droite 6e icone)
+    end
+end
+
+local function rotation2()
+end
+
+local function rotation3()
+end
+
+function ksuto.shamanRotation()
+
+    if ksuto.spe == 1 then rotation1()
+    elseif ksuto.spe == 2 then rotation2()
+    elseif ksuto.spe == 3 then rotation3()
     end
 end
