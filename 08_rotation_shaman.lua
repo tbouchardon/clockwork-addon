@@ -14,11 +14,8 @@ function ksuto.shamanHealRotation()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.lowestMemberHealthIndex and
-            not ksuto.lowestMemberHealthIndex == -1
-            and ksuto.lowestMemberHealth < 60) then
+    if (ksuto.targetMemberIfHealthLessThan(60)) then
 
-        ksuto.targetMember(ksuto.lowestMemberHealthIndex)
         ksuto.shouldHitKey(ksuto.key9, nil, 65)
 
     elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then

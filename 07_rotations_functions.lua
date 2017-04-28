@@ -272,10 +272,14 @@ function ksuto.targetMember(index)
     elseif UnitExists("party1") then root = "party"
     end
 
-    if not index == -1 then
+    local inRange = CheckInteractDistance(root + index, ksuto.FOLLOW)
+
+    if not index == -1 and inRange then
         local percent = ksuto.healthPercentage(root .. tostring(index))
         ksuto.raid[index].texture:SetTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
     end
+
+    return inRange
 end
 
 function ksuto.hasMainHandEnchant()
@@ -300,5 +304,17 @@ function ksuto.hasOffHandEnchant()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
 
     return not hasOffHandEnchant == nil
+end
+
+function ksuto.targetMemberIfHealthLessThan(health)
+
+    if ksuto.lowestMemberHealthIndex and
+            not ksuto.lowestMemberHealthIndex == -1
+            and ksuto.lowestMemberHealth < health then
+
+        return ksuto.targetMember(ksuto.lowestMemberHealthIndex)
+    end
+
+    return false
 end
 
