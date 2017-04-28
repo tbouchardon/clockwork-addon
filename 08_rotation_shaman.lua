@@ -14,7 +14,14 @@ function ksuto.shamanHealRotation()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+    if (ksuto.lowestMemberHealthIndex and
+            not ksuto.lowestMemberHealthIndex == -1
+            and ksuto.lowestMemberHealth < 60) then
+
+        ksuto.targetMember(ksuto.lowestMemberHealthIndex)
+        ksuto.shouldHitKey(ksuto.key9, nil, 65)
+
+    elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
         ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 60, 65) -- je me soigne (barre d'action bas gauche, 5e icone)
         ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Lightning Shield") and ksuto.playerManaPct() > 30, 25) -- bouclier de foudre (tout en haut barre verticale droite)

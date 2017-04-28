@@ -58,10 +58,10 @@ function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
 
     --    ksuto.printDebug("function ksuto.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
-    -- ksuto.print("key.slot = " .. tostring(key.slot))
-    -- ksuto.print("should = " .. tostring(condition))
-    -- ksuto.print("slot = " .. tostring(actionSlot))
-    -- ksuto.print("modificator = " .. tostring(modificator))
+    --     ksuto.print("key.slot = " .. tostring(key.slot))
+    --     ksuto.print("should = " .. tostring(condition))
+    --     ksuto.print("slot = " .. tostring(actionSlot))
+    --     ksuto.print("modificator = " .. tostring(modificator))
 
     if (condition == false) then
         key.texture:SetTexture(0, 0, 0, 1)
@@ -78,7 +78,7 @@ function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
         end
     end
 
-    -- ksuto.print("should = " .. tostring(should) .. " " .. tostring(modificator))
+    ksuto.print("should = " .. tostring(should) .. " " .. tostring(modificator))
 
     if condition and not modificator then key.texture:SetTexture(1, 1, 1, 1)
     elseif condition and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)

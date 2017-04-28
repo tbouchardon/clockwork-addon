@@ -14,6 +14,11 @@ function ksuto.rotation()
         ksuto.resetCombat()
     end
 
+    if UnitExists("raid1") then ksuto.updateRaidHealth()
+    elseif UnitExists("party1") then ksuto.updatePartyHealth()
+    else ksuto.checkUnitHealth("player", -1)
+    end
+
     ksuto.playerHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
     ksuto.playerMana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("player"), 1)
 
@@ -219,6 +224,60 @@ function ksuto.resetCombat()
     ksuto.deltaSelfHitCreatureHit = 0
 end
 
+ksuto.lowestMemberHealth = 100
+ksuto.lowestMemberHealthIndex = nil
+
+function ksuto.updatePartyHealth()
+
+    ksuto.lowestMemberHealth = 100
+    ksuto.lowestMemberHealthIndex = nil
+
+    ksuto.checkUnitHealth("player", -1)
+
+    for index = 1, 4 do
+
+        ksuto.checkUnitHealth("party" .. tostring(index), index)
+        ksuto.raid[index].texture:SetTexture(1 / 100 * ksuto.healthPercentage("party" .. tostring(index)), 0, 0, 1)
+    end
+end
+
+function ksuto.updateRaidHealth()
+
+    ksuto.lowestMemberHealth = 100
+    ksuto.lowestMemberHealthIndex = nil
+
+    ksuto.checkUnitHealth("player", -1)
+
+    for index = 1, 40 do
+
+        ksuto.checkUnitHealth("raid" .. tostring(index), index)
+        ksuto.raid[index].texture:SetTexture(1 / 100 * ksuto.healthPercentage("raid" .. tostring(index)), 0, 0, 1)
+    end
+end
+
+function ksuto.checkUnitHealth(unit, index)
+
+    if UnitExists(unit) then
+        if ksuto.healthPercentage(unit) < ksuto.lowestMemberHealth then
+            ksuto.lowestMemberHealth = ksuto.healthPercentage(unit)
+            ksuto.lowestMemberHealthIndex = index
+        end
+    end
+end
+
+function ksuto.targetMember(index)
+
+    local root = ""
+    if UnitExists("raid1") then root = "raid"
+    elseif UnitExists("party1") then root = "party"
+    end
+
+    if not index == -1 then
+        local percent = ksuto.healthPercentage(root .. tostring(index))
+        ksuto.raid[index].texture:SetTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
+    end
+end
+
 function ksuto.hasMainHandEnchant()
 
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
@@ -242,3 +301,4 @@ function ksuto.hasOffHandEnchant()
 
     return not hasOffHandEnchant == nil
 end
+
