@@ -78,7 +78,7 @@ function ksuto.shouldHitKey(key, condition, actionSlot, modificator)
         end
     end
 
-    ksuto.print("should = " .. tostring(should) .. " " .. tostring(modificator))
+    -- ksuto.print("should = " .. tostring(should) .. " " .. tostring(modificator)) -- spam "should = nil nil" dès que le mob est ciblé
 
     if condition and not modificator then key.texture:SetTexture(1, 1, 1, 1)
     elseif condition and modificator == ksuto.SHIFT then key.texture:SetTexture(1, 0, 0, 1)
