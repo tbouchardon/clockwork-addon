@@ -1,5 +1,3 @@
-
-
 function rotation()
 
     -- ksuto.printDebug("function rotation(")
@@ -26,20 +24,7 @@ local function commandHandler(msg)
     --ksuto.printDebug("msg : " .. msg)
     if msg == 'toggle' then
 
-        if ksuto.TOGGLE_ON_OFF == false then
-
-            ksuto.TOGGLE_ON_OFF = true
-            ksuto.toggle.texture:SetTexture(1, 1, 1, 1)
-            ksuto.onOff:Hide()
-            ksuto.print("Ksuto -> On")
-
-        else
-
-            ksuto.TOGGLE_ON_OFF = false
-            ksuto.toggle.texture:SetTexture(0, 0, 0, 1)
-            ksuto.onOff:Show()
-            ksuto.print("Ksuto -> Off")
-        end
+        ksuto.clickToggle()
 
     elseif coordinates ~= nil then
 
@@ -59,27 +44,17 @@ local function commandHandler(msg)
             ksuto.spe = tonumber(string.sub(spe, 4, 4))
         end
 
+        if (ksuto.spe > 3) then ksuto.spe = 3 end
+
         ksuto.printDebug("spe : " .. ksuto.spe)
 
     elseif (msg == 'tne') then
 
-        if ksuto.TARGET_NEAREST_ENEMY == false then
-
-            ksuto.TARGET_NEAREST_ENEMY = true
-            ksuto.targetNearestEnemy.texture:SetTexture(1, 1, 1, 1)
-            ksuto.print("Ksuto -> Target Nearest Enemy : On")
-        else
-
-            ksuto.TARGET_NEAREST_ENEMY = false
-            ksuto.targetNearestEnemy.texture:SetTexture(0, 0, 0, 1)
-            ksuto.print("Ksuto -> Target Nearest Enemy : Off")
-        end
+        ksuto.clickTNE()
 
     elseif (msg == 'addwp') then
 
-        ksuto.print("Ksuto -> Adding Waypoint")
-        ksuto.addWaypoint.texture:SetTexture(1, 1, 1, 1)
-        ksuto.ADDING_WP = true
+        ksuto.clickAddWp()
 
     elseif (msg == 'wpadded') then
 
@@ -89,8 +64,7 @@ local function commandHandler(msg)
 
     elseif (msg == 'clearwp') then
 
-        ksuto.print("Ksuto -> Clearing Waypoints")
-        ksuto.clearWaypoints.texture:SetTexture(1, 1, 1, 1)
+        ksuto.clickClearWp()
 
     elseif (msg == 'wpcleared') then
 
@@ -99,46 +73,15 @@ local function commandHandler(msg)
 
     elseif (msg == 'drive') then
 
-        if ksuto.DRIVE_MOD == false then
-
-            ksuto.DRIVE_MOD = true
-            ksuto.drive.texture:SetTexture(1, 1, 1, 1)
-            ksuto.print("Ksuto -> Drive Mod : On")
-        else
-
-            ksuto.DRIVE_MOD = false
-            ksuto.drive.texture:SetTexture(0, 0, 0, 1)
-            ksuto.print("Ksuto -> Drive Mod : Off")
-        end
+        ksuto.clickDrive()
 
     elseif (msg == 'loop') then
 
-        if ksuto.DRIVE_LOOP == false then
-
-            ksuto.DRIVE_LOOP = true
-            ksuto.driveLoop.texture:SetTexture(1, 1, 1, 1)
-            ksuto.print("Ksuto -> Drive Loop : On")
-        else
-
-            ksuto.DRIVE_LOOP = false
-            ksuto.driveLoop.texture:SetTexture(0, 0, 0, 1)
-            ksuto.print("Ksuto -> Drive Loop : Off")
-        end
+        ksuto.clickLoop()
 
     elseif (msg == 'debug') then
 
-        if ksuto.DEBUG_MOD == false then
-
-            ksuto.DEBUG_MOD = true
-            ksuto.debug.texture:SetTexture(1, 0, 0, 1)
-            ksuto.print("Ksuto -> Debug Mod : On")
-            ksuto.printDebug("UnitClass : " .. UnitClass("player"))
-        else
-
-            ksuto.DEBUG_MOD = false
-            ksuto.debug.texture:SetTexture(0, 0, 0, 1)
-            ksuto.print("Ksuto -> Debug Mod : Off")
-        end
+        ksuto.clickDebug()
 
     elseif (msg == 'listspells') then
 
@@ -166,3 +109,94 @@ end
 
 SlashCmdList["KSUTO"] = commandHandler
 
+function ksuto.clickToggle()
+
+    if ksuto.TOGGLE_ON_OFF == false then
+
+        ksuto.TOGGLE_ON_OFF = true
+        ksuto.toggle.texture:SetTexture(1, 1, 1, 1)
+        ksuto.onOff:Hide()
+        ksuto.print("Ksuto -> On")
+
+    else
+
+        ksuto.TOGGLE_ON_OFF = false
+        ksuto.toggle.texture:SetTexture(0, 0, 0, 1)
+        ksuto.onOff:Show()
+        ksuto.print("Ksuto -> Off")
+    end
+end
+
+function ksuto.clickTNE()
+
+    if ksuto.TARGET_NEAREST_ENEMY == false then
+
+        ksuto.TARGET_NEAREST_ENEMY = true
+        ksuto.targetNearestEnemy.texture:SetTexture(1, 1, 1, 1)
+        ksuto.print("Ksuto -> Target Nearest Enemy : On")
+    else
+
+        ksuto.TARGET_NEAREST_ENEMY = false
+        ksuto.targetNearestEnemy.texture:SetTexture(0, 0, 0, 1)
+        ksuto.print("Ksuto -> Target Nearest Enemy : Off")
+    end
+end
+
+function ksuto.clickAddWp()
+
+    ksuto.print("Ksuto -> Adding Waypoint")
+    ksuto.addWaypoint.texture:SetTexture(1, 1, 1, 1)
+    ksuto.ADDING_WP = true
+end
+
+function ksuto.clickClearWp()
+
+    ksuto.print("Ksuto -> Clearing Waypoints")
+    ksuto.clearWaypoints.texture:SetTexture(1, 1, 1, 1)
+end
+
+function ksuto.clickDrive()
+
+    if ksuto.DRIVE_MOD == false then
+
+        ksuto.DRIVE_MOD = true
+        ksuto.drive.texture:SetTexture(1, 1, 1, 1)
+        ksuto.print("Ksuto -> Drive Mod : On")
+    else
+
+        ksuto.DRIVE_MOD = false
+        ksuto.drive.texture:SetTexture(0, 0, 0, 1)
+        ksuto.print("Ksuto -> Drive Mod : Off")
+    end
+end
+
+function ksuto.clickLoop()
+
+    if ksuto.DRIVE_LOOP == false then
+
+        ksuto.DRIVE_LOOP = true
+        ksuto.driveLoop.texture:SetTexture(1, 1, 1, 1)
+        ksuto.print("Ksuto -> Drive Loop : On")
+    else
+
+        ksuto.DRIVE_LOOP = false
+        ksuto.driveLoop.texture:SetTexture(0, 0, 0, 1)
+        ksuto.print("Ksuto -> Drive Loop : Off")
+    end
+end
+
+function ksuto.clickDebug()
+
+    if ksuto.DEBUG_MOD == false then
+
+        ksuto.DEBUG_MOD = true
+        ksuto.debug.texture:SetTexture(1, 0, 0, 1)
+        ksuto.print("Ksuto -> Debug Mod : On")
+        ksuto.printDebug("UnitClass : " .. UnitClass("player"))
+    else
+
+        ksuto.DEBUG_MOD = false
+        ksuto.debug.texture:SetTexture(0, 0, 0, 1)
+        ksuto.print("Ksuto -> Debug Mod : Off")
+    end
+end
