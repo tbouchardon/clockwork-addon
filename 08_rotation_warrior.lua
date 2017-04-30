@@ -21,7 +21,7 @@ local function rotation1()
         ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) -- activate Attack
         ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 40, 15) -- frappe héroïque
         ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() > 35 and ksuto.healthPercentage('target') > 20 , 19) -- bloodthirst
-        ksuto.shouldHitKey(ksuto.key2, ksuto.playerManaPct() < 10 and ksuto.healthPercentage('target') > 90 , 18) -- bloodthirst
+        ksuto.shouldHitKey(ksuto.key2, ksuto.playerManaPct() < 10 and ksuto.healthPercentage('target') > 90 , 18) -- bloodrage
         ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Demoralizing Shout") and ksuto.targetInRange(ksuto.DUEL), 23) -- mon debuff
         ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
 
