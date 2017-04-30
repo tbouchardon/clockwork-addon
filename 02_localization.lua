@@ -7,6 +7,9 @@
 --
 --
 
+BINDING_HEADER_CLOCKWORK = "ClockWork"
+BINDING_NAME_TEST_BINDING = "Test Bindings"
+
 function ksuto.createLocalizedText(english, french)
 
     local localization;

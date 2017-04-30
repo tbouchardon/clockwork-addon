@@ -1,13 +1,5 @@
 <Bindings>
-    <Binding name="SPELL Moonfire" runOnUp="true" header="WOWPEDIAUIDEMO" default="SHIFT-F">
-        print("Fooled! This print statement will never run.")
-    </Binding>
-    <Binding name="REVERSEFLOWPOLARITY">print("Neutron flow polarity reversed")</Binding>
-    <Binding name="ACTIVATETRANSMOGRIFIER" runOnUp="true">
-        if keystate == "down" then
-        print("Transmogrifier activated. Release binding to deactivate")
-        else
-        print("Transmogrifier deactivated")
-        end
+    <Binding name="TEST_BINDING" header="CLOCKWORK" default="ALT-CTRL-H">
+        ksuto.print("test")
     </Binding>
 </Bindings>
