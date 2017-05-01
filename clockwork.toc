@@ -19,6 +19,7 @@
 08_rotation_warlock.lua
 08_rotation_warrior.lua
 08_rotation_shaman.lua
+08_rotation_mage.lua
 09_command_handler.lua
 10_init_quickbar.lua
 11_init_addon.lua
