@@ -136,6 +136,8 @@ function ksuto.playerEnteringWorld()
     ksuto.initLocalization()
 
     ksuto.resetCombat()
+
+    ksuto.setAllBindings()
 end
 
 function ksuto.damageDone(arg1)
@@ -300,9 +302,3 @@ ksuto.frame:RegisterEvent("PLAYER_DEAD")
 ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
 ksuto.frame.texture:SetTexture(0, 1, 0, 1)
-
-local btn = CreateFrame("BUTTON", "MyBindingHandlingButton")
-SetBinding("ALT-CTRL-T", "CLICK " .. btn:GetName())
-btn:SetScript("OnClick", function(self, button, down)
-    print("You triggered the binding using", button)
-end)

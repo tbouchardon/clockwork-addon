@@ -15,7 +15,7 @@ function ksuto.print(text)
 
     -- ksuto.printDebug("function ksuto.print(" .. tostring(text))
 
-    DEFAULT_CHAT_FRAME:AddMessage(text)
+    DEFAULT_CHAT_FRAME:AddMessage("ClockWork -> " .. tostring(text))
 end
 
 function ksuto.createDot(name, xPos, yPos, slot, shiftslot, altslot)

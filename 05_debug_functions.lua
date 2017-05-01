@@ -4,7 +4,7 @@ function ksuto.printDebug(text)
 
     if ksuto.DEBUG_MOD then
 
-        DEFAULT_CHAT_FRAME:AddMessage("Ksuto (Debug) -> " .. text)
+        DEFAULT_CHAT_FRAME:AddMessage("ClockWork (Debug) -> " .. tostring(text))
     end
 end
 

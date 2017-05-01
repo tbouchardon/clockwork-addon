@@ -1,5 +1,386 @@
 <Bindings>
-    <Binding name="TEST_BINDING" header="CLOCKWORK" default="ALT-CTRL-H">
-        ksuto.print("test")
+    <Binding name="TEST_BINDING" header="CLOCKWORK" runOnUp="true">
+        if ( keystate == "down" ) then
+        --
+        else
+        --
+        end
+        ksuto.print("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))
     </Binding>
+
+    <Binding name="CLOCKWORK_TARGET_RAID_1" hidden="true">
+        ksuto.targetMember(1)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_2" hidden="true">
+        ksuto.targetMember(2)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_3" hidden="true">
+        ksuto.targetMember(3)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_4" hidden="true">
+        ksuto.targetMember(4)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_5" hidden="true">
+        ksuto.targetMember(5)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_6" hidden="true">
+        ksuto.targetMember(6)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_7" hidden="true">
+        ksuto.targetMember(7)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_8" hidden="true">
+        ksuto.targetMember(8)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_9" hidden="true">
+        ksuto.targetMember(9)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_10" hidden="true">
+        ksuto.targetMember(10)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_11" hidden="true">
+        ksuto.targetMember(11)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_12" hidden="true">
+        ksuto.targetMember(12)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_13" hidden="true">
+        ksuto.targetMember(13)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_14" hidden="true">
+        ksuto.targetMember(14)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_15" hidden="true">
+        ksuto.targetMember(15)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_16" hidden="true">
+        ksuto.targetMember(16)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_17" hidden="true">
+        ksuto.targetMember(17)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_18" hidden="true">
+        ksuto.targetMember(18)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_19" hidden="true">
+        ksuto.targetMember(19)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_20" hidden="true">
+        ksuto.targetMember(20)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_21" hidden="true">
+        ksuto.targetMember(21)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_22" hidden="true">
+        ksuto.targetMember(22)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_23" hidden="true">
+        ksuto.targetMember(23)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_24" hidden="true">
+        ksuto.targetMember(24)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_25" hidden="true">
+        ksuto.targetMember(25)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_26" hidden="true">
+        ksuto.targetMember(26)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_27" hidden="true">
+        ksuto.targetMember(27)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_28" hidden="true">
+        ksuto.targetMember(28)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_29" hidden="true">
+        ksuto.targetMember(29)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_30" hidden="true">
+        ksuto.targetMember(30)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_31" hidden="true">
+        ksuto.targetMember(31)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_32" hidden="true">
+        ksuto.targetMember(32)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_33" hidden="true">
+        ksuto.targetMember(33)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_34" hidden="true">
+        ksuto.targetMember(34)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_35" hidden="true">
+        ksuto.targetMember(35)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_36" hidden="true">
+        ksuto.targetMember(36)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_37" hidden="true">
+        ksuto.targetMember(37)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_38" hidden="true">
+        ksuto.targetMember(38)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_39" hidden="true">
+        ksuto.targetMember(39)
+    </Binding>
+    <Binding name="CLOCKWORK_TARGET_RAID_40" hidden="true">
+        ksuto.targetMember(40)
+    </Binding>
+
+    <Binding name="CLOCKWORK_PRIORITY_CAST_1" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(120);
+        else
+        ActionButtonUp(120);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_2" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(119);
+        else
+        ActionButtonUp(119);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_3" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(118);
+        else
+        ActionButtonUp(118);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_4" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(117);
+        else
+        ActionButtonUp(117);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_5" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(116);
+        else
+        ActionButtonUp(116);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_6" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(115);
+        else
+        ActionButtonUp(115);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_7" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(114);
+        else
+        ActionButtonUp(114);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_8" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(113);
+        else
+        ActionButtonUp(113);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_9" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(112);
+        else
+        ActionButtonUp(112);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_10" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(111);
+        else
+        ActionButtonUp(111);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_11" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(110);
+        else
+        ActionButtonUp(110);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_12" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(109);
+        else
+        ActionButtonUp(109);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_13" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(108);
+        else
+        ActionButtonUp(108);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_14" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(107);
+        else
+        ActionButtonUp(107);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_15" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(106);
+        else
+        ActionButtonUp(106);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_16" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(105);
+        else
+        ActionButtonUp(105);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_17" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(104);
+        else
+        ActionButtonUp(104);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_18" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(103);
+        else
+        ActionButtonUp(103);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_19" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(102);
+        else
+        ActionButtonUp(102);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_20" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(101);
+        else
+        ActionButtonUp(101);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_21" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(100);
+        else
+        ActionButtonUp(100);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_22" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(99);
+        else
+        ActionButtonUp(99);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_23" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(98);
+        else
+        ActionButtonUp(98);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_CAST_24" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(97);
+        else
+        ActionButtonUp(97);
+        end
+    </Binding>
+
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_1" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(120);
+        else
+        ActionButtonUp(120);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_2" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(119);
+        else
+        ActionButtonUp(119);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_3" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(118);
+        else
+        ActionButtonUp(118);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_4" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(117);
+        else
+        ActionButtonUp(117);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_5" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(116);
+        else
+        ActionButtonUp(116);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_6" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(115);
+        else
+        ActionButtonUp(115);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_7" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(114);
+        else
+        ActionButtonUp(114);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_8" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(113);
+        else
+        ActionButtonUp(113);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_9" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(112);
+        else
+        ActionButtonUp(112);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_10" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(111);
+        else
+        ActionButtonUp(111);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_11" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(110);
+        else
+        ActionButtonUp(110);
+        end
+    </Binding>
+    <Binding name="CLOCKWORK_PRIORITY_OOC_CAST_12" hidden="true" runOnUp="true">
+        if ( keystate == "down" ) then
+        ActionButtonDown(109);
+        else
+        ActionButtonUp(109);
+        end
+    </Binding>
+
 </Bindings>
