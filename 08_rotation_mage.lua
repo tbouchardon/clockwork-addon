@@ -8,7 +8,7 @@
 
 local function rotation1()
 
-    --    ksuto.printDebug("function ksuto.shamanHealRotation")
+    --    ksuto.printDebug("function ksuto.mageRotation")
 
     ksuto.updatePositionCoordinates()
 
@@ -40,7 +40,7 @@ end
 local function rotation3()
 end
 
-function ksuto.shamanRotation()
+function ksuto.mageRotation()
 
     if ksuto.spe == 1 then rotation1()
     elseif ksuto.spe == 2 then rotation2()
