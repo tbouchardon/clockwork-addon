@@ -259,7 +259,7 @@ local function onEvent()
         ksuto.damageDone(arg1)
     end
 
-    if ksuto.deltaSelfHitCreatureHit > 6 then -- Si pas tapé depuis 6 secondes
+    if not UnitIsDeadOrGhost("player") and ksuto.deltaSelfHitCreatureHit > 6 then -- Si vivant && pas tapé depuis 6 secondes
         ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
     else
         ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
