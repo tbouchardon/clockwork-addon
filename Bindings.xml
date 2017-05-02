@@ -1,12 +1,12 @@
 <Bindings>
-    <Binding name="TEST_BINDING" header="CLOCKWORK" runOnUp="true">
-        if ( keystate == "down" ) then
-        --
-        else
-        --
-        end
-        ksuto.print("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))
-    </Binding>
+    <!--<Binding name="TEST_BINDING" header="CLOCKWORK" runOnUp="true">-->
+    <!--if ( keystate == "down" ) then-->
+    <!--&#45;&#45;-->
+    <!--else-->
+    <!--&#45;&#45;-->
+    <!--end-->
+    <!--ksuto.print("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
+    <!--</Binding>-->
 
     <Binding name="CLOCKWORK_TARGET_RAID_1" hidden="true">
         ksuto.targetMember(1)
@@ -296,7 +296,7 @@
              hidden="true"
              runOnUp="true">
         if ( keystate == "down" ) then
-        ActionButtonDown(98);
+        ActionButtonDown(98);bah l
         else
         ActionButtonUp(98);
         end

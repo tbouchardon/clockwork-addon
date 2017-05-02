@@ -8,9 +8,9 @@
 
 function ksuto.setAllBindings()
 
-    local key = "ALT-CTRL-SHIFT-Y"
-    local action = "TEST_BINDING"
-    ksuto.print("SetBinding(key, action) ? " .. SetBinding(key, action))
+    --    local key = "ALT-CTRL-SHIFT-Y"
+    --    local action = "TEST_BINDING"
+    --    ksuto.print("SetBinding(key, action) ? " .. SetBinding(key, action))
 
     SetBinding("ALT-SHIFT-1", "CLOCKWORK_PRIORITY_CAST_1")
     SetBinding("ALT-SHIFT-2", "CLOCKWORK_PRIORITY_CAST_2")
