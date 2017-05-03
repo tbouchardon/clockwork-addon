@@ -299,14 +299,14 @@ function ksuto.hasMainHandEnchant()
     -- if thrownExpiration then ksuto.print("thrownExpiration = "..tostring(thrownExpiration)) end
     -- if thrownCharges then ksuto.print("thrownCharges = "..tostring(thrownCharges)) end
 
-    return not hasMainHandEnchant
+    return hasMainHandEnchant
 end
 
 function ksuto.hasOffHandEnchant()
 
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
 
-    return not hasOffHandEnchant
+    return hasOffHandEnchant
 end
 
 function ksuto.targetMemberIfHealthLessThan(health)
