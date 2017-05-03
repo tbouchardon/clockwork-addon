@@ -42,8 +42,8 @@ function ksuto.rotation()
     end
 
     if ksuto.DRIVE_MOD == true
-            and (ksuto.unitHasBuff("player", "Food")
-            or ksuto.unitHasBuff("player", "Drink")) then
+            and ((ksuto.unitHasBuff("player", "Food") and (ksuto.playerHealthPct() < 100))
+            or (ksuto.unitHasBuff("player", "Drink") and (ksuto.playerManaPct() < 100))) then
         ksuto.drive.texture:SetTexture(0, 0, 0, 1)
     elseif ksuto.DRIVE_MOD == true then
         ksuto.drive.texture:SetTexture(1, 1, 1, 1)
