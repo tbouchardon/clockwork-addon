@@ -259,7 +259,7 @@ local function onEvent()
         ksuto.damageDone(arg1)
     end
 
-    if not UnitIsDeadOrGhost("player") and ksuto.deltaSelfHitCreatureHit > 6 then -- Si vivant && pas tapé depuis 6 secondes
+    if (ksuto.deltaSelfHitCreatureHit > 6) and (not event == "PLAYER_DEAD") then -- Si vivant && pas tapé depuis 6 secondes
         ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
     else
         ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
@@ -294,6 +294,8 @@ ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
 ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
 ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
+
+ksuto.frame:RegisterEvent("PLAYER_DEAD")
 
 ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
 ksuto.frame.texture:SetAllPoints()
