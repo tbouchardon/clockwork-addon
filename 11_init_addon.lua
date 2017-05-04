@@ -248,11 +248,13 @@ local function onEvent()
     if event == "PLAYER_ENTERING_WORLD" then
 
         ksuto.playerEnteringWorld()
+        return
     end
 
     if event == "ADDON_LOADED" then
 
         ksuto.addonLoaded()
+        return
     end
 
     if event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS"
@@ -273,7 +275,7 @@ local function onEvent()
         ksuto.damageDone(arg1)
     end
 
-    if (ksuto.deltaSelfHitCreatureHit > 6) and (not event == "PLAYER_DEAD") then -- Si vivant && pas tapé depuis 6 secondes
+    if (ksuto.deltaSelfHitCreatureHit > 6) and not (event == "PLAYER_DEAD") then -- Si vivant && pas tapé depuis 6 secondes
         ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
     else
         ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
