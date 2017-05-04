@@ -6,6 +6,8 @@
 
 ##OptionalDeps: -- Optional dependencies.
 
+##SavedVariables: ksutoRotations
+
 ##Dependencies:
 
 00_QR_code.xml

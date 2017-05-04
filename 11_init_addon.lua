@@ -6,6 +6,13 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+function ksuto.addonLoaded()
+
+    if ksutoRotations == nil then
+        ksutoRotations = {};
+    end
+end
+
 function ksuto.playerEnteringWorld()
 
     ksuto.printDebug("GetCurrentResolution() : " .. tostring(GetCurrentResolution()))
@@ -243,6 +250,11 @@ local function onEvent()
         ksuto.playerEnteringWorld()
     end
 
+    if event == "ADDON_LOADED" then
+
+        ksuto.addonLoaded()
+    end
+
     if event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS"
             or event == "CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS"
             or event == "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE"
@@ -296,6 +308,8 @@ ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
 ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
 ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
 ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
+
+ksuto.frame:RegisterEvent("ADDON_LOADED")
 
 ksuto.frame:RegisterEvent("PLAYER_DEAD")
 
