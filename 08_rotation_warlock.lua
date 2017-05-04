@@ -10,8 +10,6 @@ local function rotation1()
 
     ksuto.printDebug("function ksuto.warlockAfflictionRotation(")
 
-    ksuto.updatePositionCoordinates()
-
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff(, "for debug purpose") end
 
     -- N'attaquer que si :
