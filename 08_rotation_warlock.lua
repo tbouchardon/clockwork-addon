@@ -47,19 +47,13 @@ local function rotation1()
         end -- Pet Attack
 
 
-    else -- hors combat
+    elseif (ksuto.outOfCombat()) then -- hors combat
 
-        ksuto.resetKeys()
+        ksuto.shouldHitKey(ksuto.keyQ, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66) -- Life Tap
 
-        if (not UnitIsDeadOrGhost("player")) then
-            ksuto.printDebug("out of combat rotation")
-
-            ksuto.shouldHitKey(ksuto.keyQ, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66) -- Life Tap
-
-            ksuto.shouldHitShiftKey(ksuto.keyT, not ksuto.playerHasBuff("Demon Skin")) -- Buff
-            ksuto.shouldHitShiftKey(ksuto.keyG, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
-            ksuto.shouldHitShiftKey(ksuto.keyQ, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food")) -- Manger
-        end
+        ksuto.shouldHitShiftKey(ksuto.keyT, not ksuto.playerHasBuff("Demon Skin")) -- Buff
+        ksuto.shouldHitShiftKey(ksuto.keyG, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
+        ksuto.shouldHitShiftKey(ksuto.keyQ, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food")) -- Manger
     end
 end
 

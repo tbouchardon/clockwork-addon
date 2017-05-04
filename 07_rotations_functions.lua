@@ -55,6 +55,8 @@ function ksuto.rotation()
         return;
     end
 
+    ksuto.resetKeys()
+
     -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
     if (UnitAffectingCombat("player") and UnitAffectingCombat("target")) or
             (not UnitAffectingCombat("player")) then
@@ -319,5 +321,10 @@ function ksuto.targetMemberIfHealthLessThan(health)
     end
 
     return false
+end
+
+function ksuto.outOfCombat()
+
+    return (not UnitIsDeadOrGhost("player")) and (not UnitAffectingCombat("player"))
 end
 
