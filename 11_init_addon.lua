@@ -136,6 +136,8 @@ function ksuto.playerEnteringWorld()
     ksuto.initLocalization()
 
     ksuto.resetCombat()
+
+    ksuto.setAllBindings()
 end
 
 function ksuto.damageDone(arg1)

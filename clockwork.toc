@@ -23,3 +23,4 @@
 09_command_handler.lua
 10_init_quickbar.lua
 11_init_addon.lua
+12_bindings.lua

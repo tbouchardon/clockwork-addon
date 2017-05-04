@@ -10,8 +10,6 @@ local function rotation1()
 
     --    ksuto.printDebug("function ksuto.warriorDefRotation")
 
-    ksuto.updatePositionCoordinates()
-
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
     if (ksuto.unitExistCanAndShouldDie()) and (not ksuto.enemyPlayer()) then

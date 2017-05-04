@@ -10,8 +10,6 @@ local function rotation1()
 
     --    ksuto.printDebug("function ksuto.mageRotation")
 
-    ksuto.updatePositionCoordinates()
-
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
     if (ksuto.targetMemberIfHealthLessThan(60)) then

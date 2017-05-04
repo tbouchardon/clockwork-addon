@@ -1,10 +1,3 @@
-function rotation()
-
-    -- ksuto.printDebug("function rotation(")
-
-    ksuto.rotation()
-end
-
 --Chat commands
 
 SLASH_KSUTO1 = '/ksuto'
