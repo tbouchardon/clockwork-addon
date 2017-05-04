@@ -6,7 +6,7 @@
 
 ##OptionalDeps: -- Optional dependencies.
 
-##SavedVariables: ksutoRotations
+##SavedVariables: KSUTO_ROTATIONS
 
 ##Dependencies:
 

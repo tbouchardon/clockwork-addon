@@ -8,8 +8,8 @@
 
 function ksuto.addonLoaded()
 
-    if ksutoRotations == nil then
-        ksutoRotations = {};
+    if KSUTO_ROTATIONS == nil then
+        KSUTO_ROTATIONS = {};
     end
 end
 
