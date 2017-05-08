@@ -45,9 +45,7 @@
                     --                    ClockWorkMenuFrame.Collapse()
             </OnLeave>
             <OnDragStart>
-                    if (not XPerl_Admin.Pinned or (IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown())) then
-                        this:StartMoving()
-                    end
+                    this:StartMoving()
             </OnDragStart>
             <OnDragStop>
                     this:StopMovingOrSizing()
