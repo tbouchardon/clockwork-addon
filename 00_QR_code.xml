@@ -1,12 +1,374 @@
 <Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://www.blizzard.com/wow/ui/"
-	xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    xmlns="http://www.blizzard.com/wow/ui/"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 	..\FrameXML\UI.xsd">
-	 <GameTooltip name="KsutoTooltip" hidden="true" parent="WorldFrame" inherits="GameTooltipTemplate">
-		<Scripts>
-			<OnLoad>
-				this:SetOwner(WorldFrame, "ANCHOR_NONE");
-			</OnLoad>
-		</Scripts>
-	</GameTooltip>
+    <GameTooltip name="KsutoTooltip"
+                 hidden="true"
+                 parent="WorldFrame"
+                 inherits="GameTooltipTemplate">
+        <Scripts>
+            <OnLoad>
+                    this:SetOwner(WorldFrame, "ANCHOR_NONE");
+            </OnLoad>
+        </Scripts>
+    </GameTooltip>
+
+    <Frame name="MyScriptOptionsFrame"
+           parent="WorldFrame"
+           movable="true"
+           hidden="false">
+        <Scripts>
+            <OnLoad>
+                    this:RegisterForDrag("LeftButton")
+                    --                    this:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+                    --                    this:SetBackdropColor(0, 0, 0, 1)
+
+                    MyScriptOptionsFrame.Expand = function()
+                        MyScriptOptionsFrame:SetWidth(137)
+                        MyScriptOptionsFrame:SetHeight(204)
+
+                        MyScriptOptionsButtonToggle:Show()
+                        MyScriptOptionsButtonTNE:Show()
+                        MyScriptOptionsButtonAddWP:Show()
+                        MyScriptOptionsButtonClearWP:Show()
+                        MyScriptOptionsButtonDrive:Show()
+                        MyScriptOptionsButtonLoop:Show()
+                        MyScriptOptionsButtonDebug:Show()
+                    end
+
+                    MyScriptOptionsFrame.Collapse = function()
+                        MyScriptOptionsFrame:SetWidth(137)
+                        MyScriptOptionsFrame:SetHeight(18)
+
+                        MyScriptOptionsButtonToggle:Hide()
+                        MyScriptOptionsButtonTNE:Hide()
+                        MyScriptOptionsButtonAddWP:Hide()
+                        MyScriptOptionsButtonClearWP:Hide()
+                        MyScriptOptionsButtonDrive:Hide()
+                        MyScriptOptionsButtonLoop:Hide()
+                        MyScriptOptionsButtonDebug:Hide()
+                    end
+            </OnLoad>
+            <OnEnter>
+                    MyScriptOptionsFrame:Expand()
+            </OnEnter>
+            <OnLeave>
+                    --                    MyScriptOptionsFrame.Collapse()
+            </OnLeave>
+            <OnDragStart>
+                    if (not XPerl_Admin.Pinned or (IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown())) then
+                        this:StartMoving()
+                    end
+            </OnDragStart>
+            <OnDragStop>
+                    this:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+        <Backdrop bgFile="Interface\TutorialFrame\TutorialFrameBackground"
+                  edgeFile="Interface\Tooltips\UI-Tooltip-Border"
+                  tile="true">
+            <EdgeSize>
+                <AbsValue val="9"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="3"
+                          right="3"
+                          top="3"
+                          bottom="3"/>
+            </BackgroundInsets>
+        </Backdrop>
+        <Size x="137"
+              y="204"/>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+
+            <Frame name="$parent_TitleBar">
+
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="3"
+                                          y="-3"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="BOTTOMRIGHT"
+                            relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-3"
+                                          y="-13"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parent_Title"
+                                    inherits="GameFontNormalSmall"
+                                    text="Ksuto"
+                                    justifyH="CENTER">
+                            <Color r="1"
+                                   g="1"
+                                   b="1"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <Frame name="$parent_Controls">
+                <Scripts>
+                    <OnUpdate>
+                            local f = GetMouseFocus()
+                            if (f) then
+
+                                local found = false
+                                while (f:GetParent() and f:GetParent() ~= UIParent) do
+                                    if (f == MyScriptOptionsFrame) then found = true end
+                                    f = f:GetParent()
+                                end
+
+                                if (not found) then
+                                    MyScriptOptionsFrame:Collapse()
+                                end
+                            end
+                    </OnUpdate>
+                </Scripts>
+                <Anchors>
+                    <Anchor point="TOPLEFT"
+                            relativeTo="$parent_TitleBar"
+                            relativePoint="BOTTOMLEFT"/>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-3"
+                                          y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+
+                <Frames>
+
+                    <Button name="MyScriptOptionsButtonToggle"
+                            inherits="GameMenuButtonTemplate"
+                            text="Toggle">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativePoint="TOPLEFT">
+                                <Offset x="5"
+                                        y="-5"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Toggle Ksuto On/Off";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickToggle()
+
+                                    ksuto.print(tostring(MyScriptOptionsButtonToggle:GetPushedTexture()))
+                                    ksuto.print(tostring(MyScriptOptionsButtonToggle:GetNormalTexture()))
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Button name="MyScriptOptionsButtonTNE"
+                            inherits="GameMenuButtonTemplate"
+                            text="TNE">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativeTo="MyScriptOptionsButtonToggle"
+                                    relativePoint="BOTTOMLEFT">
+                                <Offset x="0"
+                                        y="0"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Auto Target Next Enemy On/Off";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickTNE()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Button name="MyScriptOptionsButtonAddWP"
+                            inherits="GameMenuButtonTemplate"
+                            text="Add Waypoint">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativeTo="MyScriptOptionsButtonTNE"
+                                    relativePoint="BOTTOMLEFT">
+                                <Offset x="0"
+                                        y="0"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Add a waypoint at current position";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickAddWp()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Button name="MyScriptOptionsButtonClearWP"
+                            inherits="GameMenuButtonTemplate"
+                            text="Clear Waypoints">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativeTo="MyScriptOptionsButtonAddWP"
+                                    relativePoint="BOTTOMLEFT">
+                                <Offset x="0"
+                                        y="0"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Clear every waypoints";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickClearWp()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Button name="MyScriptOptionsButtonDrive"
+                            inherits="GameMenuButtonTemplate"
+                            text="Drive">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativeTo="MyScriptOptionsButtonClearWP"
+                                    relativePoint="BOTTOMLEFT">
+                                <Offset x="0"
+                                        y="0"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Start/Stop GPS !!";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickDrive()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Button name="MyScriptOptionsButtonLoop"
+                            inherits="GameMenuButtonTemplate"
+                            text="Loop">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativeTo="MyScriptOptionsButtonDrive"
+                                    relativePoint="BOTTOMLEFT">
+                                <Offset x="0"
+                                        y="0"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Loop through waypoints";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickLoop()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Button name="MyScriptOptionsButtonDebug"
+                            inherits="GameMenuButtonTemplate"
+                            text="Debug">
+                        <Size x="120"
+                              y="25"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"
+                                    relativeTo="MyScriptOptionsButtonLoop"
+                                    relativePoint="BOTTOMLEFT">
+                                <Offset x="0"
+                                        y="0"/>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                    this.tooltip = "Toggle debug mod On/Off";
+                            </OnLoad>
+                            <OnEnter>
+                                    GameTooltip:SetOwner(this, "ANCHOR_LEFT");
+                                    GameTooltip:SetText(this.tooltip);
+                            </OnEnter>
+                            <OnLeave>
+                                    GameTooltip:Hide();
+                            </OnLeave>
+                            <OnClick>
+                                    ksuto.clickDebug()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                </Frames>
+            </Frame>
+        </Frames>
+    </Frame>
 </Ui>

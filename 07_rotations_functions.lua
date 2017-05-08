@@ -42,8 +42,8 @@ function ksuto.rotation()
     end
 
     if ksuto.DRIVE_MOD == true
-            and (ksuto.unitHasBuff("player", "Food")
-            or ksuto.unitHasBuff("player", "Drink")) then
+            and ((ksuto.unitHasBuff("player", "Food") and (ksuto.playerHealthPct() < 100))
+            or (ksuto.unitHasBuff("player", "Drink") and (ksuto.playerManaPct() < 100))) then
         ksuto.drive.texture:SetTexture(0, 0, 0, 1)
     elseif ksuto.DRIVE_MOD == true then
         ksuto.drive.texture:SetTexture(1, 1, 1, 1)
@@ -54,6 +54,8 @@ function ksuto.rotation()
         ksuto.resetKeys();
         return;
     end
+
+    ksuto.resetKeys()
 
     -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
     if (UnitAffectingCombat("player") and UnitAffectingCombat("target")) or
@@ -299,14 +301,14 @@ function ksuto.hasMainHandEnchant()
     -- if thrownExpiration then ksuto.print("thrownExpiration = "..tostring(thrownExpiration)) end
     -- if thrownCharges then ksuto.print("thrownCharges = "..tostring(thrownCharges)) end
 
-    return not hasMainHandEnchant == nil
+    return hasMainHandEnchant
 end
 
 function ksuto.hasOffHandEnchant()
 
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
 
-    return not hasOffHandEnchant == nil
+    return hasOffHandEnchant
 end
 
 function ksuto.targetMemberIfHealthLessThan(health)
@@ -319,5 +321,10 @@ function ksuto.targetMemberIfHealthLessThan(health)
     end
 
     return false
+end
+
+function ksuto.outOfCombat()
+
+    return (not UnitIsDeadOrGhost("player")) and (not UnitAffectingCombat("player"))
 end
 

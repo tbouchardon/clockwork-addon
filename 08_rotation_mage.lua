@@ -8,9 +8,9 @@
 
 local function rotation1()
 
-    --    ksuto.printDebug("function ksuto.mageFrostRotation")
 
-    ksuto.updatePositionCoordinates()
+    --    ksuto.printDebug("function ksuto.mageRotation")
+
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
@@ -19,6 +19,7 @@ local function rotation1()
         ksuto.shouldHitKey(ksuto.key9, nil, 65)
 
     elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+
 
         ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Frost Armor"), 25) -- Armure de givre
 		ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
@@ -32,6 +33,7 @@ local function rotation1()
         ksuto.resetKeys()
         ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() < 60 and not ksuto.playerHasBuff("Drink"), 60) -- regen mana
 		ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
+
     end
 end
 

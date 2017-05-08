@@ -10,8 +10,6 @@ local function rotation1()
 
     --    ksuto.printDebug("function ksuto.shamanHealRotation")
 
-    ksuto.updatePositionCoordinates()
-
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
     if (ksuto.targetMemberIfHealthLessThan(60)) then
@@ -25,12 +23,11 @@ local function rotation1()
         -- ksuto.shouldHitKey(ksuto.key7, not ksuto.hasMainHandEnchant() and ksuto.playerManaPct() > 15, 60) -- Windfury Weapon
 		ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
         ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 18 and not ksuto.targetHasDebuff("Flame Shock") and ksuto.playerManaPct() > 20, 3) -- orion de feu
-        ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 90, 1) -- chaine éclaire
+        ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 90, 1) -- chaine ï¿½claire
 
-    else
+    elseif (ksuto.outOfCombat()) then
 
-        ksuto.resetKeys()
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerManaPct() < 25 and not ksuto.playerHasBuff("Drink"), 59) -- regen (barre en bas à droite 6e icone)
+        ksuto.shouldHitKey(ksuto.key6, ksuto.playerManaPct() < 25 and not ksuto.playerHasBuff("Drink"), 59) -- regen (barre en bas ï¿½ droite 6e icone)
     end
 end
 
