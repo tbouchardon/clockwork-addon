@@ -22,7 +22,7 @@ local function rotation1()
 
         ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 50, 65) -- je me soigne (barre d'action bas gauche, 5e icone)
         ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Lightning Shield") and ksuto.playerManaPct() > 20, 25) -- bouclier de foudre (tout en haut barre verticale droite)
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.hasMainHandEnchant() and ksuto.playerManaPct() > 15, 60) -- Windfury Weapon
+        -- ksuto.shouldHitKey(ksuto.key7, not ksuto.hasMainHandEnchant() and ksuto.playerManaPct() > 15, 60) -- Windfury Weapon
 		ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
         ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 18 and not ksuto.targetHasDebuff("Flame Shock") and ksuto.playerManaPct() > 20, 3) -- orion de feu
         ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 90, 1) -- chaine éclaire
