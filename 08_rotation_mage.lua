@@ -11,13 +11,9 @@ local function rotation1()
 
     --    ksuto.printDebug("function ksuto.mageRotation")
 
-
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.targetMemberIfHealthLessThan(60)) then
-
-        ksuto.shouldHitKey(ksuto.key9, nil, 65)
-
+	
     elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
 
