@@ -8,11 +8,17 @@
 
 local function rotation1()
 
-    --    ksuto.printDebug("function ksuto.mageRotation")
+    --    ksuto.printDebug("function ksuto.mageFrostRotation")
+
+    ksuto.updatePositionCoordinates()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+    if (ksuto.targetMemberIfHealthLessThan(60)) then
+
+        ksuto.shouldHitKey(ksuto.key9, nil, 65)
+
+    elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
         ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Frost Armor"), 25) -- Armure de givre
         ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
@@ -21,8 +27,9 @@ local function rotation1()
         ksuto.shouldHitKey(ksuto.key4, ksuto.healthPercentage('target') < 95, 4) -- Trait de feu
         ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
 
-    elseif (ksuto.outOfCombat()) then
+        elses
 
+        ksuto .resetKeys()
         ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() < 60 and not ksuto.playerHasBuff("Drink"), 60) -- regen mana
         ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
     end
