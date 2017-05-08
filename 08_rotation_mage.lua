@@ -12,11 +12,8 @@ local function rotation1()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.targetMemberIfHealthLessThan(60)) then
 
-        ksuto.shouldHitKey(ksuto.key9, nil, 65)
-
-    elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
         ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Frost Armor"), 25) -- Armure de givre
         ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
