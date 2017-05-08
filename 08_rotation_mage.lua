@@ -18,16 +18,17 @@ local function rotation1()
 
     elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 50, 65) -- je me soigne (barre d'action bas gauche, 5e icone)
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Lightning Shield") and ksuto.playerManaPct() > 20, 25) -- bouclier de foudre (tout en haut barre verticale droite)
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.hasMainHandEnchant() and ksuto.playerManaPct() > 15, 60) -- Windfury Weapon
-		ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
-        ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 18 and not ksuto.targetHasDebuff("Flame Shock") and ksuto.playerManaPct() > 20, 3) -- orion de feu
-        ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 90, 1) -- chaine éclaire
+        ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Frost Armor"), 25) -- Armure de givre
+        ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
+        -- ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
+        ksuto.shouldHitKey(ksuto.key1, ksuto.targetInRange(ksuto.FOLLOW), 1) -- �claire de givre
+        ksuto.shouldHitKey(ksuto.key4, ksuto.healthPercentage('target') < 95, 4) -- Trait de feu
+        ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
 
     elseif (ksuto.outOfCombat()) then
 
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerManaPct() < 25 and not ksuto.playerHasBuff("Drink"), 59) -- regen (barre en bas à droite 6e icone)
+        ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() < 60 and not ksuto.playerHasBuff("Drink"), 60) -- regen mana
+        ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
     end
 end
 
