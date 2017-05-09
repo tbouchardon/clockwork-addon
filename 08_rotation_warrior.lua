@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-ksuto.regen = 53
+local regen = 53
 
 local function rotation1()
 
@@ -28,12 +28,12 @@ local function rotation1()
         --barre 1, posture attaque
         ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() > 5, 75) -- overpower
         ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend") and ksuto.healthPercentage('target') > 20 , 77) -- dot
-        ksuto.shouldHitShiftKey(ksuto.key8, ksuto.healthPercentage('target') < 20 and ksuto.playerManaPct() > 20 and ksuto.playerHealthPct() < ksuto.regen , 78) -- execut
+        ksuto.shouldHitShiftKey(ksuto.key8, ksuto.healthPercentage('target') < 20 and ksuto.playerManaPct() > 20 and ksuto.playerHealthPct() < regen, 78) -- execut
 
     elseif (ksuto.outOfCombat()) then
 
         --barre 3, divers
-        ksuto.shouldHitKey(ksuto.key3, ksuto.playerHealthPct() < ksuto.regen and not ksuto.playerHasBuff("Food"), 36) -- regen
+        ksuto.shouldHitKey(ksuto.key3, ksuto.playerHealthPct() < regen and not ksuto.playerHasBuff("Food"), 36) -- regen
         --ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() > 31 and ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("First Aid") and not ksuto.playerHasAnyDebuff(), 35) -- regen
     end
 end
