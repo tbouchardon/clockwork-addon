@@ -1,8 +1,8 @@
 function ksuto.getBuffName(id)
 
     -- ksuto.printDebug("function ksuto.getBuffName(" .. tostring(id))
-    KsutoTooltip:SetUnitBuff(id)
-    local buffName = tostring(KsutoTooltipTextLeft1:GetText());
+    ClockWorkTooltip:SetUnitBuff(id)
+    local buffName = tostring(ClockWorkTooltipTextLeft1:GetText());
     if (buffName) then
         return buffName:GetText() or id
     end
@@ -29,8 +29,8 @@ function ksuto.unitHasDebuff(unit, effect)
             --            if spellId then ksuto.printDebug("spellId : " .. spellId) end
         end
 
-        KsutoTooltip:SetUnitDebuff(unit, index);
-        local debuffName = tostring(KsutoTooltipTextLeft1:GetText());
+        ClockWorkTooltip:SetUnitDebuff(unit, index);
+        local debuffName = tostring(ClockWorkTooltipTextLeft1:GetText());
         --        ksuto.printDebug("debuffName : " .. debuffName)
 
         if (string.find(debuffName, effect)) then
@@ -94,8 +94,8 @@ function ksuto.unitHasBuff(unit, effect)
             --            if spellId then ksuto.printDebug("spellId : " .. spellId) end
         end
 
-        KsutoTooltip:SetUnitBuff(unit, index);
-        local buffName = tostring(KsutoTooltipTextLeft1:GetText());
+        ClockWorkTooltip:SetUnitBuff(unit, index);
+        local buffName = tostring(ClockWorkTooltipTextLeft1:GetText());
         --        ksuto.printDebug("buffName : " .. buffName)
         if (string.find(buffName, effect)) then
             return true, true;

@@ -2,18 +2,7 @@
     xmlns="http://www.blizzard.com/wow/ui/"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 	..\FrameXML\UI.xsd">
-    <GameTooltip name="KsutoTooltip"
-                 hidden="true"
-                 parent="WorldFrame"
-                 inherits="GameTooltipTemplate">
-        <Scripts>
-            <OnLoad>
-                    this:SetOwner(WorldFrame, "ANCHOR_NONE");
-            </OnLoad>
-        </Scripts>
-    </GameTooltip>
-
-    <Frame name="MyScriptOptionsFrame"
+    <Frame name="ClockWorkMenuFrame"
            parent="WorldFrame"
            movable="true"
            hidden="false">
@@ -23,9 +12,9 @@
                     --                    this:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
                     --                    this:SetBackdropColor(0, 0, 0, 1)
 
-                    MyScriptOptionsFrame.Expand = function()
-                        MyScriptOptionsFrame:SetWidth(137)
-                        MyScriptOptionsFrame:SetHeight(204)
+                    ClockWorkMenuFrame.Expand = function()
+                        ClockWorkMenuFrame:SetWidth(137)
+                        ClockWorkMenuFrame:SetHeight(204)
 
                         MyScriptOptionsButtonToggle:Show()
                         MyScriptOptionsButtonTNE:Show()
@@ -36,9 +25,9 @@
                         MyScriptOptionsButtonDebug:Show()
                     end
 
-                    MyScriptOptionsFrame.Collapse = function()
-                        MyScriptOptionsFrame:SetWidth(137)
-                        MyScriptOptionsFrame:SetHeight(18)
+                    ClockWorkMenuFrame.Collapse = function()
+                        ClockWorkMenuFrame:SetWidth(137)
+                        ClockWorkMenuFrame:SetHeight(18)
 
                         MyScriptOptionsButtonToggle:Hide()
                         MyScriptOptionsButtonTNE:Hide()
@@ -50,15 +39,13 @@
                     end
             </OnLoad>
             <OnEnter>
-                    MyScriptOptionsFrame:Expand()
+                    ClockWorkMenuFrame:Expand()
             </OnEnter>
             <OnLeave>
-                    --                    MyScriptOptionsFrame.Collapse()
+                    --                    ClockWorkMenuFrame.Collapse()
             </OnLeave>
             <OnDragStart>
-                    if (not XPerl_Admin.Pinned or (IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown())) then
-                        this:StartMoving()
-                    end
+                    this:StartMoving()
             </OnDragStart>
             <OnDragStop>
                     this:StopMovingOrSizing()
@@ -131,12 +118,12 @@
 
                                 local found = false
                                 while (f:GetParent() and f:GetParent() ~= UIParent) do
-                                    if (f == MyScriptOptionsFrame) then found = true end
+                                    if (f == ClockWorkMenuFrame) then found = true end
                                     f = f:GetParent()
                                 end
 
                                 if (not found) then
-                                    MyScriptOptionsFrame:Collapse()
+                                    ClockWorkMenuFrame:Collapse()
                                 end
                             end
                     </OnUpdate>
