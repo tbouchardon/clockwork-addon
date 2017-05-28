@@ -25,6 +25,8 @@ local function rotation1()
         ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 18 and not ksuto.targetHasDebuff("Flame Shock") and ksuto.playerManaPct() > 20, 3) -- orion de feu
         ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 90, 1) -- chaine éclaire
 		ksuto.shouldHitKey(ksuto.key0, ksuto.playerManaPct() < 65, 37) -- Totem regen mana
+		ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 98, 2) -- Blood Fury (racial)
+		ksuto.shouldHitKey(ksuto.key4, ksuto.playerManaPct() < 60, 4) -- Nature's Swiftness
 
     elseif (ksuto.outOfCombat()) then
 
