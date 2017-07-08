@@ -12,7 +12,7 @@ local function rotation1()
 
     -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
 
-    if (ksuto.targetMemberIfHealthLessThan(60)) then 
+    if (ksuto.targetMemberIfHealthLessThan(60)) then
 	
 		ksuto.shouldHitKey(ksuto.key9, nil, 65)
 
