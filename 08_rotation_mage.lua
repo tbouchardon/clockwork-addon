@@ -19,14 +19,14 @@ local function rotation1()
         ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
         -- ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
         ksuto.shouldHitKey(ksuto.key1, ksuto.healthPercentage('target') > 15, 1) -- eclaire de givre
-		ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 15, 2) -- brulure
-        ksuto.shouldHitKey(ksuto.key4, ksuto.healthPercentage('target') < 50, 4) -- Trait de feu
+		ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 16, 2) -- brulure
+        ksuto.shouldHitKey(ksuto.key4, ksuto.healthPercentage('target') < 70, 4) -- Trait de feu
         ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 30 and not ksuto.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
 
     elseif (ksuto.outOfCombat()) then
 		
         ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() < 60 and not ksuto.playerHasBuff("Drink"), 60) -- regen mana
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
+        ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 70 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
 
     end
 end
