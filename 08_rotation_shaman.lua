@@ -28,10 +28,9 @@ local function rotation1()
         ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 50, 2) -- Blood Fury (racial)
         ksuto.shouldHitKey(ksuto.key4, ksuto.playerHealthPct() < 55, 4) -- Nature's Swiftness
 
-
     elseif (ksuto.outOfCombat()) then		
 
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerManaPct() < 35 and not ksuto.playerHasBuff("Drink"), 59) -- regen (barre en bas à droite, avant dernière icone)
+        ksuto.shouldHitKey(ksuto.key6, ksuto.playerManaPct() < 35 and not ksuto.playerHasBuff("Drink"), 59) -- regen (barre en bas ï¿½ droite, avant derniï¿½re icone)
     end
 end
 
