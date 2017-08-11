@@ -65,7 +65,7 @@ function ksuto.rotation()
         elseif UnitClass("player") == "Warrior" then ksuto.warriorRotation()
         elseif UnitClass("player") == "Shaman" then ksuto.shamanRotation()
         elseif UnitClass("player") == "Mage" then ksuto.mageRotation()
-		elseif UnitClass("player") == "Priest" then ksuto.pretreRotation()
+	elseif UnitClass("player") == "Priest" then ksuto.priestRotation()
         end
     end
 end
