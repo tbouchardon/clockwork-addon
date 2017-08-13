@@ -66,19 +66,19 @@ local function rotation2() --Rotation bind Oko
 
     if (ksuto.unitExistCanAndShouldDie()) and (not ksuto.enemyPlayer()) then
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 25 and ksuto.playerHealthPct() > 75) -- Life Tap
+        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 25 and ksuto.playerHealthPct() > 75, 15) -- Life Tap
         -- ksuto.shouldHitKey(ksuto.key6, ksuto.healthPercentage("target") < 20 and not ksuto.targetHasDebuff("Drain Soul"))
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Immolate"))
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.targetHasDebuff("Corruption"))
-        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Curse of Agony"))
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"))
-        ksuto.shouldHitKey(ksuto.key4, ksuto.playerManaPct() > 50) -- Shadow Bolt as of now
-        ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) --Baguette
+        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Immolate"), 2)
+        ksuto.shouldHitKey(ksuto.key7, not ksuto.targetHasDebuff("Corruption"), 3)
+        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Curse of Agony"), 4)
+        --ksuto.shouldHitKey(ksuto.key5, ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"),)
+        ksuto.shouldHitKey(ksuto.key4, ksuto.playerManaPct() > 50, 1) -- Shadow Bolt as of now
+        --ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) --Baguette
 
         -- ALT KEYS
         -- SHIFT KEYS
 
-        ksuto.shouldHitKey(ksuto.key3, not UnitExists("pet")) -- Fear si le pet n'est pas présent
+        ksuto.shouldHitKey(ksuto.key3, not UnitExists("pet"), 14) -- Fear si le pet n'est pas présent
 
         -- CTRL KEYS
 
@@ -91,11 +91,11 @@ local function rotation2() --Rotation bind Oko
 
     elseif (ksuto.outOfCombat()) then -- hors combat
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66) -- Life Tap
+        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66, 15) -- Life Tap
 
-        ksuto.shouldHitShiftKey(ksuto.key9, not ksuto.playerHasBuff("Demon Skin")) -- Buff
+        ksuto.shouldHitShiftKey(ksuto.key9, not ksuto.playerHasBuff("Demon Skin"), 24) -- Buff
         ksuto.shouldHitShiftKey(ksuto.key8, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
-        ksuto.shouldHitShiftKey(ksuto.key7, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food")) -- Manger
+        ksuto.shouldHitShiftKey(ksuto.key7, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food"), 11) -- Manger
     end
 end
 
