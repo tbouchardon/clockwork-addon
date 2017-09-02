@@ -16,12 +16,15 @@ local function rotation1()
     if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
 
         
+		ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Power Word: Fortitude"), 25) -- Endurance
 		ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Inner Fire"), 37) -- feu intérieur
 		ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack
-        ksuto.shouldHitKey(ksuto.key1, ksuto.healthPercentage('target'), 1) -- Chatiment
+        ksuto.shouldHitKey(ksuto.key1, ksuto.healthPercentage('target') < 99, 1) -- Chatiment
+		ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') > 99, 3) -- Flamme sacrée
         ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 99 and ksuto.healthPercentage('target') > 25 and not ksuto.targetHasDebuff("Shadow Word: Pain"), 2) -- Mot de douleur
         ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Power Word: Shield") and not ksuto.playerHasDebuff("Weakened Soul") and ksuto.healthPercentage('target') > 20, 4 ) -- Bouclier
-		ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 55, 65) -- soins rapide 
+		ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 55, 65) -- soins rapide
+		ksuto.shouldHitKey(ksuto.key6, ksuto.healthPercentage('target') < 99 and ksuto.healthPercentage('target') > 65, 59) -- Peste dévorante
 		
     elseif (ksuto.outOfCombat()) then
 		
