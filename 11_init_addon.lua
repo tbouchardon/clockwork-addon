@@ -6,315 +6,361 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function ksuto.addonLoaded()
+function clockWork.addonLoaded()
 
-    if KSUTO_ROTATIONS == nil then
-        KSUTO_ROTATIONS = {};
+    if ClockWork_ROTATIONS == nil then
+        ClockWork_ROTATIONS = {};
     end
 end
 
-function ksuto.playerEnteringWorld()
+function clockWork.playerEnteringWorld()
 
-    ksuto.printDebug("GetCurrentResolution() : " .. tostring(GetCurrentResolution()))
-    ksuto.printDebug("({ GetScreenResolutions() })[GetCurrentResolution()] : " .. tostring(({ GetScreenResolutions() })[GetCurrentResolution()]))
+    clockWork.printDebug("GetCurrentResolution() : " .. tostring(GetCurrentResolution()))
+    clockWork.printDebug("GetScreenResolutions() : " .. tostring(GetScreenResolutions()))
+    clockWork.printDebug("({ GetScreenResolutions() })[GetCurrentResolution()] : " .. tostring(GetScreenResolutions()[GetCurrentResolution()]))
 
-    local currentResulution = tostring(({ GetScreenResolutions() })[GetCurrentResolution()])
+    --local currentResulution = tostring(({ GetScreenResolutions() })[GetCurrentResolution()])
+    local currentResulution = tostring(GetScreenResolutions())
     local height = string.gsub(currentResulution, "%d+x", "")
 
-    ksuto.printDebug("currentResolution height : " .. height)
-    ksuto.printDebug("GetCVar(uiScale) : " .. GetCVar("uiScale"))
+    clockWork.printDebug("currentResolution height : " .. height)
+    clockWork.printDebug("GetCVar(uiScale) : " .. GetCVar("uiScale"))
 
-    ksuto.scaleMultiplicator = (768 / tonumber(height)) / GetCVar("uiScale")
+    clockWork.scaleMultiplicator = (768 / tonumber(height)) / GetCVar("uiScale")
 
-    ksuto.print("scaleMultiplicator : " .. tostring(ksuto.scaleMultiplicator))
+    clockWork.print("scaleMultiplicator : " .. tostring(clockWork.scaleMultiplicator))
 
     -- init Frames
 
-    ksuto.frame:SetWidth(ksuto.scale(16))
-    ksuto.frame:SetHeight(ksuto.scale(16))
+    clockWork.frame:SetWidth(16)
+    clockWork.frame:SetHeight(16)
 
-    ksuto.nextUpdate = 0
-    ksuto.addWaypointList = nil
-    ksuto.waypointListIndex = 0
+    clockWork.nextUpdate = 0
+    clockWork.addWaypointList = nil
+    clockWork.waypointListIndex = 0
 
-    ksuto.blackBackground1 = CreateFrame("FRAME", "ksuto_ksuto.blackBackground1", ksuto.frame)
-    ksuto.blackBackground1:SetPoint("CENTER", 0, 0)
-    ksuto.blackBackground1:SetWidth(ksuto.scale(16))
-    ksuto.blackBackground1:SetHeight(ksuto.scale(8))
-    ksuto.blackBackground1:SetFrameStrata("MEDIUM");
-    ksuto.blackBackground1.texture = ksuto.blackBackground1:CreateTexture("MEDIUM")
-    ksuto.blackBackground1.texture:SetAllPoints()
-    ksuto.blackBackground1.texture:SetTexture(0, 0, 0, 1)
+    clockWork.blackBackground3 = CreateFrame("FRAME", "clockWork_Background3", clockWork.frame)
+    clockWork.blackBackground3:SetPoint("CENTER", 0, 0)
+    clockWork.blackBackground3:SetWidth(14)
+    clockWork.blackBackground3:SetHeight(14)
+    clockWork.blackBackground3:SetFrameStrata("MEDIUM");
+    clockWork.blackBackground3.texture = clockWork.blackBackground3:CreateTexture(nil, "BACKGROUND")
+    clockWork.blackBackground3.texture:SetAllPoints()
+    clockWork.blackBackground3.texture:SetColorTexture(0, 0, 0, 1)
 
-    ksuto.blackBackground2 = CreateFrame("FRAME", "ksuto_Background2", ksuto.frame)
-    ksuto.blackBackground2:SetPoint("CENTER", 0, 0)
-    ksuto.blackBackground2:SetWidth(ksuto.scale(8))
-    ksuto.blackBackground2:SetHeight(ksuto.scale(16))
-    ksuto.blackBackground2:SetFrameStrata("MEDIUM");
-    ksuto.blackBackground2.texture = ksuto.blackBackground2:CreateTexture("MEDIUM")
-    ksuto.blackBackground2.texture:SetAllPoints()
-    ksuto.blackBackground2.texture:SetTexture(0, 0, 0, 1)
+    clockWork.blackBackground1 = CreateFrame("FRAME", "clockWork_Background1", clockWork.frame)
+    clockWork.blackBackground1:SetPoint("CENTER", 0, 0)
+    clockWork.blackBackground1:SetSize(16, 8)
+    clockWork.blackBackground1:SetFrameStrata("MEDIUM");
+    clockWork.blackBackground1.texture = clockWork.blackBackground1:CreateTexture(nil, "ARTWORK")
+    clockWork.blackBackground1.texture:SetAllPoints()
+    clockWork.blackBackground1.texture:SetColorTexture(0, 0, 0, 1)
 
-    ksuto.blackBackground3 = CreateFrame("FRAME", "ksuto_Background3", ksuto.frame)
-    ksuto.blackBackground3:SetPoint("CENTER", 0, 0)
-    ksuto.blackBackground3:SetWidth(ksuto.scale(14))
-    ksuto.blackBackground3:SetHeight(ksuto.scale(14))
-    ksuto.blackBackground3:SetFrameStrata("MEDIUM");
-    ksuto.blackBackground3.texture = ksuto.blackBackground3:CreateTexture("MEDIUM")
-    ksuto.blackBackground3.texture:SetAllPoints()
-    ksuto.blackBackground3.texture:SetTexture(0, 0, 0, 1)
+    clockWork.blackBackground2 = CreateFrame("FRAME", "clockWork_Background2", clockWork.frame)
+    clockWork.blackBackground2:SetPoint("CENTER", 0, 0)
+    clockWork.blackBackground2:SetWidth(8)
+    clockWork.blackBackground2:SetHeight(16)
+    clockWork.blackBackground2:SetFrameStrata("MEDIUM");
+    clockWork.blackBackground2.texture = clockWork.blackBackground2:CreateTexture(nil, "ARTWORK")
+    clockWork.blackBackground2.texture:SetAllPoints()
+    clockWork.blackBackground2.texture:SetColorTexture(0, 0, 0, 1)
 
-    ksuto.onOff = CreateFrame("FRAME", "ksuto_onOff", ksuto.frame)
-    ksuto.onOff:SetPoint("CENTER", 0, 0)
-    ksuto.onOff:SetWidth(ksuto.scale(16))
-    ksuto.onOff:SetHeight(ksuto.scale(16))
-    ksuto.onOff:SetFrameStrata("DIALOG")
-    ksuto.onOff.texture = ksuto.onOff:CreateTexture("DIALOG")
-    ksuto.onOff.texture:SetAllPoints()
-    ksuto.onOff.texture:SetTexture(0, 1, 0, 1)
+    clockWork.onOff = CreateFrame("FRAME", "clockWork_onOff", clockWork.frame)
+    clockWork.onOff:SetPoint("CENTER", 0, 0)
+    clockWork.onOff:SetWidth(16)
+    clockWork.onOff:SetHeight(16)
+    clockWork.onOff:SetFrameStrata("DIALOG")
+    clockWork.onOff.texture = clockWork.onOff:CreateTexture("DIALOG")
+    clockWork.onOff.texture:SetAllPoints()
+    clockWork.onOff.texture:SetColorTexture(0, 1, 0, 1)
 
-    ksuto.inCombat = ksuto.createDot("ksuto_inCombat", 2, -2)
-    ksuto.casting = ksuto.createDot("ksuto_casting", 3, -2)
-    ksuto.stepBack = ksuto.createDot("ksuto_stepBack", 4, -2)
+    clockWork.inCombat = clockWork.createDot("clockWork_inCombat", 2, -2)
+    clockWork.casting = clockWork.createDot("clockWork_casting", 3, -2)
+    clockWork.stepBack = clockWork.createDot("clockWork_stepBack", 4, -2)
 
-    ksuto.playerHealth = ksuto.createDot("ksuto_health", 12, -2)
-    ksuto.playerMana = ksuto.createDot("ksuto_mana", 13, -2)
-    ksuto.targetReaction = ksuto.createDot("ksuto_target_reaction", 11, -3)
-    ksuto.targetHealth = ksuto.createDot("ksuto_target_health", 12, -3)
-    ksuto.targetMana = ksuto.createDot("ksuto_target_mana", 13, -3)
+    clockWork.playerHealth = clockWork.createDot("clockWork_health", 12, -2)
+    clockWork.playerMana = clockWork.createDot("clockWork_mana", 13, -2)
+    clockWork.targetReaction = clockWork.createDot("clockWork_target_reaction", 11, -3)
+    clockWork.targetHealth = clockWork.createDot("clockWork_target_health", 12, -3)
+    clockWork.targetMana = clockWork.createDot("clockWork_target_mana", 13, -3)
 
-    ksuto.toggle = ksuto.createDot("ksuto_toggle", 2, -13)
-    ksuto.targetNearestEnemy = ksuto.createDot("ksuto_targetNearestEnemy", 3, -13)
-    ksuto.addWaypoint = ksuto.createDot("ksuto_addWaypoint", 4, -13)
-    ksuto.clearWaypoints = ksuto.createDot("ksuto_clearWaypoints", 5, -13)
-    ksuto.drive = ksuto.createDot("ksuto_drive", 6, -13)
-    ksuto.driveLoop = ksuto.createDot("ksuto_driveLoop", 7, -13)
-    ksuto.debug = ksuto.createDot("ksuto_debug", 13, -13)
-    if ksuto.DEBUG_MOD then ksuto.debug.texture:SetTexture(1, 0, 0, 1) end
-
-    ksuto.raid = {}
-
-    table.insert(ksuto.raid, 1, ksuto.createDot("ksuto_raid1", 3, -1))
-    table.insert(ksuto.raid, 2, ksuto.createDot("ksuto_raid2", 4, -1))
-    table.insert(ksuto.raid, 3, ksuto.createDot("ksuto_raid3", 5, -1))
-    table.insert(ksuto.raid, 4, ksuto.createDot("ksuto_raid4", 6, -1))
-    table.insert(ksuto.raid, 5, ksuto.createDot("ksuto_raid5", 7, -1))
-    table.insert(ksuto.raid, 6, ksuto.createDot("ksuto_raid6", 8, -1))
-    table.insert(ksuto.raid, 7, ksuto.createDot("ksuto_raid7", 9, -1))
-    table.insert(ksuto.raid, 8, ksuto.createDot("ksuto_raid8", 10, -1))
-    table.insert(ksuto.raid, 9, ksuto.createDot("ksuto_raid9", 11, -1))
-    table.insert(ksuto.raid, 10, ksuto.createDot("ksuto_raid10", 12, -1))
-
-    table.insert(ksuto.raid, 11, ksuto.createDot("ksuto_raid11", 14, -3))
-    table.insert(ksuto.raid, 12, ksuto.createDot("ksuto_raid12", 14, -4))
-    table.insert(ksuto.raid, 13, ksuto.createDot("ksuto_raid13", 14, -5))
-    table.insert(ksuto.raid, 14, ksuto.createDot("ksuto_raid14", 14, -6))
-    table.insert(ksuto.raid, 15, ksuto.createDot("ksuto_raid15", 14, -7))
-    table.insert(ksuto.raid, 16, ksuto.createDot("ksuto_raid16", 14, -8))
-    table.insert(ksuto.raid, 17, ksuto.createDot("ksuto_raid17", 14, -9))
-    table.insert(ksuto.raid, 18, ksuto.createDot("ksuto_raid18", 14, -10))
-    table.insert(ksuto.raid, 19, ksuto.createDot("ksuto_raid19", 14, -11))
-    table.insert(ksuto.raid, 20, ksuto.createDot("ksuto_raid20", 14, -12))
-
-    table.insert(ksuto.raid, 21, ksuto.createDot("ksuto_raid21", 12, -1))
-    table.insert(ksuto.raid, 22, ksuto.createDot("ksuto_raid22", 11, -1))
-    table.insert(ksuto.raid, 23, ksuto.createDot("ksuto_raid23", 10, -1))
-    table.insert(ksuto.raid, 24, ksuto.createDot("ksuto_raid24", 9, -1))
-    table.insert(ksuto.raid, 25, ksuto.createDot("ksuto_raid25", 8, -1))
-    table.insert(ksuto.raid, 26, ksuto.createDot("ksuto_raid26", 7, -1))
-    table.insert(ksuto.raid, 27, ksuto.createDot("ksuto_raid27", 6, -1))
-    table.insert(ksuto.raid, 28, ksuto.createDot("ksuto_raid28", 5, -1))
-    table.insert(ksuto.raid, 29, ksuto.createDot("ksuto_raid29", 4, -1))
-    table.insert(ksuto.raid, 30, ksuto.createDot("ksuto_raid30", 3, -1))
-
-    table.insert(ksuto.raid, 31, ksuto.createDot("ksuto_raid31", 1, -12))
-    table.insert(ksuto.raid, 32, ksuto.createDot("ksuto_raid32", 1, -11))
-    table.insert(ksuto.raid, 33, ksuto.createDot("ksuto_raid33", 1, -10))
-    table.insert(ksuto.raid, 34, ksuto.createDot("ksuto_raid34", 1, -9))
-    table.insert(ksuto.raid, 35, ksuto.createDot("ksuto_raid35", 1, -8))
-    table.insert(ksuto.raid, 36, ksuto.createDot("ksuto_raid36", 1, -7))
-    table.insert(ksuto.raid, 37, ksuto.createDot("ksuto_raid37", 1, -6))
-    table.insert(ksuto.raid, 38, ksuto.createDot("ksuto_raid38", 1, -5))
-    table.insert(ksuto.raid, 39, ksuto.createDot("ksuto_raid39", 1, -4))
-    table.insert(ksuto.raid, 40, ksuto.createDot("ksuto_raid40", 1, -3))
-
-    ksuto.initKeys()
-    ksuto.initCoords()
-    ksuto.initLocalization()
-
-    ksuto.resetCombat()
-
-    ksuto.setAllBindings()
-end
-
-function ksuto.damageDone(arg1)
-
-    if (not ksuto.isPassiveDamage(arg1)) then
-        ksuto.selfHit = time()
-        ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
-        ksuto.printDebug("self : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+    clockWork.toggle = clockWork.createDot("clockWork_toggle", 2, -13)
+    clockWork.targetNearestEnemy = clockWork.createDot("clockWork_targetNearestEnemy", 3, -13)
+    clockWork.addWaypoint = clockWork.createDot("clockWork_addWaypoint", 4, -13)
+    clockWork.clearWaypoints = clockWork.createDot("clockWork_clearWaypoints", 5, -13)
+    clockWork.drive = clockWork.createDot("clockWork_drive", 6, -13)
+    clockWork.driveLoop = clockWork.createDot("clockWork_driveLoop", 7, -13)
+    clockWork.debug = clockWork.createDot("clockWork_debug", 13, -13)
+    if clockWork.DEBUG_MOD then
+        clockWork.debug.texture:SetColorTexture(1, 0, 0, 1)
     end
+
+    clockWork.raid = {}
+
+    table.insert(clockWork.raid, 1, clockWork.createDot("clockWork_raid1", 3, -1))
+    table.insert(clockWork.raid, 2, clockWork.createDot("clockWork_raid2", 4, -1))
+    table.insert(clockWork.raid, 3, clockWork.createDot("clockWork_raid3", 5, -1))
+    table.insert(clockWork.raid, 4, clockWork.createDot("clockWork_raid4", 6, -1))
+    table.insert(clockWork.raid, 5, clockWork.createDot("clockWork_raid5", 7, -1))
+    table.insert(clockWork.raid, 6, clockWork.createDot("clockWork_raid6", 8, -1))
+    table.insert(clockWork.raid, 7, clockWork.createDot("clockWork_raid7", 9, -1))
+    table.insert(clockWork.raid, 8, clockWork.createDot("clockWork_raid8", 10, -1))
+    table.insert(clockWork.raid, 9, clockWork.createDot("clockWork_raid9", 11, -1))
+    table.insert(clockWork.raid, 10, clockWork.createDot("clockWork_raid10", 12, -1))
+
+    table.insert(clockWork.raid, 11, clockWork.createDot("clockWork_raid11", 14, -3))
+    table.insert(clockWork.raid, 12, clockWork.createDot("clockWork_raid12", 14, -4))
+    table.insert(clockWork.raid, 13, clockWork.createDot("clockWork_raid13", 14, -5))
+    table.insert(clockWork.raid, 14, clockWork.createDot("clockWork_raid14", 14, -6))
+    table.insert(clockWork.raid, 15, clockWork.createDot("clockWork_raid15", 14, -7))
+    table.insert(clockWork.raid, 16, clockWork.createDot("clockWork_raid16", 14, -8))
+    table.insert(clockWork.raid, 17, clockWork.createDot("clockWork_raid17", 14, -9))
+    table.insert(clockWork.raid, 18, clockWork.createDot("clockWork_raid18", 14, -10))
+    table.insert(clockWork.raid, 19, clockWork.createDot("clockWork_raid19", 14, -11))
+    table.insert(clockWork.raid, 20, clockWork.createDot("clockWork_raid20", 14, -12))
+
+    table.insert(clockWork.raid, 21, clockWork.createDot("clockWork_raid21", 12, -1))
+    table.insert(clockWork.raid, 22, clockWork.createDot("clockWork_raid22", 11, -1))
+    table.insert(clockWork.raid, 23, clockWork.createDot("clockWork_raid23", 10, -1))
+    table.insert(clockWork.raid, 24, clockWork.createDot("clockWork_raid24", 9, -1))
+    table.insert(clockWork.raid, 25, clockWork.createDot("clockWork_raid25", 8, -1))
+    table.insert(clockWork.raid, 26, clockWork.createDot("clockWork_raid26", 7, -1))
+    table.insert(clockWork.raid, 27, clockWork.createDot("clockWork_raid27", 6, -1))
+    table.insert(clockWork.raid, 28, clockWork.createDot("clockWork_raid28", 5, -1))
+    table.insert(clockWork.raid, 29, clockWork.createDot("clockWork_raid29", 4, -1))
+    table.insert(clockWork.raid, 30, clockWork.createDot("clockWork_raid30", 3, -1))
+
+    table.insert(clockWork.raid, 31, clockWork.createDot("clockWork_raid31", 1, -12))
+    table.insert(clockWork.raid, 32, clockWork.createDot("clockWork_raid32", 1, -11))
+    table.insert(clockWork.raid, 33, clockWork.createDot("clockWork_raid33", 1, -10))
+    table.insert(clockWork.raid, 34, clockWork.createDot("clockWork_raid34", 1, -9))
+    table.insert(clockWork.raid, 35, clockWork.createDot("clockWork_raid35", 1, -8))
+    table.insert(clockWork.raid, 36, clockWork.createDot("clockWork_raid36", 1, -7))
+    table.insert(clockWork.raid, 37, clockWork.createDot("clockWork_raid37", 1, -6))
+    table.insert(clockWork.raid, 38, clockWork.createDot("clockWork_raid38", 1, -5))
+    table.insert(clockWork.raid, 39, clockWork.createDot("clockWork_raid39", 1, -4))
+    table.insert(clockWork.raid, 40, clockWork.createDot("clockWork_raid40", 1, -3))
+
+    clockWork.initKeys()
+    clockWork.initCoords()
+    clockWork.initLocalization()
+
+    clockWork.resetCombat()
+
+    clockWork.setAllBindings()
 end
 
-function ksuto.damageReceived(arg1)
+function clockWork.damageDone(arg1)
+
+    --if (not clockWork.isPassiveDamage(arg1)) then
+    clockWork.lastTimePlayerHit = time()
+    clockWork.durationBeingHitWithoutRetaliating = clockWork.lastTimePlayerHasBeenHit - clockWork.lastTimePlayerHit
+    --clockWork.printDebug("self : " .. tostring(clockWork.durationBeingHitWithoutRetaliating))
+    --end
+end
+
+function clockWork.damageReceived(arg1)
 
     --        if UnitAffectingCombat("player") then
-    ksuto.creatureHit = time()
-    ksuto.deltaSelfHitCreatureHit = ksuto.creatureHit - ksuto.selfHit
-    ksuto.printDebug("creature : " .. tostring(ksuto.deltaSelfHitCreatureHit))
+    clockWork.lastTimePlayerHasBeenHit = time()
+    clockWork.durationBeingHitWithoutRetaliating = clockWork.lastTimePlayerHasBeenHit - clockWork.lastTimePlayerHit
+    --clockWork.printDebug("creature : " .. tostring(clockWork.durationBeingHitWithoutRetaliating))
     --        end
 end
 
 local function onUpdate()
 
-    -- ksuto.printDebug("local function onUpdate(")
+    -- clockWork.printDebug("local function onUpdate(")
 
     local now = GetTime()
 
-    if (ksuto.nextUpdate < now) then
+    if (clockWork.nextUpdate < now) then
 
-        --        ksuto.printDebug(ksuto.nextUpdate)
-
-        if (ksuto.TOGGLE_ON_OFF and ksuto.ADDING_WP == false) then
-
-            ksuto.updatePositionCoordinates()
-            ksuto.rotation()
+        if (C_Map.GetBestMapForUnit("player") == nil) then
+            --clockWork.print("Player is nowhere to be found.")
+            --return
         end
 
-        if ksuto.addWaypointList ~= nil and
-                ksuto.ADDING_WP == false then
+        --        clockWork.printDebug(clockWork.nextUpdate)
 
-            --            ksuto.printDebug(tostring(ksuto.addWaypointList))
-            --            ksuto.printDebug(tostring(ksuto.ADDING_WP))
-            --            ksuto.printDebug(tostring(ksuto.waypointListIndex))
+        if (clockWork.TOGGLE_ON_OFF and clockWork.ADDING_WP == false) then
+
+            if (C_Map.GetBestMapForUnit("player") ~= nil) then
+                clockWork.updatePositionCoordinates()
+            end
+            clockWork.rotation()
+        end
+
+        if clockWork.addWaypointList ~= nil and
+                clockWork.ADDING_WP == false then
+
+            --            clockWork.printDebug(tostring(clockWork.addWaypointList))
+            --            clockWork.printDebug(tostring(clockWork.ADDING_WP))
+            --            clockWork.printDebug(tostring(clockWork.waypointListIndex))
 
             local index = 0;
             local finished = true
 
-            for coords in string.gfind(ksuto.addWaypointList, ".-;") do
+            for coords in string.gfind(clockWork.addWaypointList, ".-;") do
 
-                if index == ksuto.waypointListIndex then
+                if index == clockWork.waypointListIndex then
 
                     finished = false
-                    ksuto.print("Ksuto -> Adding Waypoint : " .. coords)
-                    ksuto.updatePositionFromCoordinates(coords)
-                    ksuto.addWaypoint.texture:SetTexture(1, 1, 1, 1)
-                    ksuto.ADDING_WP = true;
+                    clockWork.print("Adding Waypoint : " .. coords)
+                    clockWork.updatePositionFromCoordinates(coords)
+                    clockWork.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
+                    clockWork.ADDING_WP = true;
                 end
 
                 index = index + 1;
             end
 
-            ksuto.waypointListIndex = ksuto.waypointListIndex + 1
+            clockWork.waypointListIndex = clockWork.waypointListIndex + 1
 
             if (finished) then
 
-                ksuto.addWaypointList = nil
-                ksuto.waypointListIndex = 0
+                clockWork.addWaypointList = nil
+                clockWork.waypointListIndex = 0
             end
         end
 
-        ksuto.nextUpdate = now + ksuto.UPDATE_INTERVAL;
+        clockWork.nextUpdate = now + clockWork.UPDATE_INTERVAL;
     end
 end
 
-local function onEvent()
+local function onEvent(...)
 
-    -- ksuto.printDebug("local function onEvent(")
+    -- clockWork.printDebug("local function onEvent(")
 
-    ksuto.printDebug("event = " .. event)
+    --clockWork.printDebug(event)
 
-    -- if (arg1) then ksuto.printDebug("arg1 = " .. arg1) end
-    -- if (arg2) then ksuto.printDebug("arg2 = " .. arg2) end
-    -- if (arg3) then ksuto.printDebug("arg3 = " .. arg3) end
-    -- if (arg4) then ksuto.printDebug("arg4 = " .. arg4) end
-    -- if (arg5) then ksuto.printDebug("arg5 = " .. arg5) end
-    -- if (arg6) then ksuto.printDebug("arg6 = " .. arg6) end
-    -- if (arg7) then ksuto.printDebug("arg7 = " .. arg7) end
-    -- if (arg8) then ksuto.printDebug("arg8 = " .. arg8) end
-    -- if (arg9) then ksuto.printDebug("arg9 = " .. arg9) end
+    --local numberOfArguments = select('#', ...)
+    --clockWork.printDebug(numberOfArguments)
+
+    --for index = 1, numberOfArguments do
+    --    clockWork.printDebug(select(index, ...))
+    --end
+
+    --local frame = select(1, ...)
+    local event = select(2, ...)
+    --clockWork.printDebug(event)
+
+    if event == nil then
+        return
+    else
+        --clockWork.printDebug(event)
+    end
+
+    if (clockWork.playerGUID == nil) then
+        clockWork.playerGUID = UnitGUID("player")
+    end
 
     if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 
-        ksuto.CASTING = true
-        ksuto.casting.texture:SetTexture(1, 1, 1, 1)
+        clockWork.CASTING = true
+        clockWork.casting.texture:SetColorTexture(1, 1, 1, 1)
 
     elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_FAILED" or event == "SPELLCAST_INTERRUPTED" then
 
-        ksuto.CASTING = false
-        ksuto.casting.texture:SetTexture(0, 0, 0, 1)
+        clockWork.CASTING = false
+        clockWork.casting.texture:SetColorTexture(0, 0, 0, 1)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
 
-        ksuto.playerEnteringWorld()
-        return
+        --clockWork.playerEnteringWorld()
+        --return
     end
 
     if event == "ADDON_LOADED" then
 
-        ksuto.addonLoaded()
-        return
+        local addonName = select(3, ...)
+
+        if addonName == "ClockWork" then
+
+            clockWork.printDebug(select(3, ...) .. " Loaded")
+            clockWork.playerEnteringWorld()
+            clockWork.addonLoaded()
+            clockWork.resetCombat()
+            return
+        end
     end
 
-    if event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS"
-            or event == "CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS"
-            or event == "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE"
-            or event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE"
-            or event == "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE"
-            or event == "CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE" then
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 
-        ksuto.damageReceived()
+        --clockWork.printDebug("COMBAT_LOG_EVENT Values : ")
+
+        local args = { CombatLogGetCurrentEventInfo() }
+        --local numberOfArguments = select('#', args)
+
+        --for i, value in pairs(args) do
+        --    clockWork.printDebug(tostring (i) .. " = "  ..tostring(value))
+        --end
+        local subevent = args[2]
+        --clockWork.printDebug("subevent = " .. tostring(subevent))
+        local sourceGUID = args[4]
+        --clockWork.printDebug("sourceGUID = " .. tostring(sourceGUID))
+        local destGUID = args[8]
+        --clockWork.printDebug("destGUID   = " .. tostring(destGUID))
+
+        local amount
+        if subevent == "SWING_DAMAGE" then
+            amount = args[12]
+        elseif subevent == "SPELL_DAMAGE" then
+            amount = args[15]
+        end
+
+        if (clockWork.playerGUID == sourceGUID) then
+            clockWork.damageDone()
+        end
+
+        if (clockWork.playerGUID == destGUID) then
+            clockWork.damageReceived()
+        end
     end
 
-    if event == "CHAT_MSG_COMBAT_SELF_HITS"
-            or event == "CHAT_MSG_COMBAT_SELF_MISSES"
-            or event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
-        --            or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE"
-
-        ksuto.damageDone(arg1)
-    end
-
-    if (ksuto.deltaSelfHitCreatureHit > 6) and not (event == "PLAYER_DEAD") then -- Si vivant && pas tapé depuis 6 secondes
-        ksuto.stepBack.texture:SetTexture(1, 1, 1, 1)
+    if (clockWork.durationBeingHitWithoutRetaliating > 6) and not (event == "PLAYER_DEAD") then
+        -- Si vivant && pas tapé depuis 6 secondes
+        clockWork.stepBack.texture:SetColorTexture(1, 1, 1, 1)
     else
-        ksuto.stepBack.texture:SetTexture(0, 0, 0, 1)
+        clockWork.stepBack.texture:SetColorTexture(0, 0, 0, 1)
     end
 end
 
-ksuto.frame = CreateFrame("FRAME", "ksuto_MainFrame", UIParent)
-ksuto.frame:SetPoint("TOPLEFT", 30, -100)
-ksuto.frame:SetFrameStrata("MEDIUM")
+clockWork.frame = CreateFrame("FRAME", "clockWork_MainFrame", UIParent)
+clockWork.frame:SetPoint("TOPLEFT", 0, 0)
+clockWork.frame:SetFrameStrata("MEDIUM")
 
-ksuto.frame:SetScript("OnEvent", onEvent);
-ksuto.frame:SetScript("OnUpdate", onUpdate);
+clockWork.frame:SetScript("OnEvent", onEvent);
+clockWork.frame:SetScript("OnUpdate", onUpdate);
 
-ksuto.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+clockWork.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-ksuto.frame:RegisterEvent("SPELLCAST_START")
-ksuto.frame:RegisterEvent("SPELLCAST_STOP")
-ksuto.frame:RegisterEvent("SPELLCAST_FAILED")
-ksuto.frame:RegisterEvent("SPELLCAST_INTERRUPTED")
-ksuto.frame:RegisterEvent("SPELLCAST_DELAYED")
-ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_START")
-ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_UPDATE")
-ksuto.frame:RegisterEvent("SPELLCAST_CHANNEL_STOP")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_START")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_STOP")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+clockWork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 
-ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
-ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS")
-ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
-ksuto.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
-ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
-ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
-ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
-ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
-ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
-ksuto.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
+clockWork.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+--clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
+--clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS")
+--clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
+--clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
+--clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
+--clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
+--clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+--clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
+--clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
+--clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
 
-ksuto.frame:RegisterEvent("ADDON_LOADED")
+clockWork.frame:RegisterEvent("ADDON_LOADED")
 
-ksuto.frame:RegisterEvent("PLAYER_DEAD")
+clockWork.frame:RegisterEvent("PLAYER_DEAD")
 
-ksuto.frame.texture = ksuto.frame:CreateTexture("MEDIUM")
-ksuto.frame.texture:SetAllPoints()
-ksuto.frame.texture:SetTexture(0, 1, 0, 1)
+clockWork.frame.texture = clockWork.frame:CreateTexture("MEDIUM")
+clockWork.frame.texture:SetAllPoints()
+clockWork.frame.texture:SetColorTexture(0, 1, 0, 1)

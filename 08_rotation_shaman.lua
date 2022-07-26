@@ -8,29 +8,29 @@
 
 local function rotation1()
 
-    --    ksuto.printDebug("function ksuto.shamanHealRotation")
+    --    clockWork.printDebug("function clockWork.shamanHealRotation")
 
-    -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
+    -- if (clockWork.DEBUG_MOD) then clockWork.playerHasBuff("for debug purpose") end
 
-    if (ksuto.targetMemberIfHealthLessThan(60)) then
+    if (clockWork.targetMemberIfHealthLessThan(60)) then
 	
-		ksuto.shouldHitKey(ksuto.key9, nil, 65)
+		clockWork.shouldHitKey(clockWork.key9, nil, 65)
 
-    elseif (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+    elseif (clockWork.unitExistCanAndShouldDie()) and not (clockWork.enemyPlayer()) then
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 30, 65) -- je me soigne (barre d'action bas gauche, 5e icone)
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Lightning Shield") and ksuto.playerManaPct() > 18, 25) -- bouclier de foudre (tout en haut barre verticale droite)
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.hasMainHandEnchant() and ksuto.playerManaPct() > 10, 60) -- Windfury Weapon (barre bas droite, dernière icone)
-        ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
-        ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 15 and not ksuto.targetHasDebuff("Flame Shock") and ksuto.playerManaPct() > 18, 3) -- orion de feu
-        ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 90, 1) -- chaine éclaire
-        ksuto.shouldHitKey(ksuto.key0, ksuto.playerManaPct() < 65, 37) -- Totem regen mana
-        ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 98 and ksuto.healthPercentage('target') > 50, 2) -- Blood Fury (racial)
-        ksuto.shouldHitKey(ksuto.key4, ksuto.playerHealthPct() < 55, 4) -- Nature's Swiftness
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerHealthPct() < 30, 65) -- je me soigne (barre d'action bas gauche, 5e icone)
+        clockWork.shouldHitKey(clockWork.key8, not clockWork.playerHasBuff("Lightning Shield") and clockWork.playerManaPct() > 18, 25) -- bouclier de foudre (tout en haut barre verticale droite)
+        clockWork.shouldHitKey(clockWork.key7, not clockWork.hasMainHandEnchant() and clockWork.playerManaPct() > 10, 60) -- Windfury Weapon (barre bas droite, derniï¿½re icone)
+        clockWork.shouldHitKey(clockWork.key5, not IsCurrentAction(26) and clockWork.targetInRange(clockWork.DUEL), 26) -- activate Attack (juste en dessous du 25)
+        clockWork.shouldHitKey(clockWork.key3, clockWork.healthPercentage('target') < 98 and clockWork.healthPercentage('target') > 15 and not clockWork.targetHasDebuff("Flame Shock") and clockWork.playerManaPct() > 18, 3) -- orion de feu
+        clockWork.shouldHitKey(clockWork.key1, clockWork.playerManaPct() > 30 and clockWork.healthPercentage('target') > 90, 1) -- chaine ï¿½claire
+        clockWork.shouldHitKey(clockWork.key0, clockWork.playerManaPct() < 65, 37) -- Totem regen mana
+        clockWork.shouldHitKey(clockWork.key2, clockWork.healthPercentage('target') < 98 and clockWork.healthPercentage('target') > 50, 2) -- Blood Fury (racial)
+        clockWork.shouldHitKey(clockWork.key4, clockWork.playerHealthPct() < 55, 4) -- Nature's Swiftness
 
-    elseif (ksuto.outOfCombat()) then		
+    elseif (clockWork.outOfCombat()) then
 
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerManaPct() < 35 and not ksuto.playerHasBuff("Drink"), 59) -- regen (barre en bas ï¿½ droite, avant derniï¿½re icone)
+        clockWork.shouldHitKey(clockWork.key6, clockWork.playerManaPct() < 35 and not clockWork.playerHasBuff("Drink"), 59) -- regen (barre en bas ï¿½ droite, avant derniï¿½re icone)
     end
 end
 
@@ -40,10 +40,10 @@ end
 local function rotation3()
 end
 
-function ksuto.shamanRotation()
+function clockWork.shamanRotation()
 
-    if ksuto.spe == 1 then rotation1()
-    elseif ksuto.spe == 2 then rotation2()
-    elseif ksuto.spe == 3 then rotation3()
+    if clockWork.spe == 1 then rotation1()
+    elseif clockWork.spe == 2 then rotation2()
+    elseif clockWork.spe == 3 then rotation3()
     end
 end

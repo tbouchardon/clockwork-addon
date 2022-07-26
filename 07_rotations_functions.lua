@@ -1,88 +1,121 @@
-ksuto.INSPECT = 1 --28 yards
-ksuto.TRADE = 2 --11.11 yards
-ksuto.DUEL = 3 --9.9 yards
-ksuto.FOLLOW = 4 --28 yards
+clockWork.INSPECT = 1 --28 yards
+clockWork.TRADE = 2 --11.11 yards
+clockWork.DUEL = 3 --9.9 yards
+clockWork.FOLLOW = 4 --28 yards
 
-ksuto.spe = 1
+clockWork.spe = 1
 
-function ksuto.rotation()
+function clockWork.rotation()
 
-    -- ksuto.printDebug("function ksuto.rotation(")
+    --clockWork.printDebug("function clockWork.rotation()")
 
     if UnitAffectingCombat("player") then
-        ksuto.inCombat.texture:SetTexture(1, 1, 1, 1)
-        ksuto.wasInCombat = true
+        clockWork.inCombat.texture:SetColorTexture(1, 1, 1, 1)
+        clockWork.wasInCombat = true
     else
-        ksuto.resetCombat()
+        clockWork.resetCombat()
     end
 
-    if UnitExists("raid1") then ksuto.updateRaidHealth()
-    elseif UnitExists("party1") then ksuto.updatePartyHealth()
-    else ksuto.checkUnitHealth("player", -1)
+    if UnitExists("raid1") then
+        clockWork.updateRaidHealth()
+    elseif UnitExists("party1") then
+        clockWork.updatePartyHealth()
+    else
+        clockWork.checkUnitHealth("player", -1)
     end
 
-    ksuto.playerHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("player"), 0, 0, 1)
-    ksuto.playerMana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("player"), 1)
+    clockWork.playerHealth.texture:SetColorTexture(1 / 100 * clockWork.healthPercentage("player"), 0, 0, 1)
+    clockWork.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * clockWork.manaPercentage("player"), 1)
 
-    --    ksuto.print(tostring(ksuto.targetHostile()) .. tostring(ksuto.targetNeutral()))
+    --    clockWork.print(tostring(clockWork.targetHostile()) .. tostring(clockWork.targetNeutral()))
 
     if (UnitExists("target") and not UnitIsUnit("player", "target")) then
-        if (ksuto.targetUnfriendly()) then ksuto.targetReaction.texture:SetTexture(1, 0, 0, 1)
-        elseif (ksuto.targetNeutral()) then ksuto.targetReaction.texture:SetTexture(1, 1, 0, 1)
-        elseif (ksuto.targetFriendly()) then ksuto.targetReaction.texture:SetTexture(0, 1, 0, 1)
-        else ksuto.targetReaction.texture:SetTexture(0, 0, 0, 1)
+        if (clockWork.targetUnfriendly()) then
+            clockWork.targetReaction.texture:SetColorTexture(1, 0, 0, 1)
+        elseif (clockWork.targetNeutral()) then
+            clockWork.targetReaction.texture:SetColorTexture(1, 1, 0, 1)
+        elseif (clockWork.targetFriendly()) then
+            clockWork.targetReaction.texture:SetColorTexture(0, 1, 0, 1)
+        else
+            clockWork.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
         end
 
-        ksuto.targetHealth.texture:SetTexture(1 / 100 * ksuto.healthPercentage("target"), 0, 0, 1)
-        ksuto.targetMana.texture:SetTexture(0, 0, 1 / 100 * ksuto.manaPercentage("target"), 1)
+        clockWork.targetHealth.texture:SetColorTexture(1 / 100 * clockWork.healthPercentage("target"), 0, 0, 1)
+        clockWork.targetMana.texture:SetColorTexture(0, 0, 1 / 100 * clockWork.manaPercentage("target"), 1)
     else
-        ksuto.targetReaction.texture:SetTexture(0, 0, 0, 1)
-        ksuto.targetHealth.texture:SetTexture(0, 0, 0, 1)
-        ksuto.targetMana.texture:SetTexture(0, 0, 0, 1)
+        clockWork.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
+        clockWork.targetHealth.texture:SetColorTexture(0, 0, 0, 1)
+        clockWork.targetMana.texture:SetColorTexture(0, 0, 0, 1)
     end
 
-    if ksuto.DRIVE_MOD == true
-            and ((ksuto.unitHasBuff("player", "Food") and (ksuto.playerHealthPct() < 100))
-            or (ksuto.unitHasBuff("player", "Drink") and (ksuto.playerManaPct() < 100))) then
-        ksuto.drive.texture:SetTexture(0, 0, 0, 1)
-    elseif ksuto.DRIVE_MOD == true then
-        ksuto.drive.texture:SetTexture(1, 1, 1, 1)
+    if clockWork.DRIVE_MOD == true
+            and ((clockWork.unitHasBuff("player", "Food") and (clockWork.playerHealthPct() < 100))
+            or (clockWork.unitHasBuff("player", "Drink") and (clockWork.playerManaPct() < 100))) then
+        clockWork.drive.texture:SetColorTexture(0, 0, 0, 1)
+    elseif clockWork.DRIVE_MOD == true then
+        clockWork.drive.texture:SetColorTexture(1, 1, 1, 1)
     end
 
     -- Ne rien faire si un cast est déjà en cours
-    if (ksuto.CASTING == true) then
-        ksuto.resetKeys();
-        return;
+    if (clockWork.CASTING == true) then
+        clockWork.resetKeys();
+        return ;
     end
 
-    ksuto.resetKeys()
+    clockWork.resetKeys()
+
+    --clockWork.printDebug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
+    --clockWork.printDebug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
+    --clockWork.printDebug("UnitClass(\"player\")" .. tostring(UnitClass("player")))
+
+    if (IsMounted()) then
+        return
+    end
 
     -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
-    if (UnitAffectingCombat("player") and UnitAffectingCombat("target")) or
-            (not UnitAffectingCombat("player")) then
+    if (clockWork.AGGRO_MOD or clockWork.bothPlayerAndTargetInCombat() or clockWork.playerNotInCombat()) then
 
-        if UnitClass("player") == "Warlock" then ksuto.warlockRotation()
-        elseif UnitClass("player") == "Warrior" then ksuto.warriorRotation()
-        elseif UnitClass("player") == "Shaman" then ksuto.shamanRotation()
-        elseif UnitClass("player") == "Mage" then ksuto.mageRotation()
-	elseif UnitClass("player") == "Priest" then ksuto.priestRotation()
+        if UnitClass("player") == "Démoniste" then
+            clockWork.warlockRotation()
+            --elseif UnitClass("player") == "Warrior" then
+            --    clockWork.warriorRotation()
+            --elseif UnitClass("player") == "Shaman" then
+            --    clockWork.shamanRotation()
+            --elseif UnitClass("player") == "Mage" then
+            --    clockWork.mageRotation()
+            --elseif UnitClass("player") == "Priest" then
+            --    clockWork.priestRotation()
         end
     end
 end
 
-function ksuto.debuffCanBeCast(spell, slot)
+function clockWork.bothPlayerAndTargetInCombat()
 
-    -- ksuto.printDebug("function ksuto.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
+    return UnitAffectingCombat("player") and UnitAffectingCombat("target")
 
-    --    ksuto.print("ksuto.debuffCanBeCast(" .. tostring(spell) .. "," .. tostring(slot) .. ')')
+end
 
-    if not spell then return false end
+function clockWork.playerNotInCombat()
 
-    if not ksuto.unitHasDebuff("target", spell) then
+    return not UnitAffectingCombat("player")
+
+end
+
+function clockWork.debuffCanBeCast(spell, slot)
+
+    -- clockWork.printDebug("function clockWork.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
+
+    --    clockWork.print("clockWork.debuffCanBeCast(" .. tostring(spell) .. "," .. tostring(slot) .. ')')
+
+    if not spell then
+        return false
+    end
+
+    if not clockWork.unitHasDebuff("target", spell) then
         if slot ~= nil then
-            return ksuto.actionCanBeCast(slot)
+            return clockWork.actionCanBeCast(slot)
         else
-            ksuto.print("Ksuto -> No slot ! (" .. tostring(spell) .. ")")
+            clockWork.print("No slot ! (" .. tostring(spell) .. ")")
             return true
         end
     else
@@ -90,9 +123,9 @@ function ksuto.debuffCanBeCast(spell, slot)
     end
 end
 
-function ksuto.targetInRange(distance)
+function clockWork.targetInRange(distance)
 
-    -- ksuto.printDebug("function ksuto.targetInRange(" .. tostring(distance))
+    -- clockWork.printDebug("function clockWork.targetInRange(" .. tostring(distance))
 
     if CheckInteractDistance("target", distance) then
         return true
@@ -101,53 +134,66 @@ function ksuto.targetInRange(distance)
     end
 end
 
-function ksuto.actionCanBeCast(slot)
+function clockWork.actionCanBeCast(slot)
 
-    --    ksuto.printDebug("function ksuto.actionCanBeCast(" .. tostring(slot))
+    clockWork.printDebug("function clockWork.actionCanBeCast(" .. tostring(slot))
 
-    if (ksuto.CHECK_ACTIONS_CAST == false) then return true end
+    if (clockWork.CHECK_ACTIONS_CAST == false) then
+        return true
+    end
 
-    --    ksuto.printDebug("slot = " .. tostring(slot))
-    --    ksuto.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
-    --    ksuto.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
+    clockWork.printDebug("slot = " .. tostring(slot))
+    local actionType, id, subType = GetActionInfo(slot)
+    local name, rank, icon, castTime, minRange, maxRange, spellID = GetSpellInfo(id)
+    clockWork.printDebug(tostring(actionType) .. ": " .. tostring(name) .. " (" .. tostring(spellID) .. ") ")
+    clockWork.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
+    clockWork.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
 
     local canBeCast = true
 
-    if ActionHasRange(slot) then canBeCast = IsActionInRange(slot) == 1 end
+    if ActionHasRange(slot) then
+        canBeCast = IsActionInRange(slot) ~= false -- Can be true or nil
+    end
 
-    --    ksuto.printDebug("canBeCast1 : " .. tostring(canBeCast))
+    --clockWork.printDebug("canBeCast1 : " .. tostring(canBeCast))
 
     if canBeCast == true then
 
         local start, duration, enable = GetActionCooldown(slot)
 
-        --         ksuto.printDebug("GetActionCooldown(slot) start = " .. tostring(start))
-        --         ksuto.printDebug("GetActionCooldown(slot) duration = " .. tostring(duration))
-        --         ksuto.printDebug("GetActionCooldown(slot) enable = " .. tostring(enable))
+        --         clockWork.printDebug("GetActionCooldown(slot) start = " .. tostring(start))
+        --         clockWork.printDebug("GetActionCooldown(slot) duration = " .. tostring(duration))
+        --         clockWork.printDebug("GetActionCooldown(slot) enable = " .. tostring(enable))
 
         canBeCast = (start == 0)
     end
 
-    --    ksuto.printDebug("canBeCast2 : " .. tostring(canBeCast))
+    --clockWork.printDebug("canBeCast2 : " .. tostring(canBeCast))
 
     if canBeCast == true then
 
         local isUsable, notEnoughMana = IsUsableAction(slot)
 
-        --         ksuto.printDebug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
-        --         ksuto.printDebug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
+        --         clockWork.printDebug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
+        --         clockWork.printDebug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
 
         canBeCast = (isUsable ~= nil)
     end
 
-    --    ksuto.printDebug("canBeCast3 : " .. tostring(canBeCast))
+    if (canBeCast == true) then
+        if castTime ~= 0 then
+            canBeCast = clockWork.player.isMoving == false
+        end
+    end
+
+    --clockWork.printDebug("canBeCast3 : " .. tostring(canBeCast))
 
     return canBeCast
 end
 
-function ksuto.enemyPlayer()
+function clockWork.enemyPlayer()
 
-    -- ksuto.printDebug("function ksuto.enemyPlayer(")
+    -- clockWork.printDebug("function clockWork.enemyPlayer(")
 
     if UnitIsPlayer("target") then
         return true
@@ -156,11 +202,13 @@ function ksuto.enemyPlayer()
     end
 end
 
-function ksuto.healthPercentage(unit)
+function clockWork.healthPercentage(unit)
 
-    -- ksuto.printDebug("function ksuto.healthPercentage(" .. tostring(unit))
+    -- clockWork.printDebug("function clockWork.healthPercentage(" .. tostring(unit))
 
-    if (UnitHealth(unit) == 0) then return 0 end
+    if (UnitHealth(unit) == 0) then
+        return 0
+    end
 
     local percentage
 
@@ -169,162 +217,176 @@ function ksuto.healthPercentage(unit)
     return percentage
 end
 
-function ksuto.playerHealthPct()
+function clockWork.playerHealthPct()
 
-    return ksuto.healthPercentage("player")
+    return clockWork.healthPercentage("player")
 end
 
-function ksuto.manaPercentage(unit)
+function clockWork.manaPercentage(unit)
 
-    -- ksuto.printDebug("function ksuto.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
+    -- clockWork.printDebug("function clockWork.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
 
-    if (UnitMana(unit) == 0) then return 0 end
+    local powerType, powerToken, altR, altG, altB = UnitPowerType(unit)
+    local power = UnitPower(unit, powerType)
+    local powerMax = UnitPowerMax(unit, powerType)
+
+    if (powerType == -1) then
+        return 0
+    end
 
     local percentage
 
-    percentage = UnitMana(unit) / UnitManaMax(unit) * 100
+    percentage = power / powerMax * 100
 
     return percentage
 end
 
-function ksuto.playerManaPct()
+function clockWork.playerManaPct()
 
-    return ksuto.manaPercentage("player")
+    return clockWork.manaPercentage("player")
 end
 
-function ksuto.unitExistCanAndShouldDie()
+function clockWork.unitExistCanAndShouldDie()
     return UnitExists("target") and
             not UnitIsDeadOrGhost("target") and
             not UnitIsDeadOrGhost("player") and -- > La cible ET le joueur sont vivants (>_<)
-            (not UnitIsTapped("target") or (UnitIsTapped("target") and UnitIsTappedByPlayer("target"))) and -- > La cible n'est pas marquée OU est marquée par le joueur.
-            (ksuto.targetNeutral() or ksuto.targetUnfriendly()) -- > La cible est un enemi (rouge uniquement)
+            (not UnitIsTapDenied("target")) and -- > La cible peut être marquée par le joueur.
+            (clockWork.targetNeutral() or clockWork.targetUnfriendly()) -- > La cible est un enemi (rouge uniquement)
 end
 
-function ksuto.targetUnfriendly()
+function clockWork.targetUnfriendly()
 
-    if not UnitExists("target") then return false end
+    if not UnitExists("target") then
+        return false
+    end
 
     return UnitReaction("player", "target") < 4
 end
 
-function ksuto.targetNeutral()
+function clockWork.targetNeutral()
 
-    if not UnitExists("target") then return false end
+    if not UnitExists("target") then
+        return false
+    end
 
     return UnitReaction("player", "target") == 4
 end
 
-function ksuto.targetFriendly()
+function clockWork.targetFriendly()
 
-    if not UnitExists("target") then return false end
+    if not UnitExists("target") then
+        return false
+    end
 
     return UnitReaction("player", "target") > 4
 end
 
-function ksuto.resetCombat()
+function clockWork.resetCombat()
 
-    ksuto.inCombat.texture:SetTexture(0, 0, 0, 1)
-    ksuto.wasInCombat = false
-    ksuto.selfHit = time()
-    ksuto.creatureHit = time()
-    ksuto.deltaSelfHitCreatureHit = 0
+    clockWork.inCombat.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.wasInCombat = false
+    clockWork.lastTimePlayerHit = time()
+    clockWork.lastTimePlayerHasBeenHit = time()
+    clockWork.durationBeingHitWithoutRetaliating = 0
 end
 
-ksuto.lowestMemberHealth = 100
-ksuto.lowestMemberHealthIndex = nil
+clockWork.lowestMemberHealth = 100
+clockWork.lowestMemberHealthIndex = nil
 
-function ksuto.updatePartyHealth()
+function clockWork.updatePartyHealth()
 
-    ksuto.lowestMemberHealth = 100
-    ksuto.lowestMemberHealthIndex = nil
+    clockWork.lowestMemberHealth = 100
+    clockWork.lowestMemberHealthIndex = nil
 
-    ksuto.checkUnitHealth("player", -1)
+    clockWork.checkUnitHealth("player", -1)
 
     for index = 1, 4 do
 
-        ksuto.checkUnitHealth("party" .. tostring(index), index)
-        ksuto.raid[index].texture:SetTexture(1 / 100 * ksuto.healthPercentage("party" .. tostring(index)), 0, 0, 1)
+        clockWork.checkUnitHealth("party" .. tostring(index), index)
+        clockWork.raid[index].texture:SetColorTexture(1 / 100 * clockWork.healthPercentage("party" .. tostring(index)), 0, 0, 1)
     end
 end
 
-function ksuto.updateRaidHealth()
+function clockWork.updateRaidHealth()
 
-    ksuto.lowestMemberHealth = 100
-    ksuto.lowestMemberHealthIndex = nil
+    clockWork.lowestMemberHealth = 100
+    clockWork.lowestMemberHealthIndex = nil
 
-    ksuto.checkUnitHealth("player", -1)
+    clockWork.checkUnitHealth("player", -1)
 
     for index = 1, 40 do
 
-        ksuto.checkUnitHealth("raid" .. tostring(index), index)
-        ksuto.raid[index].texture:SetTexture(1 / 100 * ksuto.healthPercentage("raid" .. tostring(index)), 0, 0, 1)
+        clockWork.checkUnitHealth("raid" .. tostring(index), index)
+        clockWork.raid[index].texture:SetColorTexture(1 / 100 * clockWork.healthPercentage("raid" .. tostring(index)), 0, 0, 1)
     end
 end
 
-function ksuto.checkUnitHealth(unit, index)
+function clockWork.checkUnitHealth(unit, index)
 
     if UnitExists(unit) then
-        if ksuto.healthPercentage(unit) < ksuto.lowestMemberHealth then
-            ksuto.lowestMemberHealth = ksuto.healthPercentage(unit)
-            ksuto.lowestMemberHealthIndex = index
+        if clockWork.healthPercentage(unit) < clockWork.lowestMemberHealth then
+            clockWork.lowestMemberHealth = clockWork.healthPercentage(unit)
+            clockWork.lowestMemberHealthIndex = index
         end
     end
 end
 
-function ksuto.targetMember(index)
+function clockWork.targetMember(index)
 
     local root = ""
-    if UnitExists("raid1") then root = "raid"
-    elseif UnitExists("party1") then root = "party"
+    if UnitExists("raid1") then
+        root = "raid"
+    elseif UnitExists("party1") then
+        root = "party"
     end
 
-    local inRange = CheckInteractDistance(root + index, ksuto.FOLLOW)
+    local inRange = CheckInteractDistance(root + index, clockWork.FOLLOW)
 
     if not index == -1 and inRange then
-        local percent = ksuto.healthPercentage(root .. tostring(index))
-        ksuto.raid[index].texture:SetTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
+        local percent = clockWork.healthPercentage(root .. tostring(index))
+        clockWork.raid[index].texture:SetColorTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
     end
 
     return inRange
 end
 
-function ksuto.hasMainHandEnchant()
+function clockWork.hasMainHandEnchant()
 
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
 
-    -- if hasMainHandEnchant then ksuto.print("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
-    -- if mainHandExpiration then ksuto.print("mainHandExpiration = "..tostring(mainHandExpiration)) end
-    -- if mainHandCharges then ksuto.print("mainHandCharges = "..tostring(mainHandCharges)) end
-    -- if hasOffHandEnchant then ksuto.print("hasOffHandEnchant = "..tostring(hasOffHandEnchant)) end
-    -- if offHandExpiration then ksuto.print("offHandExpiration = "..tostring(offHandExpiration)) end
-    -- if offHandCharges then ksuto.print("offHandCharges = "..tostring(offHandCharges)) end
-    -- if hasThrownEnchant then ksuto.print("hasThrownEnchant = "..tostring(hasThrownEnchant)) end
-    -- if thrownExpiration then ksuto.print("thrownExpiration = "..tostring(thrownExpiration)) end
-    -- if thrownCharges then ksuto.print("thrownCharges = "..tostring(thrownCharges)) end
+    -- if hasMainHandEnchant then clockWork.print("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
+    -- if mainHandExpiration then clockWork.print("mainHandExpiration = "..tostring(mainHandExpiration)) end
+    -- if mainHandCharges then clockWork.print("mainHandCharges = "..tostring(mainHandCharges)) end
+    -- if hasOffHandEnchant then clockWork.print("hasOffHandEnchant = "..tostring(hasOffHandEnchant)) end
+    -- if offHandExpiration then clockWork.print("offHandExpiration = "..tostring(offHandExpiration)) end
+    -- if offHandCharges then clockWork.print("offHandCharges = "..tostring(offHandCharges)) end
+    -- if hasThrownEnchant then clockWork.print("hasThrownEnchant = "..tostring(hasThrownEnchant)) end
+    -- if thrownExpiration then clockWork.print("thrownExpiration = "..tostring(thrownExpiration)) end
+    -- if thrownCharges then clockWork.print("thrownCharges = "..tostring(thrownCharges)) end
 
     return hasMainHandEnchant
 end
 
-function ksuto.hasOffHandEnchant()
+function clockWork.hasOffHandEnchant()
 
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
 
     return hasOffHandEnchant
 end
 
-function ksuto.targetMemberIfHealthLessThan(health)
+function clockWork.targetMemberIfHealthLessThan(health)
 
-    if ksuto.lowestMemberHealthIndex and
-            not ksuto.lowestMemberHealthIndex == -1
-            and ksuto.lowestMemberHealth < health then
+    if clockWork.lowestMemberHealthIndex and
+            not clockWork.lowestMemberHealthIndex == -1
+            and clockWork.lowestMemberHealth < health then
 
-        return ksuto.targetMember(ksuto.lowestMemberHealthIndex)
+        return clockWork.targetMember(clockWork.lowestMemberHealthIndex)
     end
 
     return false
 end
 
-function ksuto.outOfCombat()
+function clockWork.outOfCombat()
 
     return (not UnitIsDeadOrGhost("player")) and (not UnitAffectingCombat("player"))
 end

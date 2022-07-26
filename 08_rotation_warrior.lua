@@ -10,31 +10,31 @@ local regen = 53
 
 local function rotation1()
 
-    --    ksuto.printDebug("function ksuto.warriorDefRotation")
+    --    clockWork.printDebug("function clockWork.warriorDefRotation")
 
-    -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
+    -- if (clockWork.DEBUG_MOD) then clockWork.playerHasBuff("for debug purpose") end
 
-    if (ksuto.unitExistCanAndShouldDie()) and (not ksuto.enemyPlayer()) then
+    if (clockWork.unitExistCanAndShouldDie()) and (not clockWork.enemyPlayer()) then
 
         --barre 2, tech toutes postures
-        ksuto.shouldHitKey(ksuto.keyH, nil, 13) --, not ksuto.targetInRange(ksuto.DUEL)) -- Arc
-        ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) -- activate Attack
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerManaPct() > 50, 15) -- frappe héroïque
-        ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() > 30 and ksuto.healthPercentage('target') > 20 , 19) -- bloodthirst
-        ksuto.shouldHitKey(ksuto.key2, ksuto.playerManaPct() < 10 and ksuto.healthPercentage('target') > 90 and ksuto.healthPercentage('target') < 99, 18) -- bloodrage
-        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Demoralizing Shout") and ksuto.targetInRange(ksuto.DUEL) and ksuto.healthPercentage('target') > 20 , 23) -- mon debuff
-        ksuto.shouldHitKey(ksuto.key4, not ksuto.playerHasBuff("Battle Shout"), 24) -- mon buff
+        clockWork.shouldHitKey(clockWork.keyH, nil, 13) --, not clockWork.targetInRange(clockWork.DUEL)) -- Arc
+        clockWork.shouldHitKey(clockWork.key1, not IsCurrentAction(14) and clockWork.targetInRange(clockWork.DUEL), 14) -- activate Attack
+        clockWork.shouldHitKey(clockWork.key5, clockWork.playerManaPct() > 50, 15) -- frappe héroïque
+        clockWork.shouldHitKey(clockWork.key7, clockWork.playerManaPct() > 30 and clockWork.healthPercentage('target') > 20 , 19) -- bloodthirst
+        clockWork.shouldHitKey(clockWork.key2, clockWork.playerManaPct() < 10 and clockWork.healthPercentage('target') > 90 and clockWork.healthPercentage('target') < 99, 18) -- bloodrage
+        clockWork.shouldHitKey(clockWork.key6, not clockWork.targetHasDebuff("Demoralizing Shout") and clockWork.targetInRange(clockWork.DUEL) and clockWork.healthPercentage('target') > 20 , 23) -- mon debuff
+        clockWork.shouldHitKey(clockWork.key4, not clockWork.playerHasBuff("Battle Shout"), 24) -- mon buff
 
         --barre 1, posture attaque
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() > 5, 75) -- overpower
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Rend") and ksuto.healthPercentage('target') > 20 , 77) -- dot
-        ksuto.shouldHitShiftKey(ksuto.key8, ksuto.healthPercentage('target') < 20 and ksuto.playerManaPct() > 20 and ksuto.playerHealthPct() < regen, 78) -- execut
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerManaPct() > 5, 75) -- overpower
+        clockWork.shouldHitKey(clockWork.key8, not clockWork.targetHasDebuff("Rend") and clockWork.healthPercentage('target') > 20 , 77) -- dot
+        clockWork.shouldHitShiftKey(clockWork.key8, clockWork.healthPercentage('target') < 20 and clockWork.playerManaPct() > 20 and clockWork.playerHealthPct() < regen, 78) -- execut
 
-    elseif (ksuto.outOfCombat()) then
+    elseif (clockWork.outOfCombat()) then
 
         --barre 3, divers
-        ksuto.shouldHitKey(ksuto.key3, ksuto.playerHealthPct() < regen and not ksuto.playerHasBuff("Food"), 36) -- regen
-        --ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() > 31 and ksuto.playerHealthPct() < 60 and not ksuto.playerHasBuff("First Aid") and not ksuto.playerHasAnyDebuff(), 35) -- regen
+        clockWork.shouldHitKey(clockWork.key3, clockWork.playerHealthPct() < regen and not clockWork.playerHasBuff("Food"), 36) -- regen
+        --clockWork.shouldHitKey(clockWork.key2, clockWork.playerHealthPct() > 31 and clockWork.playerHealthPct() < 60 and not clockWork.playerHasBuff("First Aid") and not clockWork.playerHasAnyDebuff(), 35) -- regen
     end
 end
 
@@ -44,11 +44,11 @@ end
 local function rotation3()
 end
 
-function ksuto.warriorRotation()
+function clockWork.warriorRotation()
 
-    if ksuto.spe == 1 then rotation1()
-    elseif ksuto.spe == 2 then rotation2()
-    elseif ksuto.spe == 3 then rotation3()
+    if clockWork.spe == 1 then rotation1()
+    elseif clockWork.spe == 2 then rotation2()
+    elseif clockWork.spe == 3 then rotation3()
     end
 end
 

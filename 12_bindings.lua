@@ -6,11 +6,11 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function ksuto.setAllBindings()
+function clockWork.setAllBindings()
 
     --    local key = "ALT-CTRL-SHIFT-Y"
     --    local action = "TEST_BINDING"
-    --    ksuto.print("SetBinding(key, action) ? " .. SetBinding(key, action))
+    --    clockWork.print("SetBinding(key, action) ? " .. SetBinding(key, action))
 
     --    SetBinding("ALT-SHIFT-1", "CLOCKWORK_PRIORITY_CAST_1")
     --    SetBinding("ALT-SHIFT-2", "CLOCKWORK_PRIORITY_CAST_2")
@@ -80,15 +80,15 @@ function ksuto.setAllBindings()
     SetBinding("ALT-CTRL-T", "CLOCKWORK_TARGET_RAID_40")
 end
 
-function ksuto.printAllBindings()
+function clockWork.printAllBindings()
 
     for index = 1, GetNumBindings() do
         local command, key1, key2 = GetBinding(index);
-        ksuto.print("GetBindingAction : command = " .. command .. ", key = " .. key1)
+        clockWork.print("GetBindingAction : command = " .. command .. ", key = " .. key1)
     end
 end
 
 -- local ok = SetBindingClick("Y", "ButtonTest");
 
--- ksuto.print(tostring(ok))
+-- clockWork.print(tostring(ok))
 

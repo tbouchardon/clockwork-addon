@@ -5,128 +5,128 @@
     <!--else-->
     <!--&#45;&#45;-->
     <!--end-->
-    <!--ksuto.print("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
+    <!--clockWork.print("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
     <!--</Binding>-->
 
     <Binding name="CLOCKWORK_TARGET_RAID_1" hidden="true">
-        ksuto.targetMember(1)
+        clockWork.targetMember(1)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_2" hidden="true">
-        ksuto.targetMember(2)
+        clockWork.targetMember(2)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_3" hidden="true">
-        ksuto.targetMember(3)
+        clockWork.targetMember(3)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_4" hidden="true">
-        ksuto.targetMember(4)
+        clockWork.targetMember(4)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_5" hidden="true">
-        ksuto.targetMember(5)
+        clockWork.targetMember(5)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_6" hidden="true">
-        ksuto.targetMember(6)
+        clockWork.targetMember(6)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_7" hidden="true">
-        ksuto.targetMember(7)
+        clockWork.targetMember(7)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_8" hidden="true">
-        ksuto.targetMember(8)
+        clockWork.targetMember(8)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_9" hidden="true">
-        ksuto.targetMember(9)
+        clockWork.targetMember(9)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_10" hidden="true">
-        ksuto.targetMember(10)
+        clockWork.targetMember(10)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_11" hidden="true">
-        ksuto.targetMember(11)
+        clockWork.targetMember(11)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_12" hidden="true">
-        ksuto.targetMember(12)
+        clockWork.targetMember(12)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_13" hidden="true">
-        ksuto.targetMember(13)
+        clockWork.targetMember(13)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_14" hidden="true">
-        ksuto.targetMember(14)
+        clockWork.targetMember(14)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_15" hidden="true">
-        ksuto.targetMember(15)
+        clockWork.targetMember(15)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_16" hidden="true">
-        ksuto.targetMember(16)
+        clockWork.targetMember(16)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_17" hidden="true">
-        ksuto.targetMember(17)
+        clockWork.targetMember(17)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_18" hidden="true">
-        ksuto.targetMember(18)
+        clockWork.targetMember(18)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_19" hidden="true">
-        ksuto.targetMember(19)
+        clockWork.targetMember(19)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_20" hidden="true">
-        ksuto.targetMember(20)
+        clockWork.targetMember(20)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_21" hidden="true">
-        ksuto.targetMember(21)
+        clockWork.targetMember(21)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_22" hidden="true">
-        ksuto.targetMember(22)
+        clockWork.targetMember(22)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_23" hidden="true">
-        ksuto.targetMember(23)
+        clockWork.targetMember(23)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_24" hidden="true">
-        ksuto.targetMember(24)
+        clockWork.targetMember(24)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_25" hidden="true">
-        ksuto.targetMember(25)
+        clockWork.targetMember(25)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_26" hidden="true">
-        ksuto.targetMember(26)
+        clockWork.targetMember(26)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_27" hidden="true">
-        ksuto.targetMember(27)
+        clockWork.targetMember(27)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_28" hidden="true">
-        ksuto.targetMember(28)
+        clockWork.targetMember(28)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_29" hidden="true">
-        ksuto.targetMember(29)
+        clockWork.targetMember(29)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_30" hidden="true">
-        ksuto.targetMember(30)
+        clockWork.targetMember(30)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_31" hidden="true">
-        ksuto.targetMember(31)
+        clockWork.targetMember(31)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_32" hidden="true">
-        ksuto.targetMember(32)
+        clockWork.targetMember(32)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_33" hidden="true">
-        ksuto.targetMember(33)
+        clockWork.targetMember(33)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_34" hidden="true">
-        ksuto.targetMember(34)
+        clockWork.targetMember(34)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_35" hidden="true">
-        ksuto.targetMember(35)
+        clockWork.targetMember(35)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_36" hidden="true">
-        ksuto.targetMember(36)
+        clockWork.targetMember(36)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_37" hidden="true">
-        ksuto.targetMember(37)
+        clockWork.targetMember(37)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_38" hidden="true">
-        ksuto.targetMember(38)
+        clockWork.targetMember(38)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_39" hidden="true">
-        ksuto.targetMember(39)
+        clockWork.targetMember(39)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_40" hidden="true">
-        ksuto.targetMember(40)
+        clockWork.targetMember(40)
     </Binding>
 
     <Binding name="CLOCKWORK_PRIORITY_CAST_1" hidden="true" runOnUp="true">
@@ -296,7 +296,7 @@
              hidden="true"
              runOnUp="true">
         if ( keystate == "down" ) then
-        ActionButtonDown(98);bah l
+        ActionButtonDown(98);
         else
         ActionButtonUp(98);
         end

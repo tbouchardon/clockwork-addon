@@ -1,14 +1,13 @@
-##Interface:11200 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
+## Interface:90205 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
+## Title: ClockWork - |cffffffffSmartCast|r
+## Author: ClockWork
+## Notes: My Smart Addon
+## X-Category: Interface Enhancements
+## OptionalDeps: -- Optional dependencies.
+## DefaultState: Enabled
+## SavedVariables: CLOCKWORK_ROTATIONS
 
-##Title: ClockWork - |cffffffffSmartCast|r
-
-##Notes: My Smart Addon
-
-##OptionalDeps: -- Optional dependencies.
-
-##SavedVariables: KSUTO_ROTATIONS
-
-##Dependencies:
+## Dependencies:
 
 00_conditions.xml
 00_menu.xml

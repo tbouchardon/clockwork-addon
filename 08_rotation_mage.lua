@@ -8,27 +8,27 @@
 
 local function rotation1() -- Sp Feu
 	
-	--    ksuto.printDebug("function ksuto.mageRotation2")
+	--    clockWork.printDebug("function clockWork.mageRotation2")
 
-    -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
+    -- if (clockWork.DEBUG_MOD) then clockWork.playerHasBuff("for debug purpose") end
 
-    if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+    if (clockWork.unitExistCanAndShouldDie()) and not (clockWork.enemyPlayer()) then
 
-		ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Mage Armor"), 25) -- Armure du mage
-        ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
-		ksuto.shouldHitKey(ksuto.key9, not ksuto.playerHasBuff("Combustion"), 65) -- Combustion
-		ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
-        ksuto.shouldHitKey(ksuto.key3, ksuto.healthPercentage('target') > 99, 3) -- Pyro
-		ksuto.shouldHitKey(ksuto.key1, ksuto.healthPercentage('target') > 15, 1) -- eclaire de feu
-		ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 16, 2) -- brulure
-        ksuto.shouldHitKey(ksuto.key4, ksuto.healthPercentage('target') < 90, 4) -- Trait de feu
-        -- ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 30 and not ksuto.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
+		clockWork.shouldHitKey(clockWork.key8, not clockWork.playerHasBuff("Mage Armor"), 25) -- Armure du mage
+        clockWork.shouldHitKey(clockWork.key0, not clockWork.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
+		clockWork.shouldHitKey(clockWork.key9, not clockWork.playerHasBuff("Combustion"), 65) -- Combustion
+		clockWork.shouldHitKey(clockWork.key5, not IsCurrentAction(26) and clockWork.targetInRange(clockWork.DUEL), 26) -- activate Attack (juste en dessous du 25)
+        clockWork.shouldHitKey(clockWork.key3, clockWork.healthPercentage('target') > 99, 3) -- Pyro
+		clockWork.shouldHitKey(clockWork.key1, clockWork.healthPercentage('target') > 15, 1) -- eclaire de feu
+		clockWork.shouldHitKey(clockWork.key2, clockWork.healthPercentage('target') < 16, 2) -- brulure
+        clockWork.shouldHitKey(clockWork.key4, clockWork.healthPercentage('target') < 90, 4) -- Trait de feu
+        -- clockWork.shouldHitKey(clockWork.key9, clockWork.playerHealthPct() < 30 and not clockWork.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
 		
-    elseif (ksuto.outOfCombat()) then
+    elseif (clockWork.outOfCombat()) then
 		
-		 -- ksuto.shouldHitKey(ksuto.key3, ksuto.playerManaPct() < 40, 3) -- Evocation
-        ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() < 60 and not ksuto.playerHasBuff("Drink"), 60) -- regen mana
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 70 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
+		 -- clockWork.shouldHitKey(clockWork.key3, clockWork.playerManaPct() < 40, 3) -- Evocation
+        clockWork.shouldHitKey(clockWork.key7, clockWork.playerManaPct() < 60 and not clockWork.playerHasBuff("Drink"), 60) -- regen mana
+        clockWork.shouldHitKey(clockWork.key6, clockWork.playerHealthPct() < 70 and not clockWork.playerHasBuff("Food"), 59) -- regen vie
         
 		
 		
@@ -39,35 +39,35 @@ end
 ---------------------------------------------------------------------------------------------------------------------
 local function rotation2() -- Sp Givre
 
-	--    ksuto.printDebug("function ksuto.mageRotation")
+	--    clockWork.printDebug("function clockWork.mageRotation")
 
-    -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff("for debug purpose") end
+    -- if (clockWork.DEBUG_MOD) then clockWork.playerHasBuff("for debug purpose") end
 
-    if (ksuto.unitExistCanAndShouldDie()) and not (ksuto.enemyPlayer()) then
+    if (clockWork.unitExistCanAndShouldDie()) and not (clockWork.enemyPlayer()) then
 
-        ksuto.shouldHitKey(ksuto.key5, not IsCurrentAction(26) and ksuto.targetInRange(ksuto.DUEL), 26) -- activate Attack (juste en dessous du 25)
-        ksuto.shouldHitKey(ksuto.key1, ksuto.healthPercentage('target') > 15, 1) -- eclaire de givre
-	ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage('target') < 16, 2) -- brulure
-        ksuto.shouldHitKey(ksuto.key4, ksuto.healthPercentage('target') < 80, 4) -- Trait de feu
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerHealthPct() < 30 and not ksuto.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
+        clockWork.shouldHitKey(clockWork.key5, not IsCurrentAction(26) and clockWork.targetInRange(clockWork.DUEL), 26) -- activate Attack (juste en dessous du 25)
+        clockWork.shouldHitKey(clockWork.key1, clockWork.healthPercentage('target') > 15, 1) -- eclaire de givre
+	clockWork.shouldHitKey(clockWork.key2, clockWork.healthPercentage('target') < 16, 2) -- brulure
+        clockWork.shouldHitKey(clockWork.key4, clockWork.healthPercentage('target') < 80, 4) -- Trait de feu
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerHealthPct() < 30 and not clockWork.playerHasBuff("Mana Shield"), 65) -- bouclier de mana
 		
-    elseif (ksuto.outOfCombat()) then
+    elseif (clockWork.outOfCombat()) then
 		
-		 -- ksuto.shouldHitKey(ksuto.key3, ksuto.playerManaPct() < 40, 3) -- Evocation
-        ksuto.shouldHitKey(ksuto.key7, ksuto.playerManaPct() < 60 and not ksuto.playerHasBuff("Drink"), 60) -- regen mana
-        ksuto.shouldHitKey(ksuto.key6, ksuto.playerHealthPct() < 70 and not ksuto.playerHasBuff("Food"), 59) -- regen vie
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.playerHasBuff("Frost Armor"), 25) -- Armure de givre
-        ksuto.shouldHitKey(ksuto.key0, not ksuto.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
+		 -- clockWork.shouldHitKey(clockWork.key3, clockWork.playerManaPct() < 40, 3) -- Evocation
+        clockWork.shouldHitKey(clockWork.key7, clockWork.playerManaPct() < 60 and not clockWork.playerHasBuff("Drink"), 60) -- regen mana
+        clockWork.shouldHitKey(clockWork.key6, clockWork.playerHealthPct() < 70 and not clockWork.playerHasBuff("Food"), 59) -- regen vie
+        clockWork.shouldHitKey(clockWork.key8, not clockWork.playerHasBuff("Frost Armor"), 25) -- Armure de givre
+        clockWork.shouldHitKey(clockWork.key0, not clockWork.playerHasBuff("Arcane Intellect"), 37) -- Intelligence des arcanes
 	end
 end
 
 local function rotation3()
 end
 
-function ksuto.mageRotation()
+function clockWork.mageRotation()
 
-    if ksuto.spe == 1 then rotation1()
-    elseif ksuto.spe == 2 then rotation2()
-    elseif ksuto.spe == 3 then rotation3()
+    if clockWork.spe == 1 then rotation1()
+    elseif clockWork.spe == 2 then rotation2()
+    elseif clockWork.spe == 3 then rotation3()
     end
 end

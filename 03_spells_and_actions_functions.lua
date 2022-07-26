@@ -1,155 +1,219 @@
-function ksuto.getBuffName(id)
+function clockWork.getBuffName(id)
 
-    -- ksuto.printDebug("function ksuto.getBuffName(" .. tostring(id))
+    -- clockWork.printDebug("function clockWork.getBuffName(" .. tostring(id))
     ClockWorkTooltip:SetUnitBuff(id)
-    local buffName = tostring(ClockWorkTooltipTextLeft1:GetText());
+    local buffName = tostring(ClockWorkTooltipTextLeft1:GetText())
     if (buffName) then
         return buffName:GetText() or id
     end
     return id
 end
 
+function clockWork.isUnitCastingEffect(unit, effect)
 
-function ksuto.unitHasDebuff(unit, effect)
+    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId = UnitCastingInfo(unit)
 
-    -- ksuto.printDebug("function ksuto.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
-    local index = 1;
-    while UnitDebuff(unit, index) do
-
-        if ksuto.DEBUG_MOD then
-            --            local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitDebuff(unit, index)
-            --            if icon then ksuto.printDebug("icon : " .. icon) end
-            --            if count then ksuto.printDebug("count : " .. count) end
-            --            if castable then ksuto.printDebug("castable : " .. castable) end
-            --            if texture then ksuto.printDebug("texture : " .. texture) end
-            --            if debuffType then ksuto.printDebug("debuffType : " .. debuffType) end
-            --            if isStealable then ksuto.printDebug("isStealable : " .. isStealable) end
-            --            if isMine then ksuto.printDebug("isMine : " .. isMine) end
-            --            if shouldConsolidate then ksuto.printDebug("shouldConsolidate : " .. shouldConsolidate) end
-            --            if spellId then ksuto.printDebug("spellId : " .. spellId) end
-        end
-
-        ClockWorkTooltip:SetUnitDebuff(unit, index);
-        local debuffName = tostring(ClockWorkTooltipTextLeft1:GetText());
-        --        ksuto.printDebug("debuffName : " .. debuffName)
-
-        if (string.find(debuffName, effect)) then
-            return true, true;
-        end
-
-        index = index + 1;
+    if (name == nil) then
+        name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(unit)
     end
-    return false, index > 1;
+
+    --clockWork.printDebug(name)
+
+    --if (name ~= nil) then
+    --    clockWork.printDebug("clockWork.isUnitCastingEffect : " .. " " .. tostring(name))
+    --end
+
+    if effect == nil then
+        return name ~= nil
+    end
+
+    return string.find(name, effect)
 end
 
-function ksuto.targetHasDebuff(effect)
+function clockWork.isCastingEffect(effect)
 
-    return ksuto.unitHasDebuff("target", effect)
+    return clockWork.isUnitCastingEffect("player", effect)
 end
 
-function ksuto.playerHasAnyBuff()
+function clockWork.isUnitCasting(unit)
 
-    local buff, anybuff = ksuto.unitHasBuff("player", "")
+    return clockWork.isUnitCastingEffect(unit, nil)
+end
+
+function clockWork.isCasting()
+
+    return clockWork.isUnitCasting("player")
+end
+
+function clockWork.targetsOwnDebuffCount()
+
+    local index = 1
+    local numberOfDebuff = 0
+
+    while UnitAura("target", index, "HARMFUL") do
+
+        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura("target", index, "HARMFUL")
+
+        --clockWork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer))
+
+        if (castByPlayer == true) then
+            numberOfDebuff = numberOfDebuff + 1
+        end
+
+        --clockWork.printDebug("index : " .. tostring(index))
+
+        index = index + 1
+    end
+
+    return numberOfDebuff
+end
+
+function clockWork.unitHasDebuff(unit, effect)
+
+    -- https://wowpedia.fandom.com/wiki/API_UnitAura
+
+    -- clockWork.printDebug("function clockWork.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
+    local index = 1
+
+    while UnitAura(unit, index, "HARMFUL") do
+
+        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index, "HARMFUL")
+
+        if (string.find(name, effect) and castByPlayer) then
+
+            local remainingTime = 0
+
+            if expirationTime then
+
+                remainingTime = expirationTime - GetTime()
+            end
+
+            --clockWork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
+
+            return true, true, remainingTime
+        end
+
+        --clockWork.printDebug(name .. " " .. source .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
+
+        index = index + 1
+    end
+
+    return false, index > 1, 0
+end
+
+function clockWork.targetHasDebuff(effect)
+
+    local buff, anybuff, remainingTime = clockWork.unitHasDebuff("target", effect)
+
+    --clockWork.printDebug("clockWork.targetHasDebuff(" .. effect .. ") => buff : " .. tostring(buff) .. ", anybuff : " .. tostring(anybuff) .. " remainingTime : " .. tostring(remainingTime))
+
+    return buff, remainingTime
+end
+
+function clockWork.playerHasAnyBuff()
+
+    local buff, anybuff = clockWork.unitHasBuff("player", "")
 
     return anybuff
 end
 
-function ksuto.playerHasDebuff(effect)
+function clockWork.playerHasDebuff(effect)
 
-    return ksuto.unitHasDebuff("player", effect)
+    return clockWork.unitHasDebuff("player", effect)
 end
 
+function clockWork.unitHasAnyBuff(unit)
 
-function ksuto.unitHasAnyBuff(unit)
-
-    local buff, anybuff = ksuto.unitHasBuff(unit, "")
+    local buff, anybuff = clockWork.unitHasBuff(unit, "")
 
     return anybuff
 end
 
-function ksuto.playerHasAnyDebuff()
+function clockWork.playerHasAnyDebuff()
 
-    local buff, anybuff = ksuto.unitHasDebuff("player", "")
-
-    return anybuff
-end
-
-function ksuto.unitHasAnyDebuff(unit)
-
-    local buff, anybuff = ksuto.unitHasDebuff(unit, "")
+    local buff, anybuff = clockWork.unitHasDebuff("player", "")
 
     return anybuff
 end
 
-function ksuto.unitHasBuff(unit, effect)
+function clockWork.unitHasAnyDebuff(unit)
 
-    -- ksuto.printDebug("function ksuto.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
-    local index = 1;
+    local buff, anybuff = clockWork.unitHasDebuff(unit, "")
+
+    return anybuff
+end
+
+function clockWork.unitHasBuff(unit, effect)
+
+    -- clockWork.printDebug("function clockWork.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
+    local index = 1
     while UnitBuff(unit, index) do
 
-        if ksuto.DEBUG_MOD then
-            --            local icon, count, castable, texture, debuffType, isStealable, isMine, shouldConsolidate, spellId = UnitBuff(unit, index)
-            --            if icon then ksuto.printDebug("icon : " .. icon) end
-            --            if count then ksuto.printDebug("count : " .. count) end
-            --            if castable then ksuto.printDebug("castable : " .. castable) end
-            --            if texture then ksuto.printDebug("texture : " .. texture) end
-            --            if debuffType then ksuto.printDebug("debuffType : " .. debuffType) end
-            --            if isStealable then ksuto.printDebug("isStealable : " .. isStealable) end
-            --            if isMine then ksuto.printDebug("isMine : " .. isMine) end
-            --            if shouldConsolidate then ksuto.printDebug("shouldConsolidate : " .. shouldConsolidate) end
-            --            if spellId then ksuto.printDebug("spellId : " .. spellId) end
+        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index)
+
+        if (string.find(name, effect) and castByPlayer) then
+
+            local remainingTime = 0
+
+            if expirationTime then
+
+                remainingTime = expirationTime - GetTime()
+            end
+
+            return true, true, remainingTime
         end
 
-        ClockWorkTooltip:SetUnitBuff(unit, index);
-        local buffName = tostring(ClockWorkTooltipTextLeft1:GetText());
-        --        ksuto.printDebug("buffName : " .. buffName)
-        if (string.find(buffName, effect)) then
-            return true, true;
-        end
-
-        index = index + 1;
+        index = index + 1
     end
 
-    return false, index > 1;
+    return false, index > 1, 0
 end
 
-function ksuto.playerHasBuff(effect)
+function clockWork.playerHasBuff(effect)
 
-    return ksuto.unitHasBuff("player", effect)
+    return clockWork.unitHasBuff("player", effect)
 end
 
-function ksuto.findSpell(spellName, bookType)
+function clockWork.findSpell(spellName, bookType)
 
-    -- ksuto.printDebug("function ksuto.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
-    local i, s;
-    local found = false;
+    -- clockWork.printDebug("function clockWork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
+    --local i, s
+    local found = false
     for i = 1, MAX_SKILLLINE_TABS do
-        local name, texture, offset, numSpells = GetSpellTabInfo(i);
-        if (not name) then break; end
+        local name, texture, offset, numSpells = GetSpellTabInfo(i)
+        if (not name) then
+            break
+        end
         for s = offset + 1, offset + numSpells do
-            local spell, rank = GetSpellName(s, bookType);
-            if (spell == spellName) then found = true; end
-            if (found and spell ~= spellName) then return s - 1; end
+            local spell, rank = GetSpellName(s, bookType)
+            if (spell == spellName) then
+                found = true
+            end
+            if (found and spell ~= spellName) then
+                return s - 1
+            end
         end
     end
-    if (found) then return s; end
-    return nil;
+    if (found) then
+        return s
+    end
+    return nil
 end
 
-function ksuto.dropSpellInBarSlot(spellName, slot)
+function clockWork.dropSpellInBarSlot(spellName, slot)
 
-    -- ksuto.printDebug("function ksuto.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
+    -- clockWork.printDebug("function clockWork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
 
-    local id = ksuto.findSpell(spellName, BOOKTYPE_SPELL);
-    ksuto.print(tostring(id))
+    local id = clockWork.findSpell(spellName, BOOKTYPE_SPELL)
+    clockWork.print(tostring(id))
     --PickupSpell(spellName)
     if id then
-        PickupSpell(id, BOOKTYPE_SPELL);
+        PickupSpell(id, BOOKTYPE_SPELL)
         PlaceAction(slot)
     end
 end
 
-function ksuto.isPassiveDamage(arg1)
+function clockWork.isPassiveDamage(arg1)
 
-    return string.find(arg1, ksuto.lightningShield)
+    return string.find(arg1, clockWork.lightningShield)
 end

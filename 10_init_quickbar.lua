@@ -8,10 +8,10 @@
 
 if UnitClass("player") == "Warlock" then
 
-    ksuto.dropSpellInBarSlot("Curse of Agony", 5)
-    ksuto.dropSpellInBarSlot("Corruption", 4)
-    ksuto.dropSpellInBarSlot("Immolate", 3)
-    ksuto.dropSpellInBarSlot("Shadow Bolt", 1)
+    clockWork.dropSpellInBarSlot("Curse of Agony", 5)
+    clockWork.dropSpellInBarSlot("Corruption", 4)
+    clockWork.dropSpellInBarSlot("Immolate", 3)
+    clockWork.dropSpellInBarSlot("Shadow Bolt", 1)
 
 elseif UnitClass("player") == "Warrior" then
 end

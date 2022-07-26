@@ -8,7 +8,7 @@
 
 function initRotationsFrame()
 
-    for action in KSUTO_ROTATIONS.actions do
+    for action in ClockWork_ROTATIONS.actions do
 
         local line = CreateFrame("Frame", action.shift .. action.ctrl .. action.alt .. action.key, "ClockWorkRotationFrame")
     end
@@ -19,9 +19,6 @@ function testRotation(spe)
     for condition in spe.contitions do
 
         local idValid = false;
-
-        --        if condition.actionCanBeCast then end
-        --        if condition.debuffCanBeCast then end
 
         if condition.enemyPlayer then end
         if condition.hasMainHandEnchant then end

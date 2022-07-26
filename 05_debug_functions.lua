@@ -1,45 +1,47 @@
-function ksuto.printDebug(text)
+function clockWork.printDebug(text)
 
-    -- ksuto.printDebug("function ksuto.printDebug(" .. tostring(text))
+    -- clockWork.printDebug("function clockWork.printDebug(" .. tostring(text))
 
-    if ksuto.DEBUG_MOD then
+    if clockWork.DEBUG_MOD then
 
-        DEFAULT_CHAT_FRAME:AddMessage("ClockWork (Debug) -> " .. tostring(text))
+        DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockWork\124r \124cFF8eacbb(Debug)\124r: " .. tostring(text))
     end
 end
 
-function ksuto.listAllSpells()
+function clockWork.listAllSpells()
 
-    -- ksuto.printDebug("function ksuto.listAllSpells(")
+    -- clockWork.printDebug("function clockWork.listAllSpells(")
 
-    ksuto.printDebug("ksuto.listAllSpells()")
+    clockWork.printDebug("clockWork.listAllSpells()")
 
-    if ksuto.DEBUG_MOD then
+    if clockWork.DEBUG_MOD then
 
-        local spellID = 1;
+        local index = 1;
 
         while true do
-            local spellName, subSpellName = GetSpellName(spellID, BOOKTYPE_SPELL);
+            local spellName, spellSubName, spellID = GetSpellBookItemName(index, BOOKTYPE_SPELL);
 
             if not spellName then
-                do break end
+                do
+                    break
+                end
             end
 
-            if (string.find(subSpellName, "Rank")) then
-                local rank = strsub(subSpellName, 6, strlen(subSpellName));
-                ksuto.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName .. ", rank=" .. rank);
+            if (spellSubName and string.find(spellSubName, "Rank")) then
+                local rank = strsub(spellSubName, 6, strlen(spellSubName));
+                clockWork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName .. ", rank=" .. rank);
             else
-                ksuto.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName);
+                clockWork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName);
             end
 
-            spellID = spellID + 1;
+            index = index + 1;
         end
     end
 end
 
-function ksuto.reportActionButtons()
+function clockWork.reportActionButtons()
 
-    -- ksuto.printDebug("function ksuto.reportActionButtons(")
+    -- clockWork.printDebug("function clockWork.reportActionButtons(")
 
     for actionSlot = 1, 120 do
 
@@ -55,20 +57,28 @@ function ksuto.reportActionButtons()
                 message = message .. " \"" .. actionText .. "\"";
             end
 
-            ksuto.printDebug(message);
+            clockWork.printDebug(message);
         end
     end
 end
 
 function getCoord()
 
-    -- ksuto.printDebug("function getCoord(")
+    -- clockWork.printDebug("function getCoord(")
 
-    local posX, posY = GetPlayerMapPosition("player");
+    local map = C_Map.GetBestMapForUnit("player")
+    clockWork.print("Map : " .. tostring(map))
+    if map == nil then
+        clockWork.print("Not outdoor")
+    end
+    local position = C_Map.GetPlayerMapPosition(map, "player");
+
+    local posX = tostring(position["x"])
+    local posY = tostring(position["y"])
 
     local posXString = tostring(posX)
     local posYString = tostring(posY)
 
-    ksuto.print("x = " .. posXString)
-    ksuto.print("y = " .. posYString)
+    clockWork.print("x = " .. posXString)
+    clockWork.print("y = " .. posYString)
 end

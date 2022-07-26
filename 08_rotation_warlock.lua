@@ -8,137 +8,190 @@
 
 local function rotation1()
 
-    ksuto.printDebug("function ksuto.warlockAfflictionRotation")
+    --clockWork.printDebug("function clockWork.warlockAfflictionRotation")
 
-    -- if (ksuto.DEBUG_MOD) then ksuto.playerHasBuff(, "for debug purpose") end
+    -- if (clockWork.DEBUG_MOD) then clockWork.playerHasBuff(, "for debug purpose") end
 
     -- N'attaquer que si :
 
-    if (ksuto.unitExistCanAndShouldDie()) then
+    if (clockWork.unitExistCanAndShouldDie()) then
 
-        -- ksuto.print("UnitCanAttack('player', 'target') : " .. tostring(UnitCanAttack("player", "target")))
+        --clockWork.print("UnitCanAttack('player', 'target') : " .. tostring(UnitCanAttack("player", "target")))
+
+        local hasDebuff, hasAnyDebuff, remainingTime
 
         -- AttackTarget()
 
         -- DEFAULT KEYS
 
-        ksuto.shouldHitKey(ksuto.keyT, ksuto.targetInRange(ksuto.TRADE) and not ksuto.targetHasDebuff("Fear") and ksuto.enemyPlayer())
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 25 and ksuto.playerHealthPct() > 75) -- Life Tap
-        -- ksuto.shouldHitKey(ksuto.key6, ksuto.healthPercentage("target") < 20 and not ksuto.targetHasDebuff("Drain Soul"))
-        ksuto.shouldHitKey(ksuto.key5, not ksuto.targetHasDebuff("Curse of Agony"))
-        ksuto.shouldHitKey(ksuto.key4, not ksuto.targetHasDebuff("Corruption"))
-        ksuto.shouldHitKey(ksuto.key3, not ksuto.targetHasDebuff("Immolate"))
-        ksuto.shouldHitKey(ksuto.key2, ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"))
-        ksuto.shouldHitKey(ksuto.key1, ksuto.playerManaPct() > 50) -- Shadow Bolt as of now
+
+        --clockWork.printDebug("UnitPower(\"player\", Enum.PowerType.SoulShards) > 2" .. tostring(UnitPower("player", Enum.PowerType.SoulShards) > 2))
+        --clockWork.shouldHitKey(clockWork.key2, UnitPower("player", Enum.PowerType.SoulShards) > 2)
+        --
+        --clockWork.shouldHitKey(clockWork.keyD, not hasDebuff)
+        --
+        --if true then return end
+
+        clockWork.shouldHitShiftKey(clockWork.keyG,
+                not clockWork.outOfCombat() and
+                        not clockWork.playerHasBuff("Domination gangrenée") and
+                        (not UnitExists("pet") or clockWork.healthPercentage("pet") < 33))
+        clockWork.shouldHitKey(clockWork.keyG,  clockWork.playerHasBuff("Domination gangrenée") and true)
+
+        clockWork.shouldHitKey(clockWork.keyR, clockWork.targetInRange(clockWork.TRADE) and not clockWork.targetHasDebuff("Voile de mort") and clockWork.enemyPlayer())
+        clockWork.shouldHitKey(clockWork.keyT, clockWork.playerHealthPct() < 60 and not clockWork.isCasting())
+        clockWork.shouldHitShiftKey(clockWork.keyT, UnitExists("pet") and clockWork.healthPercentage("pet") < 33 and not clockWork.isCasting())
+
+        clockWork.shouldHitKey(clockWork.keyF)
+
+        clockWork.shouldHitShiftKey(clockWork.keyD, clockWork.targetsOwnDebuffCount() > 3)
+
+        hasDebuff, remainingTime = clockWork.targetHasDebuff("Hanter")
+        clockWork.shouldHitKey(clockWork.keyD, not hasDebuff or remainingTime < 3)
+
+        hasDebuff, remainingTime = clockWork.targetHasDebuff("Affliction instable")
+        if (not hasDebuff and (not clockWork.afflictionInstableEndTime or clockWork.afflictionInstableEndTime < GetTime())) then
+            clockWork.shouldHitKey(clockWork.key6, true)
+        end
+        if hasDebuff then
+            clockWork.afflictionInstableEndTime = GetTime() + remainingTime
+        end
+
+        hasDebuff, remainingTime = clockWork.targetHasDebuff("Agonie")
+        clockWork.shouldHitKey(clockWork.key5, not hasDebuff or remainingTime < 4)
+
+        hasDebuff, remainingTime = clockWork.targetHasDebuff("Siphon de vie")
+        clockWork.shouldHitKey(clockWork.key4, not hasDebuff or remainingTime < 2)
+
+        hasDebuff, remainingTime = clockWork.targetHasDebuff("Corruption")
+        clockWork.shouldHitKey(clockWork.key3, not hasDebuff or remainingTime < 2)
+
+        clockWork.shouldHitKey(clockWork.key2, UnitPower("player", Enum.PowerType.SoulShards) > 2 and clockWork.targetsOwnDebuffCount() > 3)
+
+        clockWork.shouldHitKey(clockWork.key1, not clockWork.isCasting())
 
         -- ALT KEYS
         -- SHIFT KEYS
 
-        ksuto.shouldHitShiftKey(ksuto.keyG, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer si le pet n'existe pas
+        clockWork.shouldHitKey(clockWork.keyG, not UnitExists("pet")) -- Invoquer si le pet n'existe pas
 
         -- CTRL KEYS
 
         -- Le pet attaque SI l'enemi attaque le joueur ET est à moins de 9.9 yards
         if UnitIsUnit("player", "targettarget")
                 and not UnitIsUnit("pettarget", "target")
-                and ksuto.targetInRange(ksuto.DUEL) then ksuto.shouldHitCtrlKey(ksuto.key1)
+                and clockWork.targetInRange(clockWork.DUEL) then
+            clockWork.shouldHitCtrlKey(clockWork.key1)
         end -- Pet Attack
 
 
-    elseif (ksuto.outOfCombat()) then -- hors combat
+    elseif (clockWork.outOfCombat()) then
+        -- hors combat
 
-        ksuto.shouldHitKey(ksuto.keyQ, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66) -- Life Tap
+        --clockWork.printDebug("clockWork.outOfCombat()")
 
-        ksuto.shouldHitShiftKey(ksuto.keyT, not ksuto.playerHasBuff("Demon Skin")) -- Buff
-        ksuto.shouldHitShiftKey(ksuto.keyG, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
-        ksuto.shouldHitShiftKey(ksuto.keyQ, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food")) -- Manger
+        --clockWork.shouldHitKey(clockWork.keyQ, clockWork.playerManaPct() < 33 and clockWork.playerHealthPct() > 66) -- Life Tap
+
+        hasDebuff, remainingTime = clockWork.playerHasBuff("Pierre d'âme")
+        clockWork.shouldHitKey(clockWork.keyEq, not hasDebuff)
+
+        --clockWork.shouldHitShiftKey(clockWork.keyT, not clockWork.playerHasBuff("Demon Skin")) -- Buff
+        clockWork.shouldHitKey(clockWork.keyG, not UnitExists("pet") and not clockWork.isCasting()) -- Invoquer le pet s'il n'existe pas
+        --clockWork.shouldHitShiftKey(clockWork.keyQ, clockWork.playerHealthPct() < 25 and not clockWork.playerHasBuff("Food")) -- Manger
     end
 end
 
-
 ---------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------
-local function rotation2() --Rotation bind Oko
+local function rotation2()
+    --Rotation bind Oko
 
-    ksuto.printDebug("function ksuto.warlockAfflictionRotation2")
+    clockWork.printDebug("function clockWork.warlockAfflictionRotation2")
 
     -- N'attaquer que si :
 
-    if (ksuto.unitExistCanAndShouldDie()) and (not ksuto.enemyPlayer()) then
+    if (clockWork.unitExistCanAndShouldDie()) and (not clockWork.enemyPlayer()) then
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 25 and ksuto.playerHealthPct() > 75, 15) -- Life Tap
-        -- ksuto.shouldHitKey(ksuto.key6, ksuto.healthPercentage("target") < 20 and not ksuto.targetHasDebuff("Drain Soul"))
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Immolate"), 2)
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.targetHasDebuff("Corruption"), 3)
-        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Curse of Agony"), 4)
-        --ksuto.shouldHitKey(ksuto.key5, ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"),)
-        ksuto.shouldHitKey(ksuto.key4, ksuto.playerManaPct() > 50, 1) -- Shadow Bolt as of now
-        --ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) --Baguette
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerManaPct() < 25 and clockWork.playerHealthPct() > 75, 15) -- Life Tap
+        -- clockWork.shouldHitKey(clockWork.key6, clockWork.healthPercentage("target") < 20 and not clockWork.targetHasDebuff("Drain Soul"))
+        clockWork.shouldHitKey(clockWork.key8, not clockWork.targetHasDebuff("Immolate"), 2)
+        clockWork.shouldHitKey(clockWork.key7, not clockWork.targetHasDebuff("Corruption"), 3)
+        clockWork.shouldHitKey(clockWork.key6, not clockWork.targetHasDebuff("Curse of Agony"), 4)
+        --clockWork.shouldHitKey(clockWork.key5, clockWork.playerHealthPct() < 80 and not clockWork.targetHasDebuff("Drain Life"),)
+        clockWork.shouldHitKey(clockWork.key4, clockWork.playerManaPct() > 50, 1) -- Shadow Bolt as of now
+        --clockWork.shouldHitKey(clockWork.key1, not IsCurrentAction(14) and clockWork.targetInRange(clockWork.DUEL), 14) --Baguette
 
         -- ALT KEYS
         -- SHIFT KEYS
 
-        ksuto.shouldHitKey(ksuto.key3, not UnitExists("pet"), 14) -- Fear si le pet n'est pas présent
+        clockWork.shouldHitKey(clockWork.key3, not UnitExists("pet"), 14) -- Fear si le pet n'est pas présent
 
         -- CTRL KEYS
 
         -- Le pet attaque SI l'enemi attaque le joueur ET est à moins de 9.9 yards
         if UnitIsUnit("player", "targettarget")
                 and not UnitIsUnit("pettarget", "target")
-                and ksuto.targetInRange(ksuto.DUEL) then ksuto.shouldHitCtrlKey(ksuto.key1)
+                and clockWork.targetInRange(clockWork.DUEL) then
+            clockWork.shouldHitCtrlKey(clockWork.key1)
         end -- Pet Attack
 
 
-    elseif (ksuto.outOfCombat()) then -- hors combat
+    elseif (clockWork.outOfCombat()) then
+        -- hors combat
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66, 15) -- Life Tap
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerManaPct() < 33 and clockWork.playerHealthPct() > 66, 15) -- Life Tap
 
-        ksuto.shouldHitShiftKey(ksuto.key9, not ksuto.playerHasBuff("Demon Skin"), 24) -- Buff
-        ksuto.shouldHitShiftKey(ksuto.key8, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
-        ksuto.shouldHitShiftKey(ksuto.key7, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food"), 11) -- Manger
+        clockWork.shouldHitShiftKey(clockWork.key9, not clockWork.playerHasBuff("Demon Skin"), 24) -- Buff
+        clockWork.shouldHitShiftKey(clockWork.key8, not UnitExists("pet")) -- Invoquer le pet s'il n'existe pas
+        clockWork.shouldHitShiftKey(clockWork.key7, clockWork.playerHealthPct() < 25 and not clockWork.playerHasBuff("Food"), 11) -- Manger
     end
 end
 
-
 ---------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------
-local function rotation3() --Rotation bind Oko avec génération shard
+local function rotation3()
+    --Rotation bind Oko avec génération shard
 
-    ksuto.printDebug("function ksuto.warlock génération shard")
+    clockWork.printDebug("function clockWork.warlock génération shard")
 
-    if (ksuto.unitExistCanAndShouldDie()) and (not ksuto.enemyPlayer()) then
+    if (clockWork.unitExistCanAndShouldDie()) and (not clockWork.enemyPlayer()) then
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 25 and ksuto.playerHealthPct() > 75) -- Life Tap
-        ksuto.shouldHitKey(ksuto.key8, not ksuto.targetHasDebuff("Immolate"))
-        ksuto.shouldHitKey(ksuto.key7, not ksuto.targetHasDebuff("Corruption"))
-        ksuto.shouldHitKey(ksuto.key6, not ksuto.targetHasDebuff("Curse of Agony"))
-        ksuto.shouldHitKey(ksuto.key5, ksuto.playerHealthPct() < 80 and not ksuto.targetHasDebuff("Drain Life"))
-        ksuto.shouldHitKey(ksuto.key4, ksuto.playerManaPct() > 50) -- Shadow Bolt as of now
-        ksuto.shouldHitKey(ksuto.key2, ksuto.healthPercentage("target") < 20 and not ksuto.targetHasDebuff("Drain Soul"))
-        ksuto.shouldHitKey(ksuto.key1, not IsCurrentAction(14) and ksuto.targetInRange(ksuto.DUEL), 14) --Baguette
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerManaPct() < 25 and clockWork.playerHealthPct() > 75) -- Life Tap
+        clockWork.shouldHitKey(clockWork.key8, not clockWork.targetHasDebuff("Immolate"))
+        clockWork.shouldHitKey(clockWork.key7, not clockWork.targetHasDebuff("Corruption"))
+        clockWork.shouldHitKey(clockWork.key6, not clockWork.targetHasDebuff("Curse of Agony"))
+        clockWork.shouldHitKey(clockWork.key5, clockWork.playerHealthPct() < 80 and not clockWork.targetHasDebuff("Drain Life"))
+        clockWork.shouldHitKey(clockWork.key4, clockWork.playerManaPct() > 50) -- Shadow Bolt as of now
+        clockWork.shouldHitKey(clockWork.key2, clockWork.healthPercentage("target") < 20 and not clockWork.targetHasDebuff("Drain Soul"))
+        clockWork.shouldHitKey(clockWork.key1, not IsCurrentAction(14) and clockWork.targetInRange(clockWork.DUEL), 14) --Baguette
 
-        ksuto.shouldHitKey(ksuto.key3, not UnitExists("pet")) -- Fear si le pet n'est pas présent
+        clockWork.shouldHitKey(clockWork.key3, not UnitExists("pet")) -- Fear si le pet n'est pas présent
 
         -- Le pet attaque SI l'enemi attaque le joueur ET est à moins de 9.9 yards
         if UnitIsUnit("player", "targettarget")
                 and not UnitIsUnit("pettarget", "target")
-                and ksuto.targetInRange(ksuto.DUEL) then ksuto.shouldHitCtrlKey(ksuto.key1)
+                and clockWork.targetInRange(clockWork.DUEL) then
+            clockWork.shouldHitCtrlKey(clockWork.key1)
         end -- Pet Attack
 
-    elseif (ksuto.outOfCombat()) then -- hors combat
+    elseif (clockWork.outOfCombat()) then
+        -- hors combat
 
-        ksuto.shouldHitKey(ksuto.key9, ksuto.playerManaPct() < 33 and ksuto.playerHealthPct() > 66) -- Life Tap
-        ksuto.shouldHitShiftKey(ksuto.key9, not ksuto.playerHasBuff("Demon Skin")) -- Buff
-        ksuto.shouldHitShiftKey(ksuto.key8, not UnitExists("pet") and ksuto.actionCanBeCast(10)) -- Invoquer le pet s'il n'existe pas
-        ksuto.shouldHitShiftKey(ksuto.key7, ksuto.playerHealthPct() < 25 and not ksuto.playerHasBuff("Food")) -- Manger
+        clockWork.shouldHitKey(clockWork.key9, clockWork.playerManaPct() < 33 and clockWork.playerHealthPct() > 66) -- Life Tap
+        clockWork.shouldHitShiftKey(clockWork.key9, not clockWork.playerHasBuff("Demon Skin")) -- Buff
+        clockWork.shouldHitShiftKey(clockWork.key8, not UnitExists("pet")) -- Invoquer le pet s'il n'existe pas
+        clockWork.shouldHitShiftKey(clockWork.key7, clockWork.playerHealthPct() < 25 and not clockWork.playerHasBuff("Food")) -- Manger
     end
 end
 
-function ksuto.warlockRotation()
+function clockWork.warlockRotation()
 
-    if ksuto.spe == 1 then rotation1()
-    elseif ksuto.spe == 2 then rotation2()
-    elseif ksuto.spe == 3 then rotation3()
+    if clockWork.spe == 1 then
+        rotation1()
+    elseif clockWork.spe == 2 then
+        rotation2()
+    elseif clockWork.spe == 3 then
+        rotation3()
     end
 end
 

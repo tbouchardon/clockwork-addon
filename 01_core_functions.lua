@@ -1,36 +1,43 @@
-ksuto = {}
+clockWork = {}
 
-ksuto.DEBUG_MOD = false
-ksuto.CHECK_ACTIONS_CAST = true
-ksuto.CASTING = false;
+clockWork.DEBUG_MOD = false
+clockWork.CHECK_ACTIONS_CAST = true
+clockWork.CASTING = false;
 
-ksuto.UPDATE_INTERVAL = 0.2 -- 200ms
-ksuto.ADDING_WP = false;
-ksuto.TOGGLE_ON_OFF = false
-ksuto.TARGET_NEAREST_ENEMY = false
-ksuto.DRIVE_MOD = false
-ksuto.DRIVE_LOOP = false
+clockWork.UPDATE_INTERVAL = 0.2 -- 200ms
+clockWork.ADDING_WP = false;
+clockWork.TOGGLE_ON_OFF = false
+clockWork.TARGET_NEAREST_ENEMY = false
+clockWork.DRIVE_MOD = false
+clockWork.AGGRO_MOD = true
+clockWork.DRIVE_LOOP = false
 
-function ksuto.print(text)
+clockWork.player = {}
+clockWork.player.position = {}
+clockWork.player.position.posX = 0
+clockWork.player.position.posY = 0
+clockWork.player.isMoving = false
 
-    -- ksuto.printDebug("function ksuto.print(" .. tostring(text))
+function clockWork.print(text)
 
-    DEFAULT_CHAT_FRAME:AddMessage("ClockWork -> " .. tostring(text))
+    -- clockWork.printDebug("function clockWork.print(" .. tostring(text))
+
+    DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockWork\124r: " .. tostring(text))
 end
 
-function ksuto.createDot(name, xPos, yPos, slot, shiftslot, altslot)
+function clockWork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
 
-    -- ksuto.printDebug("function ksuto.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
+    -- clockWork.printDebug("function clockWork.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
 
-    local dotFrame = CreateFrame("FRAME", "ksuto_" .. name, ksuto.frame)
-    dotFrame:SetPoint("TOPLEFT", ksuto.scale(xPos), ksuto.scale(yPos))
-    dotFrame:SetWidth(ksuto.scale(1))
-    dotFrame:SetHeight(ksuto.scale(1))
+    local dotFrame = CreateFrame("FRAME", "clockWork_" .. name, clockWork.frame)
+    dotFrame:SetPoint("TOPLEFT", xPos, yPos)
+    dotFrame:SetWidth(1)
+    dotFrame:SetHeight(1)
     dotFrame:SetFrameStrata("HIGH");
 
-    dotFrame.texture = dotFrame:CreateTexture("HIGH")
+    dotFrame.texture = dotFrame:CreateTexture(nil, "HIGH")
     dotFrame.texture:SetAllPoints()
-    dotFrame.texture:SetTexture(0, 0, 0, 1)
+    dotFrame.texture:SetColorTexture(0, 0, 0, 1)
     dotFrame.slot = slot;
     dotFrame.shiftslot = shiftslot;
     dotFrame.altslot = altslot;
@@ -38,10 +45,10 @@ function ksuto.createDot(name, xPos, yPos, slot, shiftslot, altslot)
     return dotFrame
 end
 
-ksuto.scaleMultiplicator = 0
-function ksuto.scale(x)
+clockWork.scaleMultiplicator = 0
+function clockWork.scale(x)
 
-    ksuto.printDebug("function ksuto.scale(" .. tostring(x))
+    clockWork.printDebug("function clockWork.scale(" .. tostring(x))
 
-    return ksuto.scaleMultiplicator * x
+    return clockWork.scaleMultiplicator * x
 end
