@@ -17,6 +17,16 @@ clockWork.player.position = {}
 clockWork.player.position.posX = 0
 clockWork.player.position.posY = 0
 clockWork.player.isMoving = false
+clockWork.player.GUID = nil
+
+clockWork.pet = {}
+clockWork.pet.GUID = nil
+
+clockWork.targets = {}
+clockWork.targets.list = {}
+clockWork.targets.count = 0
+clockWork.targets.multiTargetMod = false
+clockWork.targets.multiTargetModTrigger = 3
 
 function clockWork.print(text)
 
@@ -42,6 +52,8 @@ function clockWork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
     dotFrame.shiftslot = shiftslot;
     dotFrame.altslot = altslot;
 
+    dotFrame.priority = -1
+
     return dotFrame
 end
 
@@ -51,4 +63,38 @@ function clockWork.scale(x)
     clockWork.printDebug("function clockWork.scale(" .. tostring(x))
 
     return clockWork.scaleMultiplicator * x
+end
+
+function clockWork.tableLength(T)
+
+    if T == nil then
+        return 0
+    end
+    local count = 0
+    for _ in pairs(T) do
+        count = count + 1
+    end
+    return count
+end
+
+function clockWork.emptyOrNil(s)
+
+    if s == nil then
+        return true
+    end
+    if s == "" then
+        return true
+    end
+    if s == 0 then
+        return true
+    end
+    return false
+end
+
+function clockWork.ternary(condition, if_true, if_false)
+    if condition then
+        return if_true
+    else
+        return if_false
+    end
 end

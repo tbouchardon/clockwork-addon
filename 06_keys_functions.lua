@@ -36,80 +36,120 @@ function clockWork.resetKeys()
     -- clockWork.printDebug("function clockWork.resetKeys(")
 
     clockWork.keyQ.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyQ.priority = -1
     clockWork.keyD.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyD.priority = -1
     clockWork.keyR.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyR.priority = -1
     clockWork.keyT.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyT.priority = -1
     clockWork.keyF.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyF.priority = -1
     clockWork.keyG.texture:SetColorTexture(0, 0, 0, 1)
-
+    clockWork.keyG.priority = -1
     clockWork.keyEq.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyEq.priority = -1
     clockWork.keyPar.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.keyPar.priority = -1
     clockWork.key0.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key0.priority = -1
     clockWork.key9.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key9.priority = -1
     clockWork.key8.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key8.priority = -1
     clockWork.key7.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key7.priority = -1
     clockWork.key6.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key6.priority = -1
     clockWork.key5.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key5.priority = -1
     clockWork.key4.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key4.priority = -1
     clockWork.key3.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key3.priority = -1
     clockWork.key2.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key2.priority = -1
     clockWork.key1.texture:SetColorTexture(0, 0, 0, 1)
+    clockWork.key1.priority = -1
 end
 
-function clockWork.shouldHitKey(key, condition, actionSlot, modificator)
+function clockWork.shouldHitKey(key, condition, priority, keyModificator)
 
-        --clockWork.printDebug("function clockWork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
+    priority = clockWork.ternary(clockWork.emptyOrNil(priority), 0, priority)
 
-         --clockWork.print("key.slot = " .. tostring(key.slot))
-         --clockWork.print("should = " .. tostring(condition))
-         --clockWork.print("slot = " .. tostring(actionSlot))
-         --clockWork.print("modificator = " .. tostring(modificator))
+    --clockWork.printDebug("function clockWork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
+
+    --clockWork.print("key.slot = " .. tostring(key.slot))
+    --clockWork.print("should = " .. tostring(condition))
+    --clockWork.print("slot = " .. tostring(actionSlot))
+    --clockWork.print("modificator = " .. tostring(modificator))
 
     if (condition == false) then
         return false
     end
 
     if (condition == nil or condition == true) then
-        if (actionSlot) then
-            condition = clockWork.actionCanBeCast(actionSlot)
-        else
-            if not modificator then condition = clockWork.actionCanBeCast(key.slot) end
-            if modificator == clockWork.SHIFT and key.shiftslot then condition = clockWork.actionCanBeCast(key.shiftslot) end
-            if modificator == clockWork.ALT and key.altslot then condition = clockWork.actionCanBeCast(key.altslot) end
+        --if (actionSlot) then
+        --    condition = clockWork.actionCanBeCast(actionSlot)
+        --else
+        if not keyModificator then
+            condition = clockWork.actionCanBeCast(key.slot)
         end
+        if keyModificator == clockWork.SHIFT and key.shiftslot then
+            condition = clockWork.actionCanBeCast(key.shiftslot)
+        end
+        if keyModificator == clockWork.ALT and key.altslot then
+            condition = clockWork.actionCanBeCast(key.altslot)
+        end
+        --end
     end
 
     -- clockWork.print("should = " .. tostring(should) .. " " .. tostring(modificator)) -- spam "should = nil nil" dès que le mob est ciblé
 
-    if condition and not modificator then key.texture:SetColorTexture(1, 1, 1, 1)
-    elseif condition and modificator == clockWork.SHIFT then key.texture:SetColorTexture(1, 0, 0, 1)
-    elseif condition and modificator == clockWork.CTRL then key.texture:SetColorTexture(0, 1, 0, 1)
-    elseif condition and modificator == clockWork.ALT then key.texture:SetColorTexture(0, 0, 1, 1)
+    -- Mode octal
+    -- CTRL  = 1
+    -- ALT   = 2
+    -- SHIFT = 4
+    --
+
+    sum = 0 +
+            clockWork.ternary(keyModificator == clockWork.CTRL, 1, 0) +
+            clockWork.ternary(keyModificator == clockWork.ALT, 2, 0) +
+            clockWork.ternary(keyModificator == clockWork.SHIFT, 4, 0)
+
+    if condition and priority > key.priority
+    --and not modificator
+    then
+        key.texture:SetColorTexture(sum / 255, priority / 255, 1, 1)
+        key.priority = priority
+        --elseif condition and modificator == clockWork.SHIFT then key.texture:SetColorTexture(1, 0, 0, 1)
+        --elseif condition and modificator == clockWork.CTRL then key.texture:SetColorTexture(0, 1, 0, 1)
+        --elseif condition and modificator == clockWork.ALT then key.texture:SetColorTexture(0, 0, 1, 1)
         return true
     else
         return false
     end
 end
 
-function clockWork.shouldHitShiftKey(key, should, slot)
+function clockWork.shouldHitShiftKey(key, condition, priority)
 
     -- clockWork.printDebug("function clockWork.shouldHitShiftKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
-    clockWork.shouldHitKey(key, should, slot, clockWork.SHIFT)
+    clockWork.shouldHitKey(key, condition, priority, clockWork.SHIFT)
 end
 
-function clockWork.shouldHitCtrlKey(key, should, slot)
+function clockWork.shouldHitCtrlKey(key, condition, priority)
 
     -- clockWork.printDebug("function clockWork.shouldHitCtrlKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
     --    clockWork.print("clockWork.shouldHitCtrlKey" .. tostring(should) .. " " .. tostring(slot))
 
-    clockWork.shouldHitKey(key, should, slot, clockWork.CTRL)
+    clockWork.shouldHitKey(key, condition, priority, clockWork.CTRL)
 end
 
-function clockWork.shouldHitAltKey(key, should, slot)
+function clockWork.shouldHitAltKey(key, condition, priority)
 
     -- clockWork.printDebug("function clockWork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
-    clockWork.shouldHitKey(key, should, slot, clockWork.ALT)
+    clockWork.shouldHitKey(key, condition, priority, clockWork.ALT)
 end

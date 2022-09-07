@@ -80,6 +80,8 @@ function clockWork.playerEnteringWorld()
 
     clockWork.playerHealth = clockWork.createDot("clockWork_health", 12, -2)
     clockWork.playerMana = clockWork.createDot("clockWork_mana", 13, -2)
+    clockWork.numberOfTargets = clockWork.createDot("clockWork_number_of_targets", 2, -3)
+    clockWork.targets.count = 0
     clockWork.targetReaction = clockWork.createDot("clockWork_target_reaction", 11, -3)
     clockWork.targetHealth = clockWork.createDot("clockWork_target_health", 12, -3)
     clockWork.targetMana = clockWork.createDot("clockWork_target_mana", 13, -3)
@@ -251,8 +253,18 @@ local function onEvent(...)
         --clockWork.printDebug(event)
     end
 
-    if (clockWork.playerGUID == nil) then
-        clockWork.playerGUID = UnitGUID("player")
+    if (clockWork.player.GUID == nil) then
+        clockWork.player.GUID = UnitGUID("player")
+    end
+
+    if (clockWork.pet.GUID == nil) then
+        if (UnitExists("pet")) then
+            clockWork.pet.GUID = UnitGUID("pet")
+        end
+    else
+        if (not UnitExists("pet")) then
+            clockWork.pet.GUID = nil
+        end
     end
 
     if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
@@ -299,9 +311,29 @@ local function onEvent(...)
         local subevent = args[2]
         --clockWork.printDebug("subevent = " .. tostring(subevent))
         local sourceGUID = args[4]
+        local sourceName = args[5]
         --clockWork.printDebug("sourceGUID = " .. tostring(sourceGUID))
         local destGUID = args[8]
-        --clockWork.printDebug("destGUID   = " .. tostring(destGUID))
+        local destName = args[9]
+
+        --string.find(sourceGUID, "Pet") == true or
+        if (sourceGUID == clockWork.player.GUID or sourceGUID == clockWork.pet.GUID)
+                and destGUID ~= clockWork.pet.GUID
+                and destGUID ~= clockWork.player.GUID
+                and not clockWork.emptyOrNil(destGUID)
+        then
+
+            if clockWork.targets.list[tostring(destGUID)] == nil then
+                --clockWork.printDebug("Unit added")
+                --clockWork.printDebug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
+
+            else
+                --clockWork.printDebug("Unit updated")
+            end
+
+            clockWork.targets.list[tostring(destGUID)] = GetTime()
+            clockWork.updateNumberOfTargets()
+        end
 
         local amount
         if subevent == "SWING_DAMAGE" then
@@ -310,11 +342,30 @@ local function onEvent(...)
             amount = args[15]
         end
 
-        if (clockWork.playerGUID == sourceGUID) then
+        --if (sourceGUID ~= clockWork.player.GUID and string.find(sourceGUID, "Pet") == false) then
+
+        if subevent == "UNIT_DIED" or
+                subevent == "UNIT_DESTROYED" or
+                subevent == "SPELL_INSTAKILL" or
+                --subevent == "PARTY_KILL" or
+                subevent == "UNIT_DISSIPATES" then
+
+            --clockWork.printDebug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
+
+            if clockWork.targets.list[tostring(destGUID)] ~= nil then
+
+                clockWork.targets.list[tostring(destGUID)] = nil
+                --clockWork.printDebug("Unit removed")
+                clockWork.updateNumberOfTargets()
+            end
+        end
+        --end
+
+        if (clockWork.player.GUID == sourceGUID) then
             clockWork.damageDone()
         end
 
-        if (clockWork.playerGUID == destGUID) then
+        if (clockWork.player.GUID == destGUID) then
             clockWork.damageReceived()
         end
     end
@@ -325,6 +376,34 @@ local function onEvent(...)
     else
         clockWork.stepBack.texture:SetColorTexture(0, 0, 0, 1)
     end
+end
+
+function clockWork.updateNumberOfTargets()
+
+    if clockWork.targets.list ~= nil then
+        for i, time in pairs(clockWork.targets.list) do
+            --clockWork.print(tostring(clockWork.emptyOrNil(i)))
+            --clockWork.print(tostring(i) .. " && " .. tostring(time) .. " && " .. tostring(now - time) .. tostring(now - time > 10))
+            if (GetTime() - time > 5) then
+                clockWork.targets.list[i] = nil
+            end
+        end
+        --clockWork.print(tostring(clockWork.tableLength(clockWork.targets.list)))
+        --clockWork.print(tostring(clockWork.tableLength(clockWork.targets.list) / 255))
+        clockWork.targets.count = clockWork.tableLength(clockWork.targets.list)
+        clockWork.numberOfTargets.texture:SetColorTexture(clockWork.targets.count / 255, 0, 0, 1)
+    else
+        clockWork.targets.count = 0
+        clockWork.numberOfTargets.texture:SetColorTexture(0, 0, 0, 1)
+    end
+
+    multiTarget = clockWork.targets.count >= clockWork.targets.multiTargetModTrigger
+
+    if (clockWork.targets.multiTargetMod ~= multiTarget) then
+        clockWork.printDebug(clockWork.ternary(multiTarget, "Multi targets mod", "Single target mod"))
+    end
+
+    clockWork.targets.multiTargetMod = multiTarget
 end
 
 clockWork.frame = CreateFrame("FRAME", "clockWork_MainFrame", UIParent)
