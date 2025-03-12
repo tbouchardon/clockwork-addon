@@ -10,7 +10,7 @@ function clockWork.setAllBindings()
 
     --    local key = "ALT-CTRL-SHIFT-Y"
     --    local action = "TEST_BINDING"
-    --    clockWork.print("SetBinding(key, action) ? " .. SetBinding(key, action))
+    clockWork.log.debug("SetBinding(key, action) ? " .. SetBinding(key, action))
 
     --    SetBinding("ALT-SHIFT-1", "CLOCKWORK_PRIORITY_CAST_1")
     --    SetBinding("ALT-SHIFT-2", "CLOCKWORK_PRIORITY_CAST_2")
@@ -84,11 +84,11 @@ function clockWork.printAllBindings()
 
     for index = 1, GetNumBindings() do
         local command, key1, key2 = GetBinding(index);
-        clockWork.print("GetBindingAction : command = " .. command .. ", key = " .. key1)
+        clockWork.log.notice("GetBindingAction : command = " .. command .. ", key = " .. key1)
     end
 end
 
 -- local ok = SetBindingClick("Y", "ButtonTest");
 
--- clockWork.print(tostring(ok))
+clockWork.log.debug(tostring(ok))
 

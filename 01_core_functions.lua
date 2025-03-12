@@ -1,5 +1,3 @@
-clockWork = {}
-
 clockWork.DEBUG_MOD = false
 clockWork.CHECK_ACTIONS_CAST = true
 clockWork.CASTING = false;
@@ -27,13 +25,6 @@ clockWork.targets.list = {}
 clockWork.targets.count = 0
 clockWork.targets.multiTargetMod = false
 clockWork.targets.multiTargetModTrigger = 3
-
-function clockWork.print(text)
-
-    -- clockWork.printDebug("function clockWork.print(" .. tostring(text))
-
-    DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockWork\124r: " .. tostring(text))
-end
 
 function clockWork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
 

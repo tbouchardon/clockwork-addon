@@ -205,7 +205,7 @@ function clockWork.dropSpellInBarSlot(spellName, slot)
     -- clockWork.printDebug("function clockWork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
 
     local id = clockWork.findSpell(spellName, BOOKTYPE_SPELL)
-    clockWork.print(tostring(id))
+    clockWork.log.notice(tostring(id))
     --PickupSpell(spellName)
     if id then
         PickupSpell(id, BOOKTYPE_SPELL)

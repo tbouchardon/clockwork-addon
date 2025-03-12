@@ -67,9 +67,9 @@ function getCoord()
     -- clockWork.printDebug("function getCoord(")
 
     local map = C_Map.GetBestMapForUnit("player")
-    clockWork.print("Map : " .. tostring(map))
+    clockWork.log.notice("Map : " .. tostring(map))
     if map == nil then
-        clockWork.print("Not outdoor")
+        clockWork.log.notice("Not outdoor")
     end
     local position = C_Map.GetPlayerMapPosition(map, "player");
 
@@ -79,6 +79,6 @@ function getCoord()
     local posXString = tostring(posX)
     local posYString = tostring(posY)
 
-    clockWork.print("x = " .. posXString)
-    clockWork.print("y = " .. posYString)
+    clockWork.log.notice("x = " .. posXString)
+    clockWork.log.notice("y = " .. posYString)
 end

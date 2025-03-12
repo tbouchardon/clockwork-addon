@@ -21,7 +21,7 @@ local function rotation1()
 
         -- Fast invoke pet
 
-        --clockWork.print(tostring((not UnitExists("pet") or clockWork.healthPercentage("pet") < 33)))
+        clockWork.log.debug(tostring((not UnitExists("pet") or clockWork.healthPercentage("pet") < 33)))
         clockWork.shouldHitShiftKey(clockWork.keyG,
                 not clockWork.outOfCombat() and
                         not clockWork.playerHasBuff("Domination gangrenée") and
@@ -59,28 +59,28 @@ local function rotation1()
         if (clockWork.afflictionInstableTarget ~= nil) then
             for guid, _ in pairs(clockWork.targets.list) do
                 if guid == clockWork.afflictionInstableTarget then
-                    --clockWork.print("Unstable Affliction : afflictionInstableTargetFound : " .. guid)
+                    clockWork.log.debug("Unstable Affliction : afflictionInstableTargetFound : " .. guid)
                     if (clockWork.afflictionInstableEndTime > GetTime()) then
                         afflictionInstableTargetFound = true
                     else
-                        --clockWork.print("Unstable Affliction : But time's up.")
+                        clockWork.log.debug("Unstable Affliction : But time's up.")
                     end
                 end
             end
         end
         if not afflictionInstableTargetFound then
-            --clockWork.print("Unstable Affliction : afflictionInstableTarget Not Found : clearing")
+            clockWork.log.debug("Unstable Affliction : afflictionInstableTarget Not Found : clearing")
             clockWork.afflictionInstableTarget = nil
             clockWork.afflictionInstableEndTime = nil
         end
         if (not hasDebuff
                 and not afflictionInstableTargetFound
                 and (not clockWork.afflictionInstableEndTime or clockWork.afflictionInstableEndTime < GetTime())) then
-            --clockWork.print("Unstable Affliction : not hasDebuff")
+            clockWork.log.debug("Unstable Affliction : not hasDebuff")
             clockWork.shouldHitKey(clockWork.key6, true, 95)
         end
         if hasDebuff then
-            --clockWork.print("Unstable Affliction : hasDebuff")
+            clockWork.log.debug("Unstable Affliction : hasDebuff")
             currentTargetGUID = UnitGUID("target")
             clockWork.afflictionInstableEndTime = GetTime() + remainingTime
             clockWork.afflictionInstableTarget = currentTargetGUID

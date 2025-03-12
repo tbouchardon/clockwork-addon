@@ -5,7 +5,7 @@
     <!--else-->
     <!--&#45;&#45;-->
     <!--end-->
-    <!--clockWork.print("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
+    <!--clockWork.log.debug("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
     <!--</Binding>-->
 
     <Binding name="CLOCKWORK_TARGET_RAID_1" hidden="true">

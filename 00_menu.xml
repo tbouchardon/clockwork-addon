@@ -164,8 +164,8 @@
                                 else
                                 MyScriptOptionsButtonToggle:SetText("On - Toggle")
                                 end
-                                -- clockWork.print(tostring(MyScriptOptionsButtonToggle:GetPushedTexture()))
-                                -- clockWork.print(tostring(MyScriptOptionsButtonToggle:GetNormalTexture()))
+                                clockWork.log.debug(tostring(MyScriptOptionsButtonToggle:GetPushedTexture()))
+                                clockWork.log.debug(tostring(MyScriptOptionsButtonToggle:GetNormalTexture()))
                             </OnClick>
                         </Scripts>
                     </Button>
@@ -199,11 +199,11 @@
                                 then
                                 clockWork.AGGRO_MOD = true
                                 MyScriptOptionsButtonAggro:SetText("On - Aggro")
-                                clockWork.print("Aggro Mod : On")
+                                clockWork.log.notice("Aggro Mod : On")
                                 else
                                 clockWork.AGGRO_MOD = false
                                 MyScriptOptionsButtonAggro:SetText("Off - Aggro")
-                                clockWork.print("Aggro Mod : Off")
+                                clockWork.log.notice("Aggro Mod : Off")
                                 end
                             </OnClick>
                         </Scripts>

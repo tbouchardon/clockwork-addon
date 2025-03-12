@@ -27,7 +27,7 @@ function clockWork.rotation()
     clockWork.playerHealth.texture:SetColorTexture(1 / 100 * clockWork.healthPercentage("player"), 0, 0, 1)
     clockWork.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * clockWork.manaPercentage("player"), 1)
 
-    --    clockWork.print(tostring(clockWork.targetHostile()) .. tostring(clockWork.targetNeutral()))
+    clockWork.log.debug(tostring(clockWork.targetHostile()) .. tostring(clockWork.targetNeutral()))
 
     if (UnitExists("target") and not UnitIsUnit("player", "target")) then
         if (clockWork.targetUnfriendly()) then
@@ -105,7 +105,7 @@ function clockWork.debuffCanBeCast(spell, slot)
 
     -- clockWork.printDebug("function clockWork.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
 
-    --    clockWork.print("clockWork.debuffCanBeCast(" .. tostring(spell) .. "," .. tostring(slot) .. ')')
+    clockWork.log.debug("clockWork.debuffCanBeCast(" .. tostring(spell) .. "," .. tostring(slot) .. ')')
 
     if not spell then
         return false
@@ -115,7 +115,7 @@ function clockWork.debuffCanBeCast(spell, slot)
         if slot ~= nil then
             return clockWork.actionCanBeCast(slot)
         else
-            clockWork.print("No slot ! (" .. tostring(spell) .. ")")
+            clockWork.log.notice("No slot ! (" .. tostring(spell) .. ")")
             return true
         end
     else
@@ -354,15 +354,15 @@ function clockWork.hasMainHandEnchant()
 
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
 
-    -- if hasMainHandEnchant then clockWork.print("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
-    -- if mainHandExpiration then clockWork.print("mainHandExpiration = "..tostring(mainHandExpiration)) end
-    -- if mainHandCharges then clockWork.print("mainHandCharges = "..tostring(mainHandCharges)) end
-    -- if hasOffHandEnchant then clockWork.print("hasOffHandEnchant = "..tostring(hasOffHandEnchant)) end
-    -- if offHandExpiration then clockWork.print("offHandExpiration = "..tostring(offHandExpiration)) end
-    -- if offHandCharges then clockWork.print("offHandCharges = "..tostring(offHandCharges)) end
-    -- if hasThrownEnchant then clockWork.print("hasThrownEnchant = "..tostring(hasThrownEnchant)) end
-    -- if thrownExpiration then clockWork.print("thrownExpiration = "..tostring(thrownExpiration)) end
-    -- if thrownCharges then clockWork.print("thrownCharges = "..tostring(thrownCharges)) end
+    -- if hasMainHandEnchant then clockWork.log.debug("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
+    -- if mainHandExpiration then clockWork.log.debug("mainHandExpiration = "..tostring(mainHandExpiration)) end
+    -- if mainHandCharges then clockWork.log.debug("mainHandCharges = "..tostring(mainHandCharges)) end
+    -- if hasOffHandEnchant then clockWork.log.debug("hasOffHandEnchant = "..tostring(hasOffHandEnchant)) end
+    -- if offHandExpiration then clockWork.log.debug("offHandExpiration = "..tostring(offHandExpiration)) end
+    -- if offHandCharges then clockWork.log.debug("offHandCharges = "..tostring(offHandCharges)) end
+    -- if hasThrownEnchant then clockWork.log.debug("hasThrownEnchant = "..tostring(hasThrownEnchant)) end
+    -- if thrownExpiration then clockWork.log.debug("thrownExpiration = "..tostring(thrownExpiration)) end
+    -- if thrownCharges then clockWork.log.debug("thrownCharges = "..tostring(thrownCharges)) end
 
     return hasMainHandEnchant
 end

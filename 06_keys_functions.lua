@@ -73,16 +73,23 @@ function clockWork.resetKeys()
     clockWork.key1.priority = -1
 end
 
-function clockWork.shouldHitKey(key, condition, priority, keyModificator)
+function clockWork.shouldHitKey(key, condition, priority)
+
+    -- clockWork.printDebug("function clockWork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
+
+    clockWork.shouldHitKeyWithModifier(key, condition, priority, nil)
+end
+
+function clockWork.shouldHitKeyWithModifier(key, condition, priority, keyModificator)
 
     priority = clockWork.ternary(clockWork.emptyOrNil(priority), 0, priority)
 
     --clockWork.printDebug("function clockWork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
-    --clockWork.print("key.slot = " .. tostring(key.slot))
-    --clockWork.print("should = " .. tostring(condition))
-    --clockWork.print("slot = " .. tostring(actionSlot))
-    --clockWork.print("modificator = " .. tostring(modificator))
+    clockWork.log.debug("key.slot = " .. tostring(key.slot))
+    clockWork.log.debug("should = " .. tostring(condition))
+    clockWork.log.debug("slot = " .. tostring(actionSlot))
+    clockWork.log.debug("modificator = " .. tostring(modificator))
 
     if (condition == false) then
         return false
@@ -104,7 +111,7 @@ function clockWork.shouldHitKey(key, condition, priority, keyModificator)
         --end
     end
 
-    -- clockWork.print("should = " .. tostring(should) .. " " .. tostring(modificator)) -- spam "should = nil nil" dès que le mob est ciblé
+    clockWork.log.debug("should = " .. tostring(should) .. " " .. tostring(modificator)) -- spam "should = nil nil" dès que le mob est ciblé
 
     -- Mode octal
     -- CTRL  = 1
@@ -135,21 +142,21 @@ function clockWork.shouldHitShiftKey(key, condition, priority)
 
     -- clockWork.printDebug("function clockWork.shouldHitShiftKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
-    clockWork.shouldHitKey(key, condition, priority, clockWork.SHIFT)
+    clockWork.shouldHitKeyWithModifier(key, condition, priority, clockWork.SHIFT)
 end
 
 function clockWork.shouldHitCtrlKey(key, condition, priority)
 
     -- clockWork.printDebug("function clockWork.shouldHitCtrlKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
-    --    clockWork.print("clockWork.shouldHitCtrlKey" .. tostring(should) .. " " .. tostring(slot))
+    clockWork.log.debug("clockWork.shouldHitCtrlKey" .. tostring(should) .. " " .. tostring(slot))
 
-    clockWork.shouldHitKey(key, condition, priority, clockWork.CTRL)
+    clockWork.shouldHitKeyWithModifier(key, condition, priority, clockWork.CTRL)
 end
 
 function clockWork.shouldHitAltKey(key, condition, priority)
 
     -- clockWork.printDebug("function clockWork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
-    clockWork.shouldHitKey(key, condition, priority, clockWork.ALT)
+    clockWork.shouldHitKeyWithModifier(key, condition, priority, clockWork.ALT)
 end

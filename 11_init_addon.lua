@@ -28,7 +28,7 @@ function clockWork.playerEnteringWorld()
 
     clockWork.scaleMultiplicator = (768 / tonumber(height)) / GetCVar("uiScale")
 
-    clockWork.print("scaleMultiplicator : " .. tostring(clockWork.scaleMultiplicator))
+    clockWork.log.notice("scaleMultiplicator : " .. tostring(clockWork.scaleMultiplicator))
 
     -- init Frames
 
@@ -179,7 +179,7 @@ local function onUpdate()
     if (clockWork.nextUpdate < now) then
 
         if (C_Map.GetBestMapForUnit("player") == nil) then
-            --clockWork.print("Player is nowhere to be found.")
+            clockWork.log.debug("Player is nowhere to be found.")
             --return
         end
 
@@ -208,7 +208,7 @@ local function onUpdate()
                 if index == clockWork.waypointListIndex then
 
                     finished = false
-                    clockWork.print("Adding Waypoint : " .. coords)
+                    clockWork.log.notice("Adding Waypoint : " .. coords)
                     clockWork.updatePositionFromCoordinates(coords)
                     clockWork.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
                     clockWork.ADDING_WP = true;
@@ -382,14 +382,14 @@ function clockWork.updateNumberOfTargets()
 
     if clockWork.targets.list ~= nil then
         for i, time in pairs(clockWork.targets.list) do
-            --clockWork.print(tostring(clockWork.emptyOrNil(i)))
-            --clockWork.print(tostring(i) .. " && " .. tostring(time) .. " && " .. tostring(now - time) .. tostring(now - time > 10))
+            clockWork.log.debug(tostring(clockWork.emptyOrNil(i)))
+            clockWork.log.debug(tostring(i) .. " && " .. tostring(time) .. " && " .. tostring(now - time) .. tostring(now - time > 10))
             if (GetTime() - time > 5) then
                 clockWork.targets.list[i] = nil
             end
         end
-        --clockWork.print(tostring(clockWork.tableLength(clockWork.targets.list)))
-        --clockWork.print(tostring(clockWork.tableLength(clockWork.targets.list) / 255))
+        clockWork.log.debug(tostring(clockWork.tableLength(clockWork.targets.list)))
+        clockWork.log.debug(tostring(clockWork.tableLength(clockWork.targets.list) / 255))
         clockWork.targets.count = clockWork.tableLength(clockWork.targets.list)
         clockWork.numberOfTargets.texture:SetColorTexture(clockWork.targets.count / 255, 0, 0, 1)
     else
