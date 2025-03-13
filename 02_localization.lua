@@ -10,7 +10,7 @@
 BINDING_HEADER_CLOCKWORK = "ClockWork"
 BINDING_NAME_TEST_BINDING = "Test Bindings"
 
-function clockWork.createLocalizedText(english, french)
+function Clockwork.createLocalizedText(english, french)
 
     local localization;
 
@@ -26,7 +26,7 @@ function clockWork.createLocalizedText(english, french)
     return localization
 end
 
-function clockWork.initLocalization()
+function Clockwork.initLocalization()
 
-    clockWork.lightningShield = clockWork.createLocalizedText("Lightning Shield", "Bouclier de foudre")
+    Clockwork.lightningShield = Clockwork.createLocalizedText("Lightning Shield", "Bouclier de foudre")
 end

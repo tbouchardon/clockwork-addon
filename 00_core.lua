@@ -1,3 +1,5 @@
-clockWork = {}
+Clockwork = {}
+---@type GameTooltip
+ClockworkTooltip = ClockworkTooltip
 
-clockWork.LOG_LEVEL = 'DEBUG'
+Clockwork.LOG_LEVEL = 'DEBUG'

@@ -8,10 +8,10 @@
 
 if UnitClass("player") == "Warlock" then
 
-    clockWork.dropSpellInBarSlot("Curse of Agony", 5)
-    clockWork.dropSpellInBarSlot("Corruption", 4)
-    clockWork.dropSpellInBarSlot("Immolate", 3)
-    clockWork.dropSpellInBarSlot("Shadow Bolt", 1)
+    Clockwork.dropSpellInBarSlot("Curse of Agony", 5)
+    Clockwork.dropSpellInBarSlot("Corruption", 4)
+    Clockwork.dropSpellInBarSlot("Immolate", 3)
+    Clockwork.dropSpellInBarSlot("Shadow Bolt", 1)
 
 elseif UnitClass("player") == "Warrior" then
 end

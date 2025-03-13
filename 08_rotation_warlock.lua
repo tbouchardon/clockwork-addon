@@ -9,131 +9,131 @@
 local function rotation1()
 
     priority = 100
-    --clockWork.printDebug("function clockWork.warlockAfflictionRotation")
+    --Clockwork.printDebug("function Clockwork.warlockAfflictionRotation")
 
-    -- if (clockWork.DEBUG_MOD) then clockWork.playerHasBuff(, "for debug purpose") end
+    -- if (Clockwork.DEBUG_MOD) then Clockwork.playerHasBuff(, "for debug purpose") end
 
     -- N'attaquer que si :
 
-    if (clockWork.unitExistCanAndShouldDie() and not clockWork.isCasting()) then
+    if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
 
         local hasDebuff, hasAnyDebuff, remainingTime
 
         -- Fast invoke pet
 
-        clockWork.log.debug(tostring((not UnitExists("pet") or clockWork.healthPercentage("pet") < 33)))
-        clockWork.shouldHitShiftKey(clockWork.keyG,
-                not clockWork.outOfCombat() and
-                        not clockWork.playerHasBuff("Domination gangrenée") and
-                        (not UnitExists("pet") or clockWork.healthPercentage("pet") < 33), 200)
-        clockWork.shouldHitKey(clockWork.keyG, clockWork.playerHasBuff("Domination gangrenée") and true, 195)
+        Clockwork.log.debug(tostring((not UnitExists("pet") or Clockwork.healthPercentage("pet") < 33)))
+        Clockwork.shouldHitShiftKey(Clockwork.keyG,
+                not Clockwork.outOfCombat() and
+                        not Clockwork.playerHasBuff("Domination gangrenée") and
+                        (not UnitExists("pet") or Clockwork.healthPercentage("pet") < 33), 200)
+        Clockwork.shouldHitKey(Clockwork.keyG, Clockwork.playerHasBuff("Domination gangrenée") and true, 195)
 
         -- Repel enemy player
-        clockWork.shouldHitKey(clockWork.keyR, clockWork.targetInRange(clockWork.TRADE) and not clockWork.targetHasDebuff("Voile de mort") and clockWork.enemyPlayer(), 190)
+        Clockwork.shouldHitKey(Clockwork.keyR, Clockwork.targetInRange(Clockwork.TRADE) and not Clockwork.targetHasDebuff("Voile de mort") and Clockwork.enemyPlayer(), 190)
 
         -- Le pet attaque SI l'enemi attaque le joueur ET est à moins de 9.9 yards
         if UnitExists("pet")
-                and clockWork.healthPercentage("pet") > 10
+                and Clockwork.healthPercentage("pet") > 10
                 and UnitIsUnit("player", "targettarget")
                 and not UnitIsUnit("pettarget", "target")
-                and clockWork.targetInRange(clockWork.DUEL) then
-            clockWork.shouldHitCtrlKey(clockWork.key1, nil, 155)
+                and Clockwork.targetInRange(Clockwork.DUEL) then
+            Clockwork.shouldHitCtrlKey(Clockwork.key1, nil, 155)
         end -- Pet Attack
 
         -- Heal self
-        clockWork.shouldHitKey(clockWork.keyT, clockWork.playerHealthPct() < 60, 150)
+        Clockwork.shouldHitKey(Clockwork.keyT, Clockwork.playerHealthPct() < 60, 150)
 
         -- Heal pet
-        clockWork.shouldHitShiftKey(clockWork.keyT, UnitExists("pet") and clockWork.healthPercentage("pet") < 33, 145)
+        Clockwork.shouldHitShiftKey(Clockwork.keyT, UnitExists("pet") and Clockwork.healthPercentage("pet") < 33, 145)
 
         -- Crépuscule
-        clockWork.shouldHitKey(clockWork.key1, clockWork.playerHasBuff("Crépuscule") and true, 105)
+        Clockwork.shouldHitKey(Clockwork.key1, Clockwork.playerHasBuff("Crépuscule") and true, 105)
 
         --Haunt
-        hasDebuff, remainingTime = clockWork.targetHasDebuff("Hanter")
-        clockWork.shouldHitKey(clockWork.keyD, not hasDebuff or remainingTime < 3, 100)
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Hanter")
+        Clockwork.shouldHitKey(Clockwork.keyD, not hasDebuff or remainingTime < 3, 100)
 
         --Unstable Affliction
-        hasDebuff, remainingTime = clockWork.targetHasDebuff("Affliction instable")
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Affliction instable")
         afflictionInstableTargetFound = false
-        if (clockWork.afflictionInstableTarget ~= nil) then
-            for guid, _ in pairs(clockWork.targets.list) do
-                if guid == clockWork.afflictionInstableTarget then
-                    clockWork.log.debug("Unstable Affliction : afflictionInstableTargetFound : " .. guid)
-                    if (clockWork.afflictionInstableEndTime > GetTime()) then
+        if (Clockwork.afflictionInstableTarget ~= nil) then
+            for guid, _ in pairs(Clockwork.targets.list) do
+                if guid == Clockwork.afflictionInstableTarget then
+                    Clockwork.log.debug("Unstable Affliction : afflictionInstableTargetFound : " .. guid)
+                    if (Clockwork.afflictionInstableEndTime > GetTime()) then
                         afflictionInstableTargetFound = true
                     else
-                        clockWork.log.debug("Unstable Affliction : But time's up.")
+                        Clockwork.log.debug("Unstable Affliction : But time's up.")
                     end
                 end
             end
         end
         if not afflictionInstableTargetFound then
-            clockWork.log.debug("Unstable Affliction : afflictionInstableTarget Not Found : clearing")
-            clockWork.afflictionInstableTarget = nil
-            clockWork.afflictionInstableEndTime = nil
+            Clockwork.log.debug("Unstable Affliction : afflictionInstableTarget Not Found : clearing")
+            Clockwork.afflictionInstableTarget = nil
+            Clockwork.afflictionInstableEndTime = nil
         end
         if (not hasDebuff
                 and not afflictionInstableTargetFound
-                and (not clockWork.afflictionInstableEndTime or clockWork.afflictionInstableEndTime < GetTime())) then
-            clockWork.log.debug("Unstable Affliction : not hasDebuff")
-            clockWork.shouldHitKey(clockWork.key6, true, 95)
+                and (not Clockwork.afflictionInstableEndTime or Clockwork.afflictionInstableEndTime < GetTime())) then
+            Clockwork.log.debug("Unstable Affliction : not hasDebuff")
+            Clockwork.shouldHitKey(Clockwork.key6, true, 95)
         end
         if hasDebuff then
-            clockWork.log.debug("Unstable Affliction : hasDebuff")
+            Clockwork.log.debug("Unstable Affliction : hasDebuff")
             currentTargetGUID = UnitGUID("target")
-            clockWork.afflictionInstableEndTime = GetTime() + remainingTime
-            clockWork.afflictionInstableTarget = currentTargetGUID
+            Clockwork.afflictionInstableEndTime = GetTime() + remainingTime
+            Clockwork.afflictionInstableTarget = currentTargetGUID
         end
 
         --Agony
-        hasDebuff, remainingTime = clockWork.targetHasDebuff("Agonie")
-        clockWork.shouldHitKey(clockWork.key5, not hasDebuff or remainingTime < 4, 90)
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Agonie")
+        Clockwork.shouldHitKey(Clockwork.key5, not hasDebuff or remainingTime < 4, 90)
 
         --Corruption
-        hasDebuff, remainingTime = clockWork.targetHasDebuff("Corruption")
-        clockWork.shouldHitKey(clockWork.key3, not hasDebuff, 85) --or remainingTime < 2
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Corruption")
+        Clockwork.shouldHitKey(Clockwork.key3, not hasDebuff, 85) --or remainingTime < 2
 
         -- Singularité
-        clockWork.shouldHitKey(clockWork.keyF, nil, 80)
+        Clockwork.shouldHitKey(Clockwork.keyF, nil, 80)
 
         --Summon Darkglare
-        clockWork.shouldHitShiftKey(clockWork.keyG, clockWork.targetsOwnDebuffCount() > 3, 75)
+        Clockwork.shouldHitShiftKey(Clockwork.keyG, Clockwork.targetsOwnDebuffCount() > 3, 75)
 
         -- Graine de Corruption
-        hasDebuff, remainingTime = clockWork.targetHasDebuff("Graine de Corruption")
-        clockWork.shouldHitShiftKey(clockWork.keyF,
-                clockWork.targets.multiTargetMod
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Graine de Corruption")
+        Clockwork.shouldHitShiftKey(Clockwork.keyF,
+                Clockwork.targets.multiTargetMod
                         and UnitPower("player", Enum.PowerType.SoulShards) > 1
                         and not hasDebuff, 86)
 
         --Malefic Raptures
-        clockWork.shouldHitKey(clockWork.key2,
-                (UnitPower("player", Enum.PowerType.SoulShards) > 1 and clockWork.targetsOwnDebuffCount() > 3)
+        Clockwork.shouldHitKey(Clockwork.key2,
+                (UnitPower("player", Enum.PowerType.SoulShards) > 1 and Clockwork.targetsOwnDebuffCount() > 3)
                         or UnitPower("player", Enum.PowerType.SoulShards) == 5, 70)
 
 
         -- filler
-        clockWork.shouldHitKey(clockWork.key1)
+        Clockwork.shouldHitKey(Clockwork.key1)
 
         -- ALT KEYS
         -- SHIFT KEYS
 
-        clockWork.shouldHitKey(clockWork.keyG, not UnitExists("pet")) -- Invoquer si le pet n'existe pas
+        Clockwork.shouldHitKey(Clockwork.keyG, not UnitExists("pet")) -- Invoquer si le pet n'existe pas
 
-    elseif (clockWork.outOfCombat()) then
+    elseif (Clockwork.outOfCombat()) then
         -- hors combat
 
-        --clockWork.printDebug("clockWork.outOfCombat()")
+        --Clockwork.printDebug("Clockwork.outOfCombat()")
 
-        --clockWork.shouldHitKey(clockWork.keyQ, clockWork.playerManaPct() < 33 and clockWork.playerHealthPct() > 66) -- Life Tap
+        --Clockwork.shouldHitKey(Clockwork.keyQ, Clockwork.playerManaPct() < 33 and Clockwork.playerHealthPct() > 66) -- Life Tap
 
-        hasDebuff, remainingTime = clockWork.playerHasBuff("Pierre d'âme")
-        clockWork.shouldHitKey(clockWork.keyEq, not hasDebuff)
+        hasDebuff, remainingTime = Clockwork.playerHasBuff("Pierre d'âme")
+        Clockwork.shouldHitKey(Clockwork.keyEq, not hasDebuff)
 
-        --clockWork.shouldHitShiftKey(clockWork.keyT, not clockWork.playerHasBuff("Demon Skin")) -- Buff
-        clockWork.shouldHitKey(clockWork.keyG, not UnitExists("pet") and not clockWork.isCasting()) -- Invoquer le pet s'il n'existe pas
-        --clockWork.shouldHitShiftKey(clockWork.keyQ, clockWork.playerHealthPct() < 25 and not clockWork.playerHasBuff("Food")) -- Manger
+        --Clockwork.shouldHitShiftKey(Clockwork.keyT, not Clockwork.playerHasBuff("Demon Skin")) -- Buff
+        Clockwork.shouldHitKey(Clockwork.keyG, not UnitExists("pet") and not Clockwork.isCasting()) -- Invoquer le pet s'il n'existe pas
+        --Clockwork.shouldHitShiftKey(Clockwork.keyQ, Clockwork.playerHealthPct() < 25 and not Clockwork.playerHasBuff("Food")) -- Manger
     end
 end
 
@@ -145,13 +145,13 @@ end
 local function rotation3()
 end
 
-function clockWork.warlockRotation()
+function Clockwork.warlockRotation()
 
-    if clockWork.spe == 1 then
+    if Clockwork.spe == 1 then
         rotation1()
-    elseif clockWork.spe == 2 then
+    elseif Clockwork.spe == 2 then
         rotation2()
-    elseif clockWork.spe == 3 then
+    elseif Clockwork.spe == 3 then
         rotation3()
     end
 end

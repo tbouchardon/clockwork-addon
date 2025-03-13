@@ -5,128 +5,128 @@
     <!--else-->
     <!--&#45;&#45;-->
     <!--end-->
-    <!--clockWork.log.debug("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
+    <!--Clockwork.log.debug("self = "..tostring(self)..", button = "..tostring(button)..", keystate = "..tostring(keystate))-->
     <!--</Binding>-->
 
     <Binding name="CLOCKWORK_TARGET_RAID_1" hidden="true">
-        clockWork.targetMember(1)
+        Clockwork.targetMember(1)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_2" hidden="true">
-        clockWork.targetMember(2)
+        Clockwork.targetMember(2)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_3" hidden="true">
-        clockWork.targetMember(3)
+        Clockwork.targetMember(3)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_4" hidden="true">
-        clockWork.targetMember(4)
+        Clockwork.targetMember(4)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_5" hidden="true">
-        clockWork.targetMember(5)
+        Clockwork.targetMember(5)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_6" hidden="true">
-        clockWork.targetMember(6)
+        Clockwork.targetMember(6)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_7" hidden="true">
-        clockWork.targetMember(7)
+        Clockwork.targetMember(7)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_8" hidden="true">
-        clockWork.targetMember(8)
+        Clockwork.targetMember(8)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_9" hidden="true">
-        clockWork.targetMember(9)
+        Clockwork.targetMember(9)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_10" hidden="true">
-        clockWork.targetMember(10)
+        Clockwork.targetMember(10)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_11" hidden="true">
-        clockWork.targetMember(11)
+        Clockwork.targetMember(11)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_12" hidden="true">
-        clockWork.targetMember(12)
+        Clockwork.targetMember(12)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_13" hidden="true">
-        clockWork.targetMember(13)
+        Clockwork.targetMember(13)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_14" hidden="true">
-        clockWork.targetMember(14)
+        Clockwork.targetMember(14)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_15" hidden="true">
-        clockWork.targetMember(15)
+        Clockwork.targetMember(15)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_16" hidden="true">
-        clockWork.targetMember(16)
+        Clockwork.targetMember(16)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_17" hidden="true">
-        clockWork.targetMember(17)
+        Clockwork.targetMember(17)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_18" hidden="true">
-        clockWork.targetMember(18)
+        Clockwork.targetMember(18)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_19" hidden="true">
-        clockWork.targetMember(19)
+        Clockwork.targetMember(19)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_20" hidden="true">
-        clockWork.targetMember(20)
+        Clockwork.targetMember(20)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_21" hidden="true">
-        clockWork.targetMember(21)
+        Clockwork.targetMember(21)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_22" hidden="true">
-        clockWork.targetMember(22)
+        Clockwork.targetMember(22)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_23" hidden="true">
-        clockWork.targetMember(23)
+        Clockwork.targetMember(23)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_24" hidden="true">
-        clockWork.targetMember(24)
+        Clockwork.targetMember(24)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_25" hidden="true">
-        clockWork.targetMember(25)
+        Clockwork.targetMember(25)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_26" hidden="true">
-        clockWork.targetMember(26)
+        Clockwork.targetMember(26)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_27" hidden="true">
-        clockWork.targetMember(27)
+        Clockwork.targetMember(27)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_28" hidden="true">
-        clockWork.targetMember(28)
+        Clockwork.targetMember(28)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_29" hidden="true">
-        clockWork.targetMember(29)
+        Clockwork.targetMember(29)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_30" hidden="true">
-        clockWork.targetMember(30)
+        Clockwork.targetMember(30)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_31" hidden="true">
-        clockWork.targetMember(31)
+        Clockwork.targetMember(31)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_32" hidden="true">
-        clockWork.targetMember(32)
+        Clockwork.targetMember(32)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_33" hidden="true">
-        clockWork.targetMember(33)
+        Clockwork.targetMember(33)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_34" hidden="true">
-        clockWork.targetMember(34)
+        Clockwork.targetMember(34)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_35" hidden="true">
-        clockWork.targetMember(35)
+        Clockwork.targetMember(35)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_36" hidden="true">
-        clockWork.targetMember(36)
+        Clockwork.targetMember(36)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_37" hidden="true">
-        clockWork.targetMember(37)
+        Clockwork.targetMember(37)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_38" hidden="true">
-        clockWork.targetMember(38)
+        Clockwork.targetMember(38)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_39" hidden="true">
-        clockWork.targetMember(39)
+        Clockwork.targetMember(39)
     </Binding>
     <Binding name="CLOCKWORK_TARGET_RAID_40" hidden="true">
-        clockWork.targetMember(40)
+        Clockwork.targetMember(40)
     </Binding>
 
     <Binding name="CLOCKWORK_PRIORITY_CAST_1" hidden="true" runOnUp="true">

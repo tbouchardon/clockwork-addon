@@ -1,26 +1,26 @@
-function clockWork.getBuffName(id)
-
-    -- clockWork.printDebug("function clockWork.getBuffName(" .. tostring(id))
-    ClockWorkTooltip:SetUnitBuff(id)
-    local buffName = tostring(ClockWorkTooltipTextLeft1:GetText())
-    if (buffName) then
-        return buffName:GetText() or id
+function Clockwork.getBuffName(id)
+    ClockworkTooltip:ClearLines()
+    ClockworkTooltip:SetUnitBuff(id)
+    local tooltipTextLeft1 = ClockworkTooltip["TextLeft1"]
+    if not tooltipTextLeft1 then
+        return id
     end
-    return id
+    local buffName = tooltipTextLeft1:GetText()
+    return buffName or id
 end
 
-function clockWork.isUnitCastingEffect(unit, effect)
-
-    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId = UnitCastingInfo(unit)
+function Clockwork.isUnitCastingEffect(unit, effect)
+    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId = UnitCastingInfo(
+        unit)
 
     if (name == nil) then
         name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(unit)
     end
 
-    --clockWork.printDebug(name)
+    --Clockwork.printDebug(name)
 
     --if (name ~= nil) then
-    --    clockWork.printDebug("clockWork.isUnitCastingEffect : " .. " " .. tostring(name))
+    --    Clockwork.printDebug("Clockwork.isUnitCastingEffect : " .. " " .. tostring(name))
     --end
 
     if effect == nil then
@@ -30,37 +30,33 @@ function clockWork.isUnitCastingEffect(unit, effect)
     return string.find(name, effect)
 end
 
-function clockWork.isCastingEffect(effect)
-
-    return clockWork.isUnitCastingEffect("player", effect)
+function Clockwork.isCastingEffect(effect)
+    return Clockwork.isUnitCastingEffect("player", effect)
 end
 
-function clockWork.isUnitCasting(unit)
-
-    return clockWork.isUnitCastingEffect(unit, nil)
+function Clockwork.isUnitCasting(unit)
+    return Clockwork.isUnitCastingEffect(unit, nil)
 end
 
-function clockWork.isCasting()
-
-    return clockWork.isUnitCasting("player")
+function Clockwork.isCasting()
+    return Clockwork.isUnitCasting("player")
 end
 
-function clockWork.targetsOwnDebuffCount()
-
+function Clockwork.targetsOwnDebuffCount()
     local index = 1
     local numberOfDebuff = 0
 
-    while UnitAura("target", index, "HARMFUL") do
+    while C_UnitAuras.GetAuraDataByIndex("target", index, "HARMFUL") do
+        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod =
+            C_UnitAuras.GetAuraDataByIndex("target", index, "HARMFUL")
 
-        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura("target", index, "HARMFUL")
-
-        --clockWork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer))
+        --Clockwork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer))
 
         if (castByPlayer == true) then
             numberOfDebuff = numberOfDebuff + 1
         end
 
-        --clockWork.printDebug("index : " .. tostring(index))
+        --Clockwork.printDebug("index : " .. tostring(index))
 
         index = index + 1
     end
@@ -68,32 +64,27 @@ function clockWork.targetsOwnDebuffCount()
     return numberOfDebuff
 end
 
-function clockWork.unitHasDebuff(unit, effect)
-
+function Clockwork.unitHasDebuff(unit, effect)
     -- https://wowpedia.fandom.com/wiki/API_UnitAura
 
-    -- clockWork.printDebug("function clockWork.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
+    -- Clockwork.printDebug("function Clockwork.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1
 
-    while UnitAura(unit, index, "HARMFUL") do
-
-        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index, "HARMFUL")
-
-        if (string.find(name, effect) and castByPlayer) then
-
+    while C_UnitAuras.GetAuraDataByIndex(unit, index, "HARMFUL") do
+        local aura = C_UnitAuras.GetAuraDataByIndex(unit, index, "HARMFUL")
+        if (aura and string.find(aura.name, effect) and aura.isFromPlayerOrPlayerPet) then
             local remainingTime = 0
 
-            if expirationTime then
-
-                remainingTime = expirationTime - GetTime()
+            if aura.expirationTime then
+                remainingTime = aura.expirationTime - GetTime()
             end
 
-            --clockWork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
+            --Clockwork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
 
             return true, true, remainingTime
         end
 
-        --clockWork.printDebug(name .. " " .. source .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
+        --Clockwork.printDebug(name .. " " .. source .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
 
         index = index + 1
     end
@@ -101,63 +92,53 @@ function clockWork.unitHasDebuff(unit, effect)
     return false, index > 1, 0
 end
 
-function clockWork.targetHasDebuff(effect)
+function Clockwork.targetHasDebuff(effect)
+    local buff, anybuff, remainingTime = Clockwork.unitHasDebuff("target", effect)
 
-    local buff, anybuff, remainingTime = clockWork.unitHasDebuff("target", effect)
-
-    --clockWork.printDebug("clockWork.targetHasDebuff(" .. effect .. ") => buff : " .. tostring(buff) .. ", anybuff : " .. tostring(anybuff) .. " remainingTime : " .. tostring(remainingTime))
+    --Clockwork.printDebug("Clockwork.targetHasDebuff(" .. effect .. ") => buff : " .. tostring(buff) .. ", anybuff : " .. tostring(anybuff) .. " remainingTime : " .. tostring(remainingTime))
 
     return buff, remainingTime
 end
 
-function clockWork.playerHasAnyBuff()
-
-    local buff, anybuff = clockWork.unitHasBuff("player", "")
-
-    return anybuff
-end
-
-function clockWork.playerHasDebuff(effect)
-
-    return clockWork.unitHasDebuff("player", effect)
-end
-
-function clockWork.unitHasAnyBuff(unit)
-
-    local buff, anybuff = clockWork.unitHasBuff(unit, "")
+function Clockwork.playerHasAnyBuff()
+    local buff, anybuff = Clockwork.unitHasBuff("player", "")
 
     return anybuff
 end
 
-function clockWork.playerHasAnyDebuff()
+function Clockwork.playerHasDebuff(effect)
+    return Clockwork.unitHasDebuff("player", effect)
+end
 
-    local buff, anybuff = clockWork.unitHasDebuff("player", "")
+function Clockwork.unitHasAnyBuff(unit)
+    local buff, anybuff = Clockwork.unitHasBuff(unit, "")
 
     return anybuff
 end
 
-function clockWork.unitHasAnyDebuff(unit)
-
-    local buff, anybuff = clockWork.unitHasDebuff(unit, "")
+function Clockwork.playerHasAnyDebuff()
+    local buff, anybuff = Clockwork.unitHasDebuff("player", "")
 
     return anybuff
 end
 
-function clockWork.unitHasBuff(unit, effect)
+function Clockwork.unitHasAnyDebuff(unit)
+    local buff, anybuff = Clockwork.unitHasDebuff(unit, "")
 
-    -- clockWork.printDebug("function clockWork.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
+    return anybuff
+end
+
+function Clockwork.unitHasBuff(unit, effect)
+    -- Clockwork.printDebug("function Clockwork.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1
-    while UnitBuff(unit, index) do
+    while C_UnitAuras.GetBuffDataByIndex(unit, index) do
+        local aura = C_UnitAuras.GetAuraDataByIndex(unit, index)
 
-        local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index)
-
-        if (string.find(name, effect) and castByPlayer) then
-
+        if (aura and string.find(aura.name, effect) and aura.isFromPlayerOrPlayerPet) then
             local remainingTime = 0
 
-            if expirationTime then
-
-                remainingTime = expirationTime - GetTime()
+            if aura.expirationTime then
+                remainingTime = aura.expirationTime - GetTime()
             end
 
             return true, true, remainingTime
@@ -169,51 +150,43 @@ function clockWork.unitHasBuff(unit, effect)
     return false, index > 1, 0
 end
 
-function clockWork.playerHasBuff(effect)
-
-    return clockWork.unitHasBuff("player", effect)
+function Clockwork.playerHasBuff(effect)
+    return Clockwork.unitHasBuff("player", effect)
 end
 
-function clockWork.findSpell(spellName, bookType)
-
-    -- clockWork.printDebug("function clockWork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
+function Clockwork.findSpellSlotIndex(spellName, bookType)
+    -- Clockwork.printDebug("function Clockwork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
     --local i, s
     local found = false
-    for i = 1, MAX_SKILLLINE_TABS do
-        local name, texture, offset, numSpells = GetSpellTabInfo(i)
-        if (not name) then
+    for spellTabIndex = 1, C_SpellBook.GetNumSpellBookSkillLines() do
+        local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(spellTabIndex)
+        if (not skillLineInfo.name) then
             break
         end
-        for s = offset + 1, offset + numSpells do
-            local spell, rank = GetSpellName(s, bookType)
-            if (spell == spellName) then
+        for spellIndex = skillLineInfo.itemIndexOffset + 1, skillLineInfo.itemIndexOffset + skillLineInfo.numSpellBookItems do
+            local name, subName = C_SpellBook.GetSpellBookItemName(spellIndex, bookType)
+            if (name == spellName) then
                 found = true
             end
-            if (found and spell ~= spellName) then
-                return s - 1
+            if (found and name ~= spellName) then
+                return spellIndex - 1
             end
         end
-    end
-    if (found) then
-        return s
     end
     return nil
 end
 
-function clockWork.dropSpellInBarSlot(spellName, slot)
+function Clockwork.dropSpellInBarSlot(spellName, slot)
+    -- Clockwork.printDebug("function Clockwork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
 
-    -- clockWork.printDebug("function clockWork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
-
-    local id = clockWork.findSpell(spellName, BOOKTYPE_SPELL)
-    clockWork.log.notice(tostring(id))
-    --PickupSpell(spellName)
-    if id then
-        PickupSpell(id, BOOKTYPE_SPELL)
+    local spellSlotIndex = Clockwork.findSpellSlotIndex(spellName, Enum.SpellBookSpellBank.Player)
+    Clockwork.log.notice(tostring(spellSlotIndex))
+    if spellSlotIndex then
+        C_SpellBook.PickupSpellBookItem(spellSlotIndex, Enum.SpellBookSpellBank.Player)
         PlaceAction(slot)
     end
 end
 
-function clockWork.isPassiveDamage(arg1)
-
-    return string.find(arg1, clockWork.lightningShield)
+function Clockwork.isPassiveDamage(arg1)
+    return string.find(arg1, Clockwork.lightningShield)
 end

@@ -1,25 +1,25 @@
-function clockWork.printDebug(text)
+function Clockwork.printDebug(text)
 
-    -- clockWork.printDebug("function clockWork.printDebug(" .. tostring(text))
+    -- Clockwork.printDebug("function Clockwork.printDebug(" .. tostring(text))
 
-    if clockWork.DEBUG_MOD then
+    if Clockwork.DEBUG_MOD then
 
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockWork\124r \124cFF8eacbb(Debug)\124r: " .. tostring(text))
     end
 end
 
-function clockWork.listAllSpells()
+function Clockwork.listAllSpells()
 
-    -- clockWork.printDebug("function clockWork.listAllSpells(")
+    -- Clockwork.printDebug("function Clockwork.listAllSpells(")
 
-    clockWork.printDebug("clockWork.listAllSpells()")
+    Clockwork.printDebug("Clockwork.listAllSpells()")
 
-    if clockWork.DEBUG_MOD then
+    if Clockwork.DEBUG_MOD then
 
         local index = 1;
 
         while true do
-            local spellName, spellSubName, spellID = GetSpellBookItemName(index, BOOKTYPE_SPELL);
+            local spellName, spellSubName, spellID = C_SpellBook.GetSpellBookItemName(index, Enum.SpellBookSpellBank.Player);
 
             if not spellName then
                 do
@@ -29,9 +29,9 @@ function clockWork.listAllSpells()
 
             if (spellSubName and string.find(spellSubName, "Rank")) then
                 local rank = strsub(spellSubName, 6, strlen(spellSubName));
-                clockWork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName .. ", rank=" .. rank);
+                Clockwork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName .. ", rank=" .. rank);
             else
-                clockWork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName);
+                Clockwork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName);
             end
 
             index = index + 1;
@@ -39,9 +39,9 @@ function clockWork.listAllSpells()
     end
 end
 
-function clockWork.reportActionButtons()
+function Clockwork.reportActionButtons()
 
-    -- clockWork.printDebug("function clockWork.reportActionButtons(")
+    -- Clockwork.printDebug("function Clockwork.reportActionButtons(")
 
     for actionSlot = 1, 120 do
 
@@ -57,21 +57,27 @@ function clockWork.reportActionButtons()
                 message = message .. " \"" .. actionText .. "\"";
             end
 
-            clockWork.printDebug(message);
+            Clockwork.printDebug(message);
         end
     end
 end
 
-function getCoord()
+function Clockwork.getCoord()
 
-    -- clockWork.printDebug("function getCoord(")
+    -- Clockwork.printDebug("function getCoord(")
 
     local map = C_Map.GetBestMapForUnit("player")
-    clockWork.log.notice("Map : " .. tostring(map))
+    Clockwork.log.notice("Map : " .. tostring(map))
     if map == nil then
-        clockWork.log.notice("Not outdoor")
+        Clockwork.log.notice("Not outdoor")
+        return
     end
     local position = C_Map.GetPlayerMapPosition(map, "player");
+
+    if position == nil then
+        Clockwork.log.notice("No position")
+        return
+    end
 
     local posX = tostring(position["x"])
     local posY = tostring(position["y"])
@@ -79,6 +85,6 @@ function getCoord()
     local posXString = tostring(posX)
     local posYString = tostring(posY)
 
-    clockWork.log.notice("x = " .. posXString)
-    clockWork.log.notice("y = " .. posYString)
+    Clockwork.log.notice("x = " .. posXString)
+    Clockwork.log.notice("y = " .. posYString)
 end

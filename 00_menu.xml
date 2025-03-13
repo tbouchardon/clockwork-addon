@@ -157,15 +157,15 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickToggle()
-                                if clockWork.TOGGLE_ON_OFF == false
+                                Clockwork.clickToggle()
+                                if Clockwork.TOGGLE_ON_OFF == false
                                 then
                                 MyScriptOptionsButtonToggle:SetText("Off - Toggle")
                                 else
                                 MyScriptOptionsButtonToggle:SetText("On - Toggle")
                                 end
-                                clockWork.log.debug(tostring(MyScriptOptionsButtonToggle:GetPushedTexture()))
-                                clockWork.log.debug(tostring(MyScriptOptionsButtonToggle:GetNormalTexture()))
+                                Clockwork.log.debug(tostring(MyScriptOptionsButtonToggle:GetPushedTexture()))
+                                Clockwork.log.debug(tostring(MyScriptOptionsButtonToggle:GetNormalTexture()))
                             </OnClick>
                         </Scripts>
                     </Button>
@@ -195,15 +195,15 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                if clockWork.AGGRO_MOD == false
+                                if Clockwork.AGGRO_MOD == false
                                 then
-                                clockWork.AGGRO_MOD = true
+                                Clockwork.AGGRO_MOD = true
                                 MyScriptOptionsButtonAggro:SetText("On - Aggro")
-                                clockWork.log.notice("Aggro Mod : On")
+                                Clockwork.log.notice("Aggro Mod : On")
                                 else
-                                clockWork.AGGRO_MOD = false
+                                Clockwork.AGGRO_MOD = false
                                 MyScriptOptionsButtonAggro:SetText("Off - Aggro")
-                                clockWork.log.notice("Aggro Mod : Off")
+                                Clockwork.log.notice("Aggro Mod : Off")
                                 end
                             </OnClick>
                         </Scripts>
@@ -234,8 +234,8 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickTNE()
-                                if clockWork.TARGET_NEAREST_ENEMY == false
+                                Clockwork.clickTNE()
+                                if Clockwork.TARGET_NEAREST_ENEMY == false
                                 then
                                 MyScriptOptionsButtonTNE:SetText("Off - TNE")
                                 else
@@ -270,8 +270,8 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickDrive()
-                                if clockWork.DRIVE_MOD == false
+                                Clockwork.clickDrive()
+                                if Clockwork.DRIVE_MOD == false
                                 then
                                 MyScriptOptionsButtonDrive:SetText("Off - Drive")
                                 else
@@ -306,8 +306,8 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickLoop()
-                                if clockWork.DRIVE_LOOP == false
+                                Clockwork.clickLoop()
+                                if Clockwork.DRIVE_LOOP == false
                                 then
                                 MyScriptOptionsButtonLoop:SetText("Off - Loop WP")
                                 else
@@ -342,8 +342,8 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickDebug()
-                                if clockWork.DEBUG_MOD == false
+                                Clockwork.clickDebug()
+                                if Clockwork.DEBUG_MOD == false
                                 then
                                 MyScriptOptionsButtonDebug:SetText("Off - Debug")
                                 else
@@ -378,7 +378,7 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickAddWp()
+                                Clockwork.clickAddWp()
                             </OnClick>
                         </Scripts>
                     </Button>
@@ -408,7 +408,7 @@
                                 GameTooltip:Hide();
                             </OnLeave>
                             <OnClick>
-                                clockWork.clickClearWp()
+                                Clockwork.clickClearWp()
                             </OnClick>
                         </Scripts>
                     </Button>

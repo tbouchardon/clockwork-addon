@@ -6,11 +6,10 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function clockWork.setAllBindings()
+function Clockwork.setAllBindings()
 
     --    local key = "ALT-CTRL-SHIFT-Y"
     --    local action = "TEST_BINDING"
-    clockWork.log.debug("SetBinding(key, action) ? " .. SetBinding(key, action))
 
     --    SetBinding("ALT-SHIFT-1", "CLOCKWORK_PRIORITY_CAST_1")
     --    SetBinding("ALT-SHIFT-2", "CLOCKWORK_PRIORITY_CAST_2")
@@ -80,15 +79,14 @@ function clockWork.setAllBindings()
     SetBinding("ALT-CTRL-T", "CLOCKWORK_TARGET_RAID_40")
 end
 
-function clockWork.printAllBindings()
+function Clockwork.printAllBindings()
 
     for index = 1, GetNumBindings() do
         local command, key1, key2 = GetBinding(index);
-        clockWork.log.notice("GetBindingAction : command = " .. command .. ", key = " .. key1)
+        Clockwork.log.notice("GetBindingAction : command = " .. command .. ", key = " .. key1)
     end
 end
 
 -- local ok = SetBindingClick("Y", "ButtonTest");
-
-clockWork.log.debug(tostring(ok))
+-- Clockwork.log.debug(tostring(ok))
 

@@ -9,11 +9,11 @@
 
 ## Dependencies:
 
+00_core.lua
 00_conditions.xml
 00_menu.xml
 00_rotation.xml
 00_tooltips.xml
-00_core.lua
 00_logger.lua
 01_core_functions.lua
 02_localization.lua

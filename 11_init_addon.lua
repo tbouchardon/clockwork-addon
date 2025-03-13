@@ -6,281 +6,266 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function clockWork.addonLoaded()
+function Clockwork.addonLoaded()
 
     if ClockWork_ROTATIONS == nil then
         ClockWork_ROTATIONS = {};
     end
 end
 
-function clockWork.playerEnteringWorld()
-
-    clockWork.printDebug("GetCurrentResolution() : " .. tostring(GetCurrentResolution()))
-    clockWork.printDebug("GetScreenResolutions() : " .. tostring(GetScreenResolutions()))
-    clockWork.printDebug("({ GetScreenResolutions() })[GetCurrentResolution()] : " .. tostring(GetScreenResolutions()[GetCurrentResolution()]))
-
-    --local currentResulution = tostring(({ GetScreenResolutions() })[GetCurrentResolution()])
-    local currentResulution = tostring(GetScreenResolutions())
-    local height = string.gsub(currentResulution, "%d+x", "")
-
-    clockWork.printDebug("currentResolution height : " .. height)
-    clockWork.printDebug("GetCVar(uiScale) : " .. GetCVar("uiScale"))
-
-    clockWork.scaleMultiplicator = (768 / tonumber(height)) / GetCVar("uiScale")
-
-    clockWork.log.notice("scaleMultiplicator : " .. tostring(clockWork.scaleMultiplicator))
+function Clockwork.playerEnteringWorld()
 
     -- init Frames
 
-    clockWork.frame:SetWidth(16)
-    clockWork.frame:SetHeight(16)
+    Clockwork.frame:SetWidth(16)
+    Clockwork.frame:SetHeight(16)
 
-    clockWork.nextUpdate = 0
-    clockWork.addWaypointList = nil
-    clockWork.waypointListIndex = 0
+    Clockwork.nextUpdate = 0
+    Clockwork.addWaypointList = nil
+    Clockwork.waypointListIndex = 0
 
-    clockWork.blackBackground3 = CreateFrame("FRAME", "clockWork_Background3", clockWork.frame)
-    clockWork.blackBackground3:SetPoint("CENTER", 0, 0)
-    clockWork.blackBackground3:SetWidth(14)
-    clockWork.blackBackground3:SetHeight(14)
-    clockWork.blackBackground3:SetFrameStrata("MEDIUM");
-    clockWork.blackBackground3.texture = clockWork.blackBackground3:CreateTexture(nil, "BACKGROUND")
-    clockWork.blackBackground3.texture:SetAllPoints()
-    clockWork.blackBackground3.texture:SetColorTexture(0, 0, 0, 1)
+    Clockwork.blackBackground3 = CreateFrame("FRAME", "clockWork_Background3", Clockwork.frame)
+    Clockwork.blackBackground3:SetPoint("CENTER", 0, 0)
+    Clockwork.blackBackground3:SetWidth(14)
+    Clockwork.blackBackground3:SetHeight(14)
+    Clockwork.blackBackground3:SetFrameStrata("MEDIUM");
+    Clockwork.blackBackground3.texture = Clockwork.blackBackground3:CreateTexture(nil, "BACKGROUND")
+    Clockwork.blackBackground3.texture:SetAllPoints()
+    Clockwork.blackBackground3.texture:SetColorTexture(0, 0, 0, 1)
 
-    clockWork.blackBackground1 = CreateFrame("FRAME", "clockWork_Background1", clockWork.frame)
-    clockWork.blackBackground1:SetPoint("CENTER", 0, 0)
-    clockWork.blackBackground1:SetSize(16, 8)
-    clockWork.blackBackground1:SetFrameStrata("MEDIUM");
-    clockWork.blackBackground1.texture = clockWork.blackBackground1:CreateTexture(nil, "ARTWORK")
-    clockWork.blackBackground1.texture:SetAllPoints()
-    clockWork.blackBackground1.texture:SetColorTexture(0, 0, 0, 1)
+    Clockwork.blackBackground1 = CreateFrame("FRAME", "clockWork_Background1", Clockwork.frame)
+    Clockwork.blackBackground1:SetPoint("CENTER", 0, 0)
+    Clockwork.blackBackground1:SetSize(16, 8)
+    Clockwork.blackBackground1:SetFrameStrata("MEDIUM");
+    Clockwork.blackBackground1.texture = Clockwork.blackBackground1:CreateTexture(nil, "ARTWORK")
+    Clockwork.blackBackground1.texture:SetAllPoints()
+    Clockwork.blackBackground1.texture:SetColorTexture(0, 0, 0, 1)
 
-    clockWork.blackBackground2 = CreateFrame("FRAME", "clockWork_Background2", clockWork.frame)
-    clockWork.blackBackground2:SetPoint("CENTER", 0, 0)
-    clockWork.blackBackground2:SetWidth(8)
-    clockWork.blackBackground2:SetHeight(16)
-    clockWork.blackBackground2:SetFrameStrata("MEDIUM");
-    clockWork.blackBackground2.texture = clockWork.blackBackground2:CreateTexture(nil, "ARTWORK")
-    clockWork.blackBackground2.texture:SetAllPoints()
-    clockWork.blackBackground2.texture:SetColorTexture(0, 0, 0, 1)
+    Clockwork.blackBackground2 = CreateFrame("FRAME", "clockWork_Background2", Clockwork.frame)
+    Clockwork.blackBackground2:SetPoint("CENTER", 0, 0)
+    Clockwork.blackBackground2:SetWidth(8)
+    Clockwork.blackBackground2:SetHeight(16)
+    Clockwork.blackBackground2:SetFrameStrata("MEDIUM");
+    Clockwork.blackBackground2.texture = Clockwork.blackBackground2:CreateTexture(nil, "ARTWORK")
+    Clockwork.blackBackground2.texture:SetAllPoints()
+    Clockwork.blackBackground2.texture:SetColorTexture(0, 0, 0, 1)
 
-    clockWork.onOff = CreateFrame("FRAME", "clockWork_onOff", clockWork.frame)
-    clockWork.onOff:SetPoint("CENTER", 0, 0)
-    clockWork.onOff:SetWidth(16)
-    clockWork.onOff:SetHeight(16)
-    clockWork.onOff:SetFrameStrata("DIALOG")
-    clockWork.onOff.texture = clockWork.onOff:CreateTexture("DIALOG")
-    clockWork.onOff.texture:SetAllPoints()
-    clockWork.onOff.texture:SetColorTexture(0, 1, 0, 1)
+    Clockwork.onOff = CreateFrame("FRAME", "clockWork_onOff", Clockwork.frame)
+    Clockwork.onOff:SetPoint("CENTER", 0, 0)
+    Clockwork.onOff:SetWidth(16)
+    Clockwork.onOff:SetHeight(16)
+    Clockwork.onOff:SetFrameStrata("DIALOG")
+    Clockwork.onOff.texture = Clockwork.onOff:CreateTexture("DIALOG")
+    Clockwork.onOff.texture:SetAllPoints()
+    Clockwork.onOff.texture:SetColorTexture(0, 1, 0, 1)
 
-    clockWork.inCombat = clockWork.createDot("clockWork_inCombat", 2, -2)
-    clockWork.casting = clockWork.createDot("clockWork_casting", 3, -2)
-    clockWork.stepBack = clockWork.createDot("clockWork_stepBack", 4, -2)
+    Clockwork.inCombat = Clockwork.createDot("clockWork_inCombat", 2, -2)
+    Clockwork.casting = Clockwork.createDot("clockWork_casting", 3, -2)
+    Clockwork.stepBack = Clockwork.createDot("clockWork_stepBack", 4, -2)
 
-    clockWork.playerHealth = clockWork.createDot("clockWork_health", 12, -2)
-    clockWork.playerMana = clockWork.createDot("clockWork_mana", 13, -2)
-    clockWork.numberOfTargets = clockWork.createDot("clockWork_number_of_targets", 2, -3)
-    clockWork.targets.count = 0
-    clockWork.targetReaction = clockWork.createDot("clockWork_target_reaction", 11, -3)
-    clockWork.targetHealth = clockWork.createDot("clockWork_target_health", 12, -3)
-    clockWork.targetMana = clockWork.createDot("clockWork_target_mana", 13, -3)
+    Clockwork.playerHealth = Clockwork.createDot("clockWork_health", 12, -2)
+    Clockwork.playerMana = Clockwork.createDot("clockWork_mana", 13, -2)
+    Clockwork.numberOfTargets = Clockwork.createDot("clockWork_number_of_targets", 2, -3)
+    Clockwork.targets.count = 0
+    Clockwork.targetReaction = Clockwork.createDot("clockWork_target_reaction", 11, -3)
+    Clockwork.targetHealth = Clockwork.createDot("clockWork_target_health", 12, -3)
+    Clockwork.targetMana = Clockwork.createDot("clockWork_target_mana", 13, -3)
 
-    clockWork.toggle = clockWork.createDot("clockWork_toggle", 2, -13)
-    clockWork.targetNearestEnemy = clockWork.createDot("clockWork_targetNearestEnemy", 3, -13)
-    clockWork.addWaypoint = clockWork.createDot("clockWork_addWaypoint", 4, -13)
-    clockWork.clearWaypoints = clockWork.createDot("clockWork_clearWaypoints", 5, -13)
-    clockWork.drive = clockWork.createDot("clockWork_drive", 6, -13)
-    clockWork.driveLoop = clockWork.createDot("clockWork_driveLoop", 7, -13)
-    clockWork.debug = clockWork.createDot("clockWork_debug", 13, -13)
-    if clockWork.DEBUG_MOD then
-        clockWork.debug.texture:SetColorTexture(1, 0, 0, 1)
+    Clockwork.toggle = Clockwork.createDot("clockWork_toggle", 2, -13)
+    Clockwork.targetNearestEnemy = Clockwork.createDot("clockWork_targetNearestEnemy", 3, -13)
+    Clockwork.addWaypoint = Clockwork.createDot("clockWork_addWaypoint", 4, -13)
+    Clockwork.clearWaypoints = Clockwork.createDot("clockWork_clearWaypoints", 5, -13)
+    Clockwork.drive = Clockwork.createDot("clockWork_drive", 6, -13)
+    Clockwork.driveLoop = Clockwork.createDot("clockWork_driveLoop", 7, -13)
+    Clockwork.debug = Clockwork.createDot("clockWork_debug", 13, -13)
+    if Clockwork.DEBUG_MOD then
+        Clockwork.debug.texture:SetColorTexture(1, 0, 0, 1)
     end
 
-    clockWork.raid = {}
+    Clockwork.raid = {}
 
-    table.insert(clockWork.raid, 1, clockWork.createDot("clockWork_raid1", 3, -1))
-    table.insert(clockWork.raid, 2, clockWork.createDot("clockWork_raid2", 4, -1))
-    table.insert(clockWork.raid, 3, clockWork.createDot("clockWork_raid3", 5, -1))
-    table.insert(clockWork.raid, 4, clockWork.createDot("clockWork_raid4", 6, -1))
-    table.insert(clockWork.raid, 5, clockWork.createDot("clockWork_raid5", 7, -1))
-    table.insert(clockWork.raid, 6, clockWork.createDot("clockWork_raid6", 8, -1))
-    table.insert(clockWork.raid, 7, clockWork.createDot("clockWork_raid7", 9, -1))
-    table.insert(clockWork.raid, 8, clockWork.createDot("clockWork_raid8", 10, -1))
-    table.insert(clockWork.raid, 9, clockWork.createDot("clockWork_raid9", 11, -1))
-    table.insert(clockWork.raid, 10, clockWork.createDot("clockWork_raid10", 12, -1))
+    table.insert(Clockwork.raid, 1, Clockwork.createDot("clockWork_raid1", 3, -1))
+    table.insert(Clockwork.raid, 2, Clockwork.createDot("clockWork_raid2", 4, -1))
+    table.insert(Clockwork.raid, 3, Clockwork.createDot("clockWork_raid3", 5, -1))
+    table.insert(Clockwork.raid, 4, Clockwork.createDot("clockWork_raid4", 6, -1))
+    table.insert(Clockwork.raid, 5, Clockwork.createDot("clockWork_raid5", 7, -1))
+    table.insert(Clockwork.raid, 6, Clockwork.createDot("clockWork_raid6", 8, -1))
+    table.insert(Clockwork.raid, 7, Clockwork.createDot("clockWork_raid7", 9, -1))
+    table.insert(Clockwork.raid, 8, Clockwork.createDot("clockWork_raid8", 10, -1))
+    table.insert(Clockwork.raid, 9, Clockwork.createDot("clockWork_raid9", 11, -1))
+    table.insert(Clockwork.raid, 10, Clockwork.createDot("clockWork_raid10", 12, -1))
 
-    table.insert(clockWork.raid, 11, clockWork.createDot("clockWork_raid11", 14, -3))
-    table.insert(clockWork.raid, 12, clockWork.createDot("clockWork_raid12", 14, -4))
-    table.insert(clockWork.raid, 13, clockWork.createDot("clockWork_raid13", 14, -5))
-    table.insert(clockWork.raid, 14, clockWork.createDot("clockWork_raid14", 14, -6))
-    table.insert(clockWork.raid, 15, clockWork.createDot("clockWork_raid15", 14, -7))
-    table.insert(clockWork.raid, 16, clockWork.createDot("clockWork_raid16", 14, -8))
-    table.insert(clockWork.raid, 17, clockWork.createDot("clockWork_raid17", 14, -9))
-    table.insert(clockWork.raid, 18, clockWork.createDot("clockWork_raid18", 14, -10))
-    table.insert(clockWork.raid, 19, clockWork.createDot("clockWork_raid19", 14, -11))
-    table.insert(clockWork.raid, 20, clockWork.createDot("clockWork_raid20", 14, -12))
+    table.insert(Clockwork.raid, 11, Clockwork.createDot("clockWork_raid11", 14, -3))
+    table.insert(Clockwork.raid, 12, Clockwork.createDot("clockWork_raid12", 14, -4))
+    table.insert(Clockwork.raid, 13, Clockwork.createDot("clockWork_raid13", 14, -5))
+    table.insert(Clockwork.raid, 14, Clockwork.createDot("clockWork_raid14", 14, -6))
+    table.insert(Clockwork.raid, 15, Clockwork.createDot("clockWork_raid15", 14, -7))
+    table.insert(Clockwork.raid, 16, Clockwork.createDot("clockWork_raid16", 14, -8))
+    table.insert(Clockwork.raid, 17, Clockwork.createDot("clockWork_raid17", 14, -9))
+    table.insert(Clockwork.raid, 18, Clockwork.createDot("clockWork_raid18", 14, -10))
+    table.insert(Clockwork.raid, 19, Clockwork.createDot("clockWork_raid19", 14, -11))
+    table.insert(Clockwork.raid, 20, Clockwork.createDot("clockWork_raid20", 14, -12))
 
-    table.insert(clockWork.raid, 21, clockWork.createDot("clockWork_raid21", 12, -1))
-    table.insert(clockWork.raid, 22, clockWork.createDot("clockWork_raid22", 11, -1))
-    table.insert(clockWork.raid, 23, clockWork.createDot("clockWork_raid23", 10, -1))
-    table.insert(clockWork.raid, 24, clockWork.createDot("clockWork_raid24", 9, -1))
-    table.insert(clockWork.raid, 25, clockWork.createDot("clockWork_raid25", 8, -1))
-    table.insert(clockWork.raid, 26, clockWork.createDot("clockWork_raid26", 7, -1))
-    table.insert(clockWork.raid, 27, clockWork.createDot("clockWork_raid27", 6, -1))
-    table.insert(clockWork.raid, 28, clockWork.createDot("clockWork_raid28", 5, -1))
-    table.insert(clockWork.raid, 29, clockWork.createDot("clockWork_raid29", 4, -1))
-    table.insert(clockWork.raid, 30, clockWork.createDot("clockWork_raid30", 3, -1))
+    table.insert(Clockwork.raid, 21, Clockwork.createDot("clockWork_raid21", 12, -1))
+    table.insert(Clockwork.raid, 22, Clockwork.createDot("clockWork_raid22", 11, -1))
+    table.insert(Clockwork.raid, 23, Clockwork.createDot("clockWork_raid23", 10, -1))
+    table.insert(Clockwork.raid, 24, Clockwork.createDot("clockWork_raid24", 9, -1))
+    table.insert(Clockwork.raid, 25, Clockwork.createDot("clockWork_raid25", 8, -1))
+    table.insert(Clockwork.raid, 26, Clockwork.createDot("clockWork_raid26", 7, -1))
+    table.insert(Clockwork.raid, 27, Clockwork.createDot("clockWork_raid27", 6, -1))
+    table.insert(Clockwork.raid, 28, Clockwork.createDot("clockWork_raid28", 5, -1))
+    table.insert(Clockwork.raid, 29, Clockwork.createDot("clockWork_raid29", 4, -1))
+    table.insert(Clockwork.raid, 30, Clockwork.createDot("clockWork_raid30", 3, -1))
 
-    table.insert(clockWork.raid, 31, clockWork.createDot("clockWork_raid31", 1, -12))
-    table.insert(clockWork.raid, 32, clockWork.createDot("clockWork_raid32", 1, -11))
-    table.insert(clockWork.raid, 33, clockWork.createDot("clockWork_raid33", 1, -10))
-    table.insert(clockWork.raid, 34, clockWork.createDot("clockWork_raid34", 1, -9))
-    table.insert(clockWork.raid, 35, clockWork.createDot("clockWork_raid35", 1, -8))
-    table.insert(clockWork.raid, 36, clockWork.createDot("clockWork_raid36", 1, -7))
-    table.insert(clockWork.raid, 37, clockWork.createDot("clockWork_raid37", 1, -6))
-    table.insert(clockWork.raid, 38, clockWork.createDot("clockWork_raid38", 1, -5))
-    table.insert(clockWork.raid, 39, clockWork.createDot("clockWork_raid39", 1, -4))
-    table.insert(clockWork.raid, 40, clockWork.createDot("clockWork_raid40", 1, -3))
+    table.insert(Clockwork.raid, 31, Clockwork.createDot("clockWork_raid31", 1, -12))
+    table.insert(Clockwork.raid, 32, Clockwork.createDot("clockWork_raid32", 1, -11))
+    table.insert(Clockwork.raid, 33, Clockwork.createDot("clockWork_raid33", 1, -10))
+    table.insert(Clockwork.raid, 34, Clockwork.createDot("clockWork_raid34", 1, -9))
+    table.insert(Clockwork.raid, 35, Clockwork.createDot("clockWork_raid35", 1, -8))
+    table.insert(Clockwork.raid, 36, Clockwork.createDot("clockWork_raid36", 1, -7))
+    table.insert(Clockwork.raid, 37, Clockwork.createDot("clockWork_raid37", 1, -6))
+    table.insert(Clockwork.raid, 38, Clockwork.createDot("clockWork_raid38", 1, -5))
+    table.insert(Clockwork.raid, 39, Clockwork.createDot("clockWork_raid39", 1, -4))
+    table.insert(Clockwork.raid, 40, Clockwork.createDot("clockWork_raid40", 1, -3))
 
-    clockWork.initKeys()
-    clockWork.initCoords()
-    clockWork.initLocalization()
+    Clockwork.initKeys()
+    Clockwork.initCoords()
+    Clockwork.initLocalization()
 
-    clockWork.resetCombat()
+    Clockwork.resetCombat()
 
-    clockWork.setAllBindings()
+    Clockwork.setAllBindings()
 end
 
-function clockWork.damageDone(arg1)
+function Clockwork.damageDone(arg1)
 
-    --if (not clockWork.isPassiveDamage(arg1)) then
-    clockWork.lastTimePlayerHit = time()
-    clockWork.durationBeingHitWithoutRetaliating = clockWork.lastTimePlayerHasBeenHit - clockWork.lastTimePlayerHit
-    --clockWork.printDebug("self : " .. tostring(clockWork.durationBeingHitWithoutRetaliating))
+    --if (not Clockwork.isPassiveDamage(arg1)) then
+    Clockwork.lastTimePlayerHit = time()
+    Clockwork.durationBeingHitWithoutRetaliating = Clockwork.lastTimePlayerHasBeenHit - Clockwork.lastTimePlayerHit
+    --Clockwork.printDebug("self : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
     --end
 end
 
-function clockWork.damageReceived(arg1)
+function Clockwork.damageReceived(arg1)
 
     --        if UnitAffectingCombat("player") then
-    clockWork.lastTimePlayerHasBeenHit = time()
-    clockWork.durationBeingHitWithoutRetaliating = clockWork.lastTimePlayerHasBeenHit - clockWork.lastTimePlayerHit
-    --clockWork.printDebug("creature : " .. tostring(clockWork.durationBeingHitWithoutRetaliating))
+    Clockwork.lastTimePlayerHasBeenHit = time()
+    Clockwork.durationBeingHitWithoutRetaliating = Clockwork.lastTimePlayerHasBeenHit - Clockwork.lastTimePlayerHit
+    --Clockwork.printDebug("creature : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
     --        end
 end
 
 local function onUpdate()
 
-    -- clockWork.printDebug("local function onUpdate(")
+    -- Clockwork.printDebug("local function onUpdate(")
 
     local now = GetTime()
 
-    if (clockWork.nextUpdate < now) then
+    if (Clockwork.nextUpdate < now) then
 
         if (C_Map.GetBestMapForUnit("player") == nil) then
-            clockWork.log.debug("Player is nowhere to be found.")
+            Clockwork.log.debug("Player is nowhere to be found.")
             --return
         end
 
-        --        clockWork.printDebug(clockWork.nextUpdate)
+        --        Clockwork.printDebug(Clockwork.nextUpdate)
 
-        if (clockWork.TOGGLE_ON_OFF and clockWork.ADDING_WP == false) then
+        if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
 
             if (C_Map.GetBestMapForUnit("player") ~= nil) then
-                clockWork.updatePositionCoordinates()
+                Clockwork.updatePositionCoordinates()
             end
-            clockWork.rotation()
+            Clockwork.rotation()
         end
 
-        if clockWork.addWaypointList ~= nil and
-                clockWork.ADDING_WP == false then
+        if Clockwork.addWaypointList ~= nil and
+                Clockwork.ADDING_WP == false then
 
-            --            clockWork.printDebug(tostring(clockWork.addWaypointList))
-            --            clockWork.printDebug(tostring(clockWork.ADDING_WP))
-            --            clockWork.printDebug(tostring(clockWork.waypointListIndex))
+            --            Clockwork.printDebug(tostring(Clockwork.addWaypointList))
+            --            Clockwork.printDebug(tostring(Clockwork.ADDING_WP))
+            --            Clockwork.printDebug(tostring(Clockwork.waypointListIndex))
 
             local index = 0;
             local finished = true
 
-            for coords in string.gfind(clockWork.addWaypointList, ".-;") do
+            for coords in string.gmatch(Clockwork.addWaypointList, ".-;") do
 
-                if index == clockWork.waypointListIndex then
+                if index == Clockwork.waypointListIndex then
 
                     finished = false
-                    clockWork.log.notice("Adding Waypoint : " .. coords)
-                    clockWork.updatePositionFromCoordinates(coords)
-                    clockWork.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
-                    clockWork.ADDING_WP = true;
+                    Clockwork.log.notice("Adding Waypoint : " .. coords)
+                    Clockwork.updatePositionFromCoordinates(coords)
+                    Clockwork.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
+                    Clockwork.ADDING_WP = true;
                 end
 
                 index = index + 1;
             end
 
-            clockWork.waypointListIndex = clockWork.waypointListIndex + 1
+            Clockwork.waypointListIndex = Clockwork.waypointListIndex + 1
 
             if (finished) then
 
-                clockWork.addWaypointList = nil
-                clockWork.waypointListIndex = 0
+                Clockwork.addWaypointList = nil
+                Clockwork.waypointListIndex = 0
             end
         end
 
-        clockWork.nextUpdate = now + clockWork.UPDATE_INTERVAL;
+        Clockwork.nextUpdate = now + Clockwork.UPDATE_INTERVAL;
     end
 end
 
 local function onEvent(...)
 
-    -- clockWork.printDebug("local function onEvent(")
+    -- Clockwork.printDebug("local function onEvent(")
 
-    --clockWork.printDebug(event)
+    --Clockwork.printDebug(event)
 
     --local numberOfArguments = select('#', ...)
-    --clockWork.printDebug(numberOfArguments)
+    --Clockwork.printDebug(numberOfArguments)
 
     --for index = 1, numberOfArguments do
-    --    clockWork.printDebug(select(index, ...))
+    --    Clockwork.printDebug(select(index, ...))
     --end
 
     --local frame = select(1, ...)
     local event = select(2, ...)
-    --clockWork.printDebug(event)
+    --Clockwork.printDebug(event)
 
     if event == nil then
         return
     else
-        --clockWork.printDebug(event)
+        --Clockwork.printDebug(event)
     end
 
-    if (clockWork.player.GUID == nil) then
-        clockWork.player.GUID = UnitGUID("player")
+    if (Clockwork.player.GUID == nil) then
+        Clockwork.player.GUID = UnitGUID("player")
     end
 
-    if (clockWork.pet.GUID == nil) then
+    if (Clockwork.pet.GUID == nil) then
         if (UnitExists("pet")) then
-            clockWork.pet.GUID = UnitGUID("pet")
+            Clockwork.pet.GUID = UnitGUID("pet")
         end
     else
         if (not UnitExists("pet")) then
-            clockWork.pet.GUID = nil
+            Clockwork.pet.GUID = nil
         end
     end
 
     if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
 
-        clockWork.CASTING = true
-        clockWork.casting.texture:SetColorTexture(1, 1, 1, 1)
+        Clockwork.CASTING = true
+        Clockwork.casting.texture:SetColorTexture(1, 1, 1, 1)
 
     elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_FAILED" or event == "SPELLCAST_INTERRUPTED" then
 
-        clockWork.CASTING = false
-        clockWork.casting.texture:SetColorTexture(0, 0, 0, 1)
+        Clockwork.CASTING = false
+        Clockwork.casting.texture:SetColorTexture(0, 0, 0, 1)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
 
-        --clockWork.playerEnteringWorld()
+        --Clockwork.playerEnteringWorld()
         --return
     end
 
@@ -290,49 +275,49 @@ local function onEvent(...)
 
         if addonName == "ClockWork" then
 
-            clockWork.printDebug(select(3, ...) .. " Loaded")
-            clockWork.playerEnteringWorld()
-            clockWork.addonLoaded()
-            clockWork.resetCombat()
+            Clockwork.printDebug(select(3, ...) .. " Loaded")
+            Clockwork.playerEnteringWorld()
+            Clockwork.addonLoaded()
+            Clockwork.resetCombat()
             return
         end
     end
 
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 
-        --clockWork.printDebug("COMBAT_LOG_EVENT Values : ")
+        --Clockwork.printDebug("COMBAT_LOG_EVENT Values : ")
 
         local args = { CombatLogGetCurrentEventInfo() }
         --local numberOfArguments = select('#', args)
 
         --for i, value in pairs(args) do
-        --    clockWork.printDebug(tostring (i) .. " = "  ..tostring(value))
+        --    Clockwork.printDebug(tostring (i) .. " = "  ..tostring(value))
         --end
         local subevent = args[2]
-        --clockWork.printDebug("subevent = " .. tostring(subevent))
+        --Clockwork.printDebug("subevent = " .. tostring(subevent))
         local sourceGUID = args[4]
         local sourceName = args[5]
-        --clockWork.printDebug("sourceGUID = " .. tostring(sourceGUID))
+        --Clockwork.printDebug("sourceGUID = " .. tostring(sourceGUID))
         local destGUID = args[8]
         local destName = args[9]
 
         --string.find(sourceGUID, "Pet") == true or
-        if (sourceGUID == clockWork.player.GUID or sourceGUID == clockWork.pet.GUID)
-                and destGUID ~= clockWork.pet.GUID
-                and destGUID ~= clockWork.player.GUID
-                and not clockWork.emptyOrNil(destGUID)
+        if (sourceGUID == Clockwork.player.GUID or sourceGUID == Clockwork.pet.GUID)
+                and destGUID ~= Clockwork.pet.GUID
+                and destGUID ~= Clockwork.player.GUID
+                and not Clockwork.emptyOrNil(destGUID)
         then
 
-            if clockWork.targets.list[tostring(destGUID)] == nil then
-                --clockWork.printDebug("Unit added")
-                --clockWork.printDebug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
+            if Clockwork.targets.list[tostring(destGUID)] == nil then
+                --Clockwork.printDebug("Unit added")
+                --Clockwork.printDebug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
 
             else
-                --clockWork.printDebug("Unit updated")
+                --Clockwork.printDebug("Unit updated")
             end
 
-            clockWork.targets.list[tostring(destGUID)] = GetTime()
-            clockWork.updateNumberOfTargets()
+            Clockwork.targets.list[tostring(destGUID)] = GetTime()
+            Clockwork.updateNumberOfTargets()
         end
 
         local amount
@@ -342,104 +327,102 @@ local function onEvent(...)
             amount = args[15]
         end
 
-        --if (sourceGUID ~= clockWork.player.GUID and string.find(sourceGUID, "Pet") == false) then
+        --if (sourceGUID ~= Clockwork.player.GUID and string.find(sourceGUID, "Pet") == false) then
 
         if subevent == "UNIT_DIED" or
                 subevent == "UNIT_DESTROYED" or
                 subevent == "SPELL_INSTAKILL" or
-                --subevent == "PARTY_KILL" or
+                --subevent == "PARTY_KILL" or 
                 subevent == "UNIT_DISSIPATES" then
 
-            --clockWork.printDebug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
+            --Clockwork.printDebug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
 
-            if clockWork.targets.list[tostring(destGUID)] ~= nil then
+            if Clockwork.targets.list[tostring(destGUID)] ~= nil then
 
-                clockWork.targets.list[tostring(destGUID)] = nil
-                --clockWork.printDebug("Unit removed")
-                clockWork.updateNumberOfTargets()
+                Clockwork.targets.list[tostring(destGUID)] = nil
+                --Clockwork.printDebug("Unit removed")
+                Clockwork.updateNumberOfTargets()
             end
         end
         --end
 
-        if (clockWork.player.GUID == sourceGUID) then
-            clockWork.damageDone()
+        if (Clockwork.player.GUID == sourceGUID) then
+            Clockwork.damageDone()
         end
 
-        if (clockWork.player.GUID == destGUID) then
-            clockWork.damageReceived()
+        if (Clockwork.player.GUID == destGUID) then
+            Clockwork.damageReceived()
         end
     end
 
-    if (clockWork.durationBeingHitWithoutRetaliating > 6) and not (event == "PLAYER_DEAD") then
+    if (Clockwork.durationBeingHitWithoutRetaliating > 6) and not (event == "PLAYER_DEAD") then
         -- Si vivant && pas tapé depuis 6 secondes
-        clockWork.stepBack.texture:SetColorTexture(1, 1, 1, 1)
+        Clockwork.stepBack.texture:SetColorTexture(1, 1, 1, 1)
     else
-        clockWork.stepBack.texture:SetColorTexture(0, 0, 0, 1)
+        Clockwork.stepBack.texture:SetColorTexture(0, 0, 0, 1)
     end
 end
 
-function clockWork.updateNumberOfTargets()
+function Clockwork.updateNumberOfTargets()
 
-    if clockWork.targets.list ~= nil then
-        for i, time in pairs(clockWork.targets.list) do
-            clockWork.log.debug(tostring(clockWork.emptyOrNil(i)))
-            clockWork.log.debug(tostring(i) .. " && " .. tostring(time) .. " && " .. tostring(now - time) .. tostring(now - time > 10))
+    if Clockwork.targets.list ~= nil then
+        for i, time in pairs(Clockwork.targets.list) do
             if (GetTime() - time > 5) then
-                clockWork.targets.list[i] = nil
+                Clockwork.targets.list[i] = nil
             end
         end
-        clockWork.log.debug(tostring(clockWork.tableLength(clockWork.targets.list)))
-        clockWork.log.debug(tostring(clockWork.tableLength(clockWork.targets.list) / 255))
-        clockWork.targets.count = clockWork.tableLength(clockWork.targets.list)
-        clockWork.numberOfTargets.texture:SetColorTexture(clockWork.targets.count / 255, 0, 0, 1)
+        Clockwork.log.debug(tostring(Clockwork.tableLength(Clockwork.targets.list)))
+        Clockwork.log.debug(tostring(Clockwork.tableLength(Clockwork.targets.list) / 255))
+        Clockwork.targets.count = Clockwork.tableLength(Clockwork.targets.list)
+        Clockwork.numberOfTargets.texture:SetColorTexture(Clockwork.targets.count / 255, 0, 0, 1)
     else
-        clockWork.targets.count = 0
-        clockWork.numberOfTargets.texture:SetColorTexture(0, 0, 0, 1)
+        Clockwork.targets.count = 0
+        Clockwork.numberOfTargets.texture:SetColorTexture(0, 0, 0, 1)
     end
 
-    multiTarget = clockWork.targets.count >= clockWork.targets.multiTargetModTrigger
+    multiTarget = Clockwork.targets.count >= Clockwork.targets.multiTargetModTrigger
 
-    if (clockWork.targets.multiTargetMod ~= multiTarget) then
-        clockWork.printDebug(clockWork.ternary(multiTarget, "Multi targets mod", "Single target mod"))
+    if (Clockwork.targets.multiTargetMod ~= multiTarget) then
+        Clockwork.printDebug(Clockwork.ternary(multiTarget, "Multi targets mod", "Single target mod"))
     end
 
-    clockWork.targets.multiTargetMod = multiTarget
+    Clockwork.targets.multiTargetMod = multiTarget
 end
 
-clockWork.frame = CreateFrame("FRAME", "clockWork_MainFrame", UIParent)
-clockWork.frame:SetPoint("TOPLEFT", 0, 0)
-clockWork.frame:SetFrameStrata("MEDIUM")
+Clockwork.frame = CreateFrame("FRAME", "clockWork_MainFrame", UIParent)
+Clockwork.frame:SetPoint("TOPLEFT", 0, 0)
+Clockwork.frame:SetFrameStrata("MEDIUM")
 
-clockWork.frame:SetScript("OnEvent", onEvent);
-clockWork.frame:SetScript("OnUpdate", onUpdate);
+Clockwork.frame:SetScript("OnEvent", onEvent);
+Clockwork.frame:SetScript("OnUpdate", onUpdate);
 
-clockWork.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+Clockwork.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_START")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_STOP")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-clockWork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_START")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_STOP")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_FAILED")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 
-clockWork.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
---clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
---clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS")
---clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
---clockWork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
---clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
---clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
---clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
---clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
---clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
---clockWork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
+Clockwork.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
+--Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
 
-clockWork.frame:RegisterEvent("ADDON_LOADED")
+Clockwork.frame:RegisterEvent("ADDON_LOADED")
 
-clockWork.frame:RegisterEvent("PLAYER_DEAD")
+Clockwork.frame:RegisterEvent("PLAYER_DEAD")
 
-clockWork.frame.texture = clockWork.frame:CreateTexture("MEDIUM")
-clockWork.frame.texture:SetAllPoints()
-clockWork.frame.texture:SetColorTexture(0, 1, 0, 1)
+Clockwork.frame.texture = Clockwork.frame:CreateTexture("MEDIUM")
+Clockwork.frame.texture:SetAllPoints()
+Clockwork.frame.texture:SetColorTexture(0, 1, 0, 1)

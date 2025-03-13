@@ -17,10 +17,10 @@ end
 local function rotation3()
 end
 
-function clockWork.priestRotation()
+function Clockwork.priestRotation()
 
-    if clockWork.spe == 1 then rotation1()
-    elseif clockWork.spe == 2 then rotation2()
-    elseif clockWork.spe == 3 then rotation3()
+    if Clockwork.spe == 1 then rotation1()
+    elseif Clockwork.spe == 2 then rotation2()
+    elseif Clockwork.spe == 3 then rotation3()
     end
 end
