@@ -7,7 +7,6 @@
 --
 
 local function rotation1()
-
     local priority = 100
     --Clockwork.log.debug("function Clockwork.warlockAfflictionRotation")
 
@@ -16,27 +15,28 @@ local function rotation1()
     -- N'attaquer que si :
 
     if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
-
         local hasDebuff, hasAnyDebuff, remainingTime
 
         -- Fast invoke pet
 
         Clockwork.log.debug(tostring((not UnitExists("pet") or Clockwork.healthPercentage("pet") < 33)))
         Clockwork.shouldHitShiftKey(Clockwork.keyG,
-                not Clockwork.outOfCombat() and
-                        not Clockwork.playerHasBuff("Domination gangrenée") and
-                        (not UnitExists("pet") or Clockwork.healthPercentage("pet") < 33), 200)
+            not Clockwork.outOfCombat() and
+            not Clockwork.playerHasBuff("Domination gangrenée") and
+            (not UnitExists("pet") or Clockwork.healthPercentage("pet") < 33), 200)
         Clockwork.shouldHitKey(Clockwork.keyG, Clockwork.playerHasBuff("Domination gangrenée") and true, 195)
 
         -- Repel enemy player
-        Clockwork.shouldHitKey(Clockwork.keyR, Clockwork.targetInRange(Clockwork.TRADE) and not Clockwork.targetHasDebuff("Voile de mort") and Clockwork.enemyPlayer(), 190)
+        Clockwork.shouldHitKey(Clockwork.keyR,
+            Clockwork.targetInRange(Clockwork.TRADE) and not Clockwork.targetHasDebuff("Voile de mort") and
+            Clockwork.enemyPlayer(), 190)
 
         -- Le pet attaque SI l'enemi attaque le joueur ET est à moins de 9.9 yards
         if UnitExists("pet")
-                and Clockwork.healthPercentage("pet") > 10
-                and UnitIsUnit("player", "targettarget")
-                and not UnitIsUnit("pettarget", "target")
-                and Clockwork.targetInRange(Clockwork.DUEL) then
+            and Clockwork.healthPercentage("pet") > 10
+            and UnitIsUnit("player", "targettarget")
+            and not UnitIsUnit("pettarget", "target")
+            and Clockwork.targetInRange(Clockwork.DUEL) then
             Clockwork.shouldHitCtrlKey(Clockwork.key1, nil, 155)
         end -- Pet Attack
 
@@ -103,14 +103,14 @@ local function rotation1()
         -- Graine de Corruption
         hasDebuff, remainingTime = Clockwork.targetHasDebuff("Graine de Corruption")
         Clockwork.shouldHitShiftKey(Clockwork.keyF,
-                Clockwork.targets.multiTargetMod
-                        and UnitPower("player", Enum.PowerType.SoulShards) > 1
-                        and not hasDebuff, 86)
+            Clockwork.targets.multiTargetMod
+            and UnitPower("player", Enum.PowerType.SoulShards) > 1
+            and not hasDebuff, 86)
 
         --Malefic Raptures
         Clockwork.shouldHitKey(Clockwork.key2,
-                (UnitPower("player", Enum.PowerType.SoulShards) > 1 and Clockwork.targetsOwnDebuffCount() > 3)
-                        or UnitPower("player", Enum.PowerType.SoulShards) == 5, 70)
+            (UnitPower("player", Enum.PowerType.SoulShards) > 1 and Clockwork.targetsOwnDebuffCount() > 3)
+            or UnitPower("player", Enum.PowerType.SoulShards) == 5, 70)
 
 
         -- filler
@@ -120,7 +120,6 @@ local function rotation1()
         -- SHIFT KEYS
 
         Clockwork.shouldHitKey(Clockwork.keyG, not UnitExists("pet")) -- Invoquer si le pet n'existe pas
-
     elseif (Clockwork.outOfCombat()) then
         -- hors combat
 
@@ -145,8 +144,7 @@ end
 local function rotation3()
 end
 
-function Clockwork.warlockRotation()
-
+local function rotations()
     if Clockwork.spe == 1 then
         rotation1()
     elseif Clockwork.spe == 2 then
@@ -156,3 +154,4 @@ function Clockwork.warlockRotation()
     end
 end
 
+Clockwork.rotations[Clockwork.Enum.Class.WARLOCK] = rotations

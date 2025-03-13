@@ -240,6 +240,10 @@ local function onEvent(...)
 
     if (Clockwork.player.GUID == nil) then
         Clockwork.player.GUID = UnitGUID("player")
+        local className, classFilename, classID = UnitClass("player")
+        Clockwork.player.className = className
+        Clockwork.player.classFilename = classFilename
+        Clockwork.player.classID = classID
     end
 
     if (Clockwork.pet.GUID == nil) then

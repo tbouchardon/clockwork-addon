@@ -1,12 +1,12 @@
 Clockwork.INSPECT = 1 --28 yards
-Clockwork.TRADE = 2 --11.11 yards
-Clockwork.DUEL = 3 --9.9 yards
-Clockwork.FOLLOW = 4 --28 yards
+Clockwork.TRADE = 2   --11.11 yards
+Clockwork.DUEL = 3    --9.9 yards
+Clockwork.FOLLOW = 4  --28 yards
 
 Clockwork.spe = 1
+Clockwork.rotations = {}
 
 function Clockwork.rotation()
-
     --Clockwork.log.debug("function Clockwork.rotation()")
 
     if UnitAffectingCombat("player") then
@@ -49,20 +49,19 @@ function Clockwork.rotation()
     end
 
     if Clockwork.DRIVE_MOD == true
-            and ((Clockwork.unitHasBuff("player", "Food") and (Clockwork.playerHealthPct() < 100))
+        and ((Clockwork.unitHasBuff("player", "Food") and (Clockwork.playerHealthPct() < 100))
             or (Clockwork.unitHasBuff("player", "Drink") and (Clockwork.playerManaPct() < 100))) then
         Clockwork.drive.texture:SetColorTexture(0, 0, 0, 1)
     elseif Clockwork.DRIVE_MOD == true then
         Clockwork.drive.texture:SetColorTexture(1, 1, 1, 1)
     end
 
+    Clockwork.resetKeys()
+
     -- Ne rien faire si un cast est déjà en cours
     if (Clockwork.CASTING == true) then
-        Clockwork.resetKeys();
-        return ;
+        return;
     end
-
-    Clockwork.resetKeys()
 
     --Clockwork.log.debug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
     --Clockwork.log.debug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
@@ -74,35 +73,21 @@ function Clockwork.rotation()
 
     -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
     if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
-
-        if UnitClass("player") == "Démoniste" then
-            Clockwork.warlockRotation()
-            --elseif UnitClass("player") == "Warrior" then
-            --    Clockwork.warriorRotation()
-            --elseif UnitClass("player") == "Shaman" then
-            --    Clockwork.shamanRotation()
-            --elseif UnitClass("player") == "Mage" then
-            --    Clockwork.mageRotation()
-            --elseif UnitClass("player") == "Priest" then
-            --    Clockwork.priestRotation()
-        end
+        if not Clockwork.player.classID then return end
+        local rotation = Clockwork.rotations[Clockwork.player.classID]
+        if rotation then rotation() end
     end
 end
 
 function Clockwork.bothPlayerAndTargetInCombat()
-
     return UnitAffectingCombat("player") and UnitAffectingCombat("target")
-
 end
 
 function Clockwork.playerNotInCombat()
-
     return not UnitAffectingCombat("player")
-
 end
 
 function Clockwork.debuffCanBeCast(spell, slot)
-
     -- Clockwork.log.debug("function Clockwork.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
 
     Clockwork.log.debug("Clockwork.debuffCanBeCast(" .. tostring(spell) .. "," .. tostring(slot) .. ')')
@@ -124,7 +109,6 @@ function Clockwork.debuffCanBeCast(spell, slot)
 end
 
 function Clockwork.targetInRange(distance)
-
     -- Clockwork.log.debug("function Clockwork.targetInRange(" .. tostring(distance))
 
     if CheckInteractDistance("target", distance) then
@@ -135,7 +119,6 @@ function Clockwork.targetInRange(distance)
 end
 
 function Clockwork.actionCanBeCast(slot)
-
     Clockwork.log.debug("function Clockwork.actionCanBeCast(" .. tostring(slot))
 
     if (Clockwork.CHECK_ACTIONS_CAST == false) then
@@ -158,7 +141,6 @@ function Clockwork.actionCanBeCast(slot)
     --Clockwork.log.debug("canBeCast1 : " .. tostring(canBeCast))
 
     if canBeCast == true then
-
         local start, duration, enable = GetActionCooldown(slot)
 
         --         Clockwork.log.debug("GetActionCooldown(slot) start = " .. tostring(start))
@@ -171,7 +153,6 @@ function Clockwork.actionCanBeCast(slot)
     --Clockwork.log.debug("canBeCast2 : " .. tostring(canBeCast))
 
     if canBeCast == true then
-
         local isUsable, notEnoughMana = IsUsableAction(slot)
 
         --         Clockwork.log.debug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
@@ -192,7 +173,6 @@ function Clockwork.actionCanBeCast(slot)
 end
 
 function Clockwork.enemyPlayer()
-
     -- Clockwork.log.debug("function Clockwork.enemyPlayer(")
 
     if UnitIsPlayer("target") then
@@ -203,7 +183,6 @@ function Clockwork.enemyPlayer()
 end
 
 function Clockwork.healthPercentage(unit)
-
     -- Clockwork.log.debug("function Clockwork.healthPercentage(" .. tostring(unit))
 
     if (UnitHealth(unit) == 0) then
@@ -218,12 +197,10 @@ function Clockwork.healthPercentage(unit)
 end
 
 function Clockwork.playerHealthPct()
-
     return Clockwork.healthPercentage("player")
 end
 
 function Clockwork.manaPercentage(unit)
-
     -- Clockwork.log.debug("function Clockwork.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
 
     local powerType, powerToken, altR, altG, altB = UnitPowerType(unit)
@@ -242,20 +219,18 @@ function Clockwork.manaPercentage(unit)
 end
 
 function Clockwork.playerManaPct()
-
     return Clockwork.manaPercentage("player")
 end
 
 function Clockwork.unitExistCanAndShouldDie()
     return UnitExists("target") and
-            not UnitIsDeadOrGhost("target") and
-            not UnitIsDeadOrGhost("player") and -- > La cible ET le joueur sont vivants (>_<)
-            (not UnitIsTapDenied("target")) and -- > La cible peut être marquée par le joueur.
-            (Clockwork.targetNeutral() or Clockwork.targetUnfriendly()) -- > La cible est un enemi (rouge uniquement)
+        not UnitIsDeadOrGhost("target") and
+        not UnitIsDeadOrGhost("player") and                             -- > La cible ET le joueur sont vivants (>_<)
+        (not UnitIsTapDenied("target")) and                             -- > La cible peut être marquée par le joueur.
+        (Clockwork.targetNeutral() or Clockwork.targetUnfriendly())     -- > La cible est un enemi (rouge uniquement)
 end
 
 function Clockwork.targetUnfriendly()
-
     if not UnitExists("target") then
         return false
     end
@@ -264,7 +239,6 @@ function Clockwork.targetUnfriendly()
 end
 
 function Clockwork.targetNeutral()
-
     if not UnitExists("target") then
         return false
     end
@@ -273,7 +247,6 @@ function Clockwork.targetNeutral()
 end
 
 function Clockwork.targetFriendly()
-
     if not UnitExists("target") then
         return false
     end
@@ -282,7 +255,6 @@ function Clockwork.targetFriendly()
 end
 
 function Clockwork.resetCombat()
-
     Clockwork.inCombat.texture:SetColorTexture(0, 0, 0, 1)
     Clockwork.wasInCombat = false
     Clockwork.lastTimePlayerHit = time()
@@ -294,35 +266,32 @@ Clockwork.lowestMemberHealth = 100
 Clockwork.lowestMemberHealthIndex = nil
 
 function Clockwork.updatePartyHealth()
-
     Clockwork.lowestMemberHealth = 100
     Clockwork.lowestMemberHealthIndex = nil
 
     Clockwork.checkUnitHealth("player", -1)
 
     for index = 1, 4 do
-
         Clockwork.checkUnitHealth("party" .. tostring(index), index)
-        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("party" .. tostring(index)), 0, 0, 1)
+        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("party" .. tostring(index)), 0,
+            0, 1)
     end
 end
 
 function Clockwork.updateRaidHealth()
-
     Clockwork.lowestMemberHealth = 100
     Clockwork.lowestMemberHealthIndex = nil
 
     Clockwork.checkUnitHealth("player", -1)
 
     for index = 1, 40 do
-
         Clockwork.checkUnitHealth("raid" .. tostring(index), index)
-        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("raid" .. tostring(index)), 0, 0, 1)
+        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("raid" .. tostring(index)), 0,
+            0, 1)
     end
 end
 
 function Clockwork.checkUnitHealth(unit, index)
-
     if UnitExists(unit) then
         if Clockwork.healthPercentage(unit) < Clockwork.lowestMemberHealth then
             Clockwork.lowestMemberHealth = Clockwork.healthPercentage(unit)
@@ -332,7 +301,6 @@ function Clockwork.checkUnitHealth(unit, index)
 end
 
 function Clockwork.targetMember(index)
-
     local root = ""
     if UnitExists("raid1") then
         root = "raid"
@@ -351,8 +319,8 @@ function Clockwork.targetMember(index)
 end
 
 function Clockwork.hasMainHandEnchant()
-
-    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges =
+    GetWeaponEnchantInfo()
 
     -- if hasMainHandEnchant then Clockwork.log.debug("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
     -- if mainHandExpiration then Clockwork.log.debug("mainHandExpiration = "..tostring(mainHandExpiration)) end
@@ -368,18 +336,16 @@ function Clockwork.hasMainHandEnchant()
 end
 
 function Clockwork.hasOffHandEnchant()
-
-    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges = GetWeaponEnchantInfo()
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges =
+    GetWeaponEnchantInfo()
 
     return hasOffHandEnchant
 end
 
 function Clockwork.targetMemberIfHealthLessThan(health)
-
     if Clockwork.lowestMemberHealthIndex and
-            not Clockwork.lowestMemberHealthIndex == -1
-            and Clockwork.lowestMemberHealth < health then
-
+        not Clockwork.lowestMemberHealthIndex == -1
+        and Clockwork.lowestMemberHealth < health then
         return Clockwork.targetMember(Clockwork.lowestMemberHealthIndex)
     end
 
@@ -387,7 +353,5 @@ function Clockwork.targetMemberIfHealthLessThan(health)
 end
 
 function Clockwork.outOfCombat()
-
     return (not UnitIsDeadOrGhost("player")) and (not UnitAffectingCombat("player"))
 end
-

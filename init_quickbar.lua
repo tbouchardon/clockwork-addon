@@ -6,13 +6,15 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-if UnitClass("player") == "Warlock" then
+function Clockwork.updateActionButtons()
+    local className, classFilename, classID = UnitClass("player")
 
-    Clockwork.dropSpellInBarSlot("Curse of Agony", 5)
-    Clockwork.dropSpellInBarSlot("Corruption", 4)
-    Clockwork.dropSpellInBarSlot("Immolate", 3)
-    Clockwork.dropSpellInBarSlot("Shadow Bolt", 1)
+    if classID == Clockwork.Enum.Class.WARLOCK then
+        Clockwork.dropSpellInBarSlot("Curse of Agony", 5)
+        Clockwork.dropSpellInBarSlot("Corruption", 4)
+        Clockwork.dropSpellInBarSlot("Immolate", 3)
+        Clockwork.dropSpellInBarSlot("Shadow Bolt", 1)
+    elseif classID == Clockwork.Enum.Class.WARRIORLOCK then
 
-elseif UnitClass("player") == "Warrior" then
+    end
 end
-
