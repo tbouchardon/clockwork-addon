@@ -61,11 +61,11 @@ function Clockwork.playerEnteringWorld()
 
     Clockwork.inCombat = Clockwork.createDot("clockWork_inCombat", 2, -2)
     Clockwork.casting = Clockwork.createDot("clockWork_casting", 3, -2)
-    Clockwork.notRetaliating = Clockwork.createDot("clockWork_stepBack", 4, -2)
+    Clockwork.notRetaliating = Clockwork.createDot("clockWork_notRetaliating", 4, -2)
 
     Clockwork.playerHealth = Clockwork.createDot("clockWork_health", 12, -2)
     Clockwork.playerMana = Clockwork.createDot("clockWork_mana", 13, -2)
-    Clockwork.numberOfTargets = Clockwork.createDot("clockWork_number_of_targets", 2, -3)
+    Clockwork.numberOfTargets = Clockwork.createDot("clockWork_numberOfTargets", 2, -3)
     Clockwork.targets.count = 0
     Clockwork.targetReaction = Clockwork.createDot("clockWork_target_reaction", 11, -3)
     Clockwork.targetHealth = Clockwork.createDot("clockWork_target_health", 12, -3)
