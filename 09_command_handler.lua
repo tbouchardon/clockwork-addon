@@ -22,7 +22,7 @@ local function commandHandler(msg)
 
         Clockwork.log.debug(msg)
 
-        for coords in string.gfind(msg, '%d%d,%d%d.%d%d,%d%d;') do
+        for coords in string.gmatch(msg, '%d%d,%d%d.%d%d,%d%d;') do
             coordinates = coordinates .. coords
         end
 
@@ -30,7 +30,7 @@ local function commandHandler(msg)
 
     elseif spe ~= nil then
 
-        for spe in string.gfind(msg, 'spe%d') do
+        for spe in string.gmatch(msg, 'spe%d') do
             Clockwork.spe = tonumber(string.sub(spe, 4, 4))
         end
 

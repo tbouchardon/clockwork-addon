@@ -8,7 +8,7 @@
 
 local function rotation1()
 
-    priority = 100
+    local priority = 100
     --Clockwork.log.debug("function Clockwork.warlockAfflictionRotation")
 
     -- if (Clockwork.DEBUG_MOD) then Clockwork.playerHasBuff(, "for debug purpose") end
@@ -55,7 +55,7 @@ local function rotation1()
 
         --Unstable Affliction
         hasDebuff, remainingTime = Clockwork.targetHasDebuff("Affliction instable")
-        afflictionInstableTargetFound = false
+        local afflictionInstableTargetFound = false
         if (Clockwork.afflictionInstableTarget ~= nil) then
             for guid, _ in pairs(Clockwork.targets.list) do
                 if guid == Clockwork.afflictionInstableTarget then
@@ -81,7 +81,7 @@ local function rotation1()
         end
         if hasDebuff then
             Clockwork.log.debug("Unstable Affliction : hasDebuff")
-            currentTargetGUID = UnitGUID("target")
+            local currentTargetGUID = UnitGUID("target")
             Clockwork.afflictionInstableEndTime = GetTime() + remainingTime
             Clockwork.afflictionInstableTarget = currentTargetGUID
         end
@@ -128,7 +128,7 @@ local function rotation1()
 
         --Clockwork.shouldHitKey(Clockwork.keyQ, Clockwork.playerManaPct() < 33 and Clockwork.playerHealthPct() > 66) -- Life Tap
 
-        hasDebuff, remainingTime = Clockwork.playerHasBuff("Pierre d'âme")
+        local hasDebuff, remainingTime = Clockwork.playerHasBuff("Pierre d'âme")
         Clockwork.shouldHitKey(Clockwork.keyEq, not hasDebuff)
 
         --Clockwork.shouldHitShiftKey(Clockwork.keyT, not Clockwork.playerHasBuff("Demon Skin")) -- Buff
