@@ -1,18 +1,8 @@
-function Clockwork.printDebug(text)
-
-    -- Clockwork.printDebug("function Clockwork.printDebug(" .. tostring(text))
-
-    if Clockwork.DEBUG_MOD then
-
-        DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r \124cFF8eacbb(Debug)\124r: " .. tostring(text))
-    end
-end
-
 function Clockwork.listAllSpells()
 
-    -- Clockwork.printDebug("function Clockwork.listAllSpells(")
+    -- Clockwork.log.debug("function Clockwork.listAllSpells(")
 
-    Clockwork.printDebug("Clockwork.listAllSpells()")
+    Clockwork.log.debug("Clockwork.listAllSpells()")
 
     if Clockwork.DEBUG_MOD then
 
@@ -29,9 +19,9 @@ function Clockwork.listAllSpells()
 
             if (spellSubName and string.find(spellSubName, "Rank")) then
                 local rank = strsub(spellSubName, 6, strlen(spellSubName));
-                Clockwork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName .. ", rank=" .. rank);
+                Clockwork.log.debug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName .. ", rank=" .. rank);
             else
-                Clockwork.printDebug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName);
+                Clockwork.log.debug("Spell : id=" .. tostring(spellID) .. ", name=" .. spellName);
             end
 
             index = index + 1;
@@ -41,7 +31,7 @@ end
 
 function Clockwork.reportActionButtons()
 
-    -- Clockwork.printDebug("function Clockwork.reportActionButtons(")
+    -- Clockwork.log.debug("function Clockwork.reportActionButtons(")
 
     for actionSlot = 1, 120 do
 
@@ -57,14 +47,14 @@ function Clockwork.reportActionButtons()
                 message = message .. " \"" .. actionText .. "\"";
             end
 
-            Clockwork.printDebug(message);
+            Clockwork.log.debug(message);
         end
     end
 end
 
 function Clockwork.getCoord()
 
-    -- Clockwork.printDebug("function getCoord(")
+    -- Clockwork.log.debug("function getCoord(")
 
     local map = C_Map.GetBestMapForUnit("player")
     Clockwork.log.notice("Map : " .. tostring(map))

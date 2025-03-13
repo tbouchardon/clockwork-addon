@@ -17,10 +17,10 @@ function Clockwork.isUnitCastingEffect(unit, effect)
         name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(unit)
     end
 
-    --Clockwork.printDebug(name)
+    --Clockwork.log.debug(name)
 
     --if (name ~= nil) then
-    --    Clockwork.printDebug("Clockwork.isUnitCastingEffect : " .. " " .. tostring(name))
+    --    Clockwork.log.debug("Clockwork.isUnitCastingEffect : " .. " " .. tostring(name))
     --end
 
     if effect == nil then
@@ -50,13 +50,13 @@ function Clockwork.targetsOwnDebuffCount()
         local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod =
             C_UnitAuras.GetAuraDataByIndex("target", index, "HARMFUL")
 
-        --Clockwork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer))
+        --Clockwork.log.debug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer))
 
         if (castByPlayer == true) then
             numberOfDebuff = numberOfDebuff + 1
         end
 
-        --Clockwork.printDebug("index : " .. tostring(index))
+        --Clockwork.log.debug("index : " .. tostring(index))
 
         index = index + 1
     end
@@ -67,7 +67,7 @@ end
 function Clockwork.unitHasDebuff(unit, effect)
     -- https://wowpedia.fandom.com/wiki/API_UnitAura
 
-    -- Clockwork.printDebug("function Clockwork.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
+    -- Clockwork.log.debug("function Clockwork.unitHasDebuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1
 
     while C_UnitAuras.GetAuraDataByIndex(unit, index, "HARMFUL") do
@@ -79,12 +79,12 @@ function Clockwork.unitHasDebuff(unit, effect)
                 remainingTime = aura.expirationTime - GetTime()
             end
 
-            --Clockwork.printDebug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
+            --Clockwork.log.debug(tostring(name) .. " " .. tostring(source) .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
 
             return true, true, remainingTime
         end
 
-        --Clockwork.printDebug(name .. " " .. source .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
+        --Clockwork.log.debug(name .. " " .. source .. " " .. tostring(castByPlayer) .. " " .. tostring(expirationTime))
 
         index = index + 1
     end
@@ -95,7 +95,7 @@ end
 function Clockwork.targetHasDebuff(effect)
     local buff, anybuff, remainingTime = Clockwork.unitHasDebuff("target", effect)
 
-    --Clockwork.printDebug("Clockwork.targetHasDebuff(" .. effect .. ") => buff : " .. tostring(buff) .. ", anybuff : " .. tostring(anybuff) .. " remainingTime : " .. tostring(remainingTime))
+    --Clockwork.log.debug("Clockwork.targetHasDebuff(" .. effect .. ") => buff : " .. tostring(buff) .. ", anybuff : " .. tostring(anybuff) .. " remainingTime : " .. tostring(remainingTime))
 
     return buff, remainingTime
 end
@@ -129,7 +129,7 @@ function Clockwork.unitHasAnyDebuff(unit)
 end
 
 function Clockwork.unitHasBuff(unit, effect)
-    -- Clockwork.printDebug("function Clockwork.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
+    -- Clockwork.log.debug("function Clockwork.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1
     while C_UnitAuras.GetBuffDataByIndex(unit, index) do
         local aura = C_UnitAuras.GetAuraDataByIndex(unit, index)
@@ -155,7 +155,7 @@ function Clockwork.playerHasBuff(effect)
 end
 
 function Clockwork.findSpellSlotIndex(spellName, bookType)
-    -- Clockwork.printDebug("function Clockwork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
+    -- Clockwork.log.debug("function Clockwork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
     --local i, s
     local found = false
     for spellTabIndex = 1, C_SpellBook.GetNumSpellBookSkillLines() do
@@ -177,7 +177,7 @@ function Clockwork.findSpellSlotIndex(spellName, bookType)
 end
 
 function Clockwork.dropSpellInBarSlot(spellName, slot)
-    -- Clockwork.printDebug("function Clockwork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
+    -- Clockwork.log.debug("function Clockwork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
 
     local spellSlotIndex = Clockwork.findSpellSlotIndex(spellName, Enum.SpellBookSpellBank.Player)
     Clockwork.log.notice(tostring(spellSlotIndex))

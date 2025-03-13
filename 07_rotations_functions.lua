@@ -7,7 +7,7 @@ Clockwork.spe = 1
 
 function Clockwork.rotation()
 
-    --Clockwork.printDebug("function Clockwork.rotation()")
+    --Clockwork.log.debug("function Clockwork.rotation()")
 
     if UnitAffectingCombat("player") then
         Clockwork.inCombat.texture:SetColorTexture(1, 1, 1, 1)
@@ -64,9 +64,9 @@ function Clockwork.rotation()
 
     Clockwork.resetKeys()
 
-    --Clockwork.printDebug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
-    --Clockwork.printDebug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
-    --Clockwork.printDebug("UnitClass(\"player\")" .. tostring(UnitClass("player")))
+    --Clockwork.log.debug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
+    --Clockwork.log.debug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
+    --Clockwork.log.debug("UnitClass(\"player\")" .. tostring(UnitClass("player")))
 
     if (IsMounted()) then
         return
@@ -103,7 +103,7 @@ end
 
 function Clockwork.debuffCanBeCast(spell, slot)
 
-    -- Clockwork.printDebug("function Clockwork.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
+    -- Clockwork.log.debug("function Clockwork.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
 
     Clockwork.log.debug("Clockwork.debuffCanBeCast(" .. tostring(spell) .. "," .. tostring(slot) .. ')')
 
@@ -125,7 +125,7 @@ end
 
 function Clockwork.targetInRange(distance)
 
-    -- Clockwork.printDebug("function Clockwork.targetInRange(" .. tostring(distance))
+    -- Clockwork.log.debug("function Clockwork.targetInRange(" .. tostring(distance))
 
     if CheckInteractDistance("target", distance) then
         return true
@@ -136,18 +136,18 @@ end
 
 function Clockwork.actionCanBeCast(slot)
 
-    Clockwork.printDebug("function Clockwork.actionCanBeCast(" .. tostring(slot))
+    Clockwork.log.debug("function Clockwork.actionCanBeCast(" .. tostring(slot))
 
     if (Clockwork.CHECK_ACTIONS_CAST == false) then
         return true
     end
 
-    Clockwork.printDebug("slot = " .. tostring(slot))
+    Clockwork.log.debug("slot = " .. tostring(slot))
     local actionType, id, subType = GetActionInfo(slot)
     local name, rank, icon, castTime, minRange, maxRange, spellID = C_Spell.GetSpellInfo(id)
-    Clockwork.printDebug(tostring(actionType) .. ": " .. tostring(name) .. " (" .. tostring(spellID) .. ") ")
-    Clockwork.printDebug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
-    Clockwork.printDebug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
+    Clockwork.log.debug(tostring(actionType) .. ": " .. tostring(name) .. " (" .. tostring(spellID) .. ") ")
+    Clockwork.log.debug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
+    Clockwork.log.debug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
 
     local canBeCast = true
 
@@ -155,27 +155,27 @@ function Clockwork.actionCanBeCast(slot)
         canBeCast = IsActionInRange(slot) ~= false -- Can be true or nil
     end
 
-    --Clockwork.printDebug("canBeCast1 : " .. tostring(canBeCast))
+    --Clockwork.log.debug("canBeCast1 : " .. tostring(canBeCast))
 
     if canBeCast == true then
 
         local start, duration, enable = GetActionCooldown(slot)
 
-        --         Clockwork.printDebug("GetActionCooldown(slot) start = " .. tostring(start))
-        --         Clockwork.printDebug("GetActionCooldown(slot) duration = " .. tostring(duration))
-        --         Clockwork.printDebug("GetActionCooldown(slot) enable = " .. tostring(enable))
+        --         Clockwork.log.debug("GetActionCooldown(slot) start = " .. tostring(start))
+        --         Clockwork.log.debug("GetActionCooldown(slot) duration = " .. tostring(duration))
+        --         Clockwork.log.debug("GetActionCooldown(slot) enable = " .. tostring(enable))
 
         canBeCast = (start == 0)
     end
 
-    --Clockwork.printDebug("canBeCast2 : " .. tostring(canBeCast))
+    --Clockwork.log.debug("canBeCast2 : " .. tostring(canBeCast))
 
     if canBeCast == true then
 
         local isUsable, notEnoughMana = IsUsableAction(slot)
 
-        --         Clockwork.printDebug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
-        --         Clockwork.printDebug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
+        --         Clockwork.log.debug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
+        --         Clockwork.log.debug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
 
         canBeCast = (isUsable ~= nil)
     end
@@ -186,14 +186,14 @@ function Clockwork.actionCanBeCast(slot)
         end
     end
 
-    --Clockwork.printDebug("canBeCast3 : " .. tostring(canBeCast))
+    --Clockwork.log.debug("canBeCast3 : " .. tostring(canBeCast))
 
     return canBeCast
 end
 
 function Clockwork.enemyPlayer()
 
-    -- Clockwork.printDebug("function Clockwork.enemyPlayer(")
+    -- Clockwork.log.debug("function Clockwork.enemyPlayer(")
 
     if UnitIsPlayer("target") then
         return true
@@ -204,7 +204,7 @@ end
 
 function Clockwork.healthPercentage(unit)
 
-    -- Clockwork.printDebug("function Clockwork.healthPercentage(" .. tostring(unit))
+    -- Clockwork.log.debug("function Clockwork.healthPercentage(" .. tostring(unit))
 
     if (UnitHealth(unit) == 0) then
         return 0
@@ -224,7 +224,7 @@ end
 
 function Clockwork.manaPercentage(unit)
 
-    -- Clockwork.printDebug("function Clockwork.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
+    -- Clockwork.log.debug("function Clockwork.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
 
     local powerType, powerToken, altR, altG, altB = UnitPowerType(unit)
     local power = UnitPower(unit, powerType)

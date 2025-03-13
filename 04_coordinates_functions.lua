@@ -1,5 +1,5 @@
 function Clockwork.initLatitude()
-    -- Clockwork.printDebug("function Clockwork.initLatitude(")
+    -- Clockwork.log.debug("function Clockwork.initLatitude(")
 
     Clockwork.coord_lati_1 = Clockwork.createDot("coord_lati_1", 13, -8)
     Clockwork.coord_lati_2 = Clockwork.createDot("coord_lati_2", 12, -8)
@@ -25,7 +25,7 @@ function Clockwork.initLatitude()
 end
 
 function Clockwork.initLongitude()
-    -- Clockwork.printDebug("function Clockwork.initLongitude(")
+    -- Clockwork.log.debug("function Clockwork.initLongitude(")
 
     Clockwork.coord_long_1 = Clockwork.createDot("coord_long_1", 13, -11)
     Clockwork.coord_long_2 = Clockwork.createDot("coord_long_2", 12, -11)
@@ -51,14 +51,14 @@ function Clockwork.initLongitude()
 end
 
 function Clockwork.initCoords()
-    -- Clockwork.printDebug("function Clockwork.initCoords(")
+    -- Clockwork.log.debug("function Clockwork.initCoords(")
 
     Clockwork.initLatitude()
     Clockwork.initLongitude()
 end
 
 function Clockwork.updateLatitude(coordinates)
-    -- Clockwork.printDebug("function Clockwork.updateLatitude(" .. tostring(coordinates))
+    -- Clockwork.log.debug("function Clockwork.updateLatitude(" .. tostring(coordinates))
 
     if coordinates - 524288 >= 0 then
         coordinates = coordinates - 524288;
@@ -202,7 +202,7 @@ function Clockwork.updateLatitude(coordinates)
 end
 
 function Clockwork.updateLongitude(coordinates)
-    -- Clockwork.printDebug("function Clockwork.updateLongitude(" .. tostring(coordinates))
+    -- Clockwork.log.debug("function Clockwork.updateLongitude(" .. tostring(coordinates))
 
     if coordinates - 524288 >= 0 then
         coordinates = coordinates - 524288;
@@ -346,9 +346,9 @@ function Clockwork.updateLongitude(coordinates)
 end
 
 function Clockwork.updatePositionCoordinates()
-    -- Clockwork.printDebug("function Clockwork.updatePositionCoordinates(")
+    -- Clockwork.log.debug("function Clockwork.updatePositionCoordinates(")
 
-    --Clockwork.printDebug("Clockwork.updatePositionCoordinates()")
+    --Clockwork.log.debug("Clockwork.updatePositionCoordinates()")
     local map = C_Map.GetBestMapForUnit("player")
     if map == nil then
         return
@@ -366,8 +366,8 @@ function Clockwork.updatePositionCoordinates()
         posY = Clockwork.player.position.posY
     end
 
-    --Clockwork.printDebug(posX)
-    --Clockwork.printDebug(posY)
+    --Clockwork.log.debug(posX)
+    --Clockwork.log.debug(posY)
 
     posX = posX * 1000000
     posY = posY * 1000000
@@ -382,7 +382,7 @@ function Clockwork.updatePositionCoordinates()
 end
 
 function Clockwork.updatePositionFromCoordinates(coordinates)
-    -- Clockwork.printDebug("function Clockwork.updatePositionFromCoordinates(" .. tostring(coordinates))
+    -- Clockwork.log.debug("function Clockwork.updatePositionFromCoordinates(" .. tostring(coordinates))
 
     local posX = string.sub(coordinates, 1, 2) .. string.sub(coordinates, 4, 5) .. "00"
     local posY = string.sub(coordinates, 7, 8) .. string.sub(coordinates, 10, 11) .. "00"

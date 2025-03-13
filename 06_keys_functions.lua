@@ -4,7 +4,7 @@ Clockwork.ALT = 919836
 
 function Clockwork.initKeys()
 
-    -- Clockwork.printDebug("function Clockwork.initKeys(")
+    -- Clockwork.log.debug("function Clockwork.initKeys(")
 
     --Clockwork.keyMaj = Clockwork.createDot("clockWork_keyMaj", 2, -2)
     --Clockwork.keyCtrl = Clockwork.createDot("clockWork_keyCtrl", 3, -2)
@@ -33,7 +33,7 @@ end
 
 function Clockwork.resetKeys()
 
-    -- Clockwork.printDebug("function Clockwork.resetKeys(")
+    -- Clockwork.log.debug("function Clockwork.resetKeys(")
 
     Clockwork.keyQ.texture:SetColorTexture(0, 0, 0, 1)
     Clockwork.keyQ.priority = -1
@@ -75,7 +75,7 @@ end
 
 function Clockwork.shouldHitKey(key, condition, priority)
 
-    -- Clockwork.printDebug("function Clockwork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
+    -- Clockwork.log.debug("function Clockwork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
     Clockwork.shouldHitKeyWithModifier(key, condition, priority, nil)
 end
@@ -84,7 +84,7 @@ function Clockwork.shouldHitKeyWithModifier(key, condition, priority, keyModific
 
     priority = Clockwork.ternary(Clockwork.emptyOrNil(priority), 0, priority)
 
-    --Clockwork.printDebug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
+    --Clockwork.log.debug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
     Clockwork.log.debug("key.slot = " .. tostring(key.slot))
     Clockwork.log.debug("should = " .. tostring(condition))

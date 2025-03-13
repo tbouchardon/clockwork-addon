@@ -28,7 +28,7 @@ Clockwork.targets.multiTargetModTrigger = 3
 
 function Clockwork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
 
-    -- Clockwork.printDebug("function Clockwork.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
+    -- Clockwork.log.debug("function Clockwork.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
 
     local dotFrame = CreateFrame("FRAME", "clockWork_" .. name, Clockwork.frame)
     dotFrame:SetPoint("TOPLEFT", xPos, yPos)

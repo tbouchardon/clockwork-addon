@@ -2,16 +2,16 @@
 
 local function commandHandler(msg)
 
-    -- Clockwork.printDebug("local function commandHandler(" .. tostring(msg))
+    -- Clockwork.log.debug("local function commandHandler(" .. tostring(msg))
 
-    Clockwork.printDebug("Command Handler")
+    Clockwork.log.debug("Command Handler")
 
     local coordinates
     if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d.%d%d,%d%d;') end
     local spe
     if msg ~= nil then spe = string.find(msg, 'spe%d') end
 
-    --Clockwork.printDebug("msg : " .. msg)
+    --Clockwork.log.debug("msg : " .. msg)
     if msg == 'toggle' then
 
         Clockwork.clickToggle()
@@ -20,7 +20,7 @@ local function commandHandler(msg)
 
         coordinates = ""
 
-        Clockwork.printDebug(msg)
+        Clockwork.log.debug(msg)
 
         for coords in string.gfind(msg, '%d%d,%d%d.%d%d,%d%d;') do
             coordinates = coordinates .. coords
@@ -36,7 +36,7 @@ local function commandHandler(msg)
 
         if (Clockwork.spe > 3) then Clockwork.spe = 3 end
 
-        Clockwork.printDebug("spe : " .. Clockwork.spe)
+        Clockwork.log.debug("spe : " .. Clockwork.spe)
 
     elseif (msg == 'tne') then
 
@@ -184,7 +184,7 @@ function Clockwork.clickDebug()
         Clockwork.DEBUG_MOD = true
         Clockwork.debug.texture:SetColorTexture(1, 0, 0, 1)
         Clockwork.log.notice("Debug Mod : On")
-        Clockwork.printDebug("UnitClass : " .. UnitClass("player"))
+        Clockwork.log.debug("UnitClass : " .. UnitClass("player"))
     else
 
         Clockwork.DEBUG_MOD = false

@@ -142,7 +142,7 @@ function Clockwork.damageDone(arg1)
     --if (not Clockwork.isPassiveDamage(arg1)) then
     Clockwork.lastTimePlayerHit = time()
     Clockwork.durationBeingHitWithoutRetaliating = Clockwork.lastTimePlayerHasBeenHit - Clockwork.lastTimePlayerHit
-    --Clockwork.printDebug("self : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
+    --Clockwork.log.debug("self : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
     --end
 end
 
@@ -151,13 +151,13 @@ function Clockwork.damageReceived(arg1)
     --        if UnitAffectingCombat("player") then
     Clockwork.lastTimePlayerHasBeenHit = time()
     Clockwork.durationBeingHitWithoutRetaliating = Clockwork.lastTimePlayerHasBeenHit - Clockwork.lastTimePlayerHit
-    --Clockwork.printDebug("creature : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
+    --Clockwork.log.debug("creature : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
     --        end
 end
 
 local function onUpdate()
 
-    -- Clockwork.printDebug("local function onUpdate(")
+    -- Clockwork.log.debug("local function onUpdate(")
 
     local now = GetTime()
 
@@ -168,7 +168,7 @@ local function onUpdate()
             --return
         end
 
-        --        Clockwork.printDebug(Clockwork.nextUpdate)
+        --        Clockwork.log.debug(Clockwork.nextUpdate)
 
         if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
 
@@ -181,9 +181,9 @@ local function onUpdate()
         if Clockwork.addWaypointList ~= nil and
                 Clockwork.ADDING_WP == false then
 
-            --            Clockwork.printDebug(tostring(Clockwork.addWaypointList))
-            --            Clockwork.printDebug(tostring(Clockwork.ADDING_WP))
-            --            Clockwork.printDebug(tostring(Clockwork.waypointListIndex))
+            --            Clockwork.log.debug(tostring(Clockwork.addWaypointList))
+            --            Clockwork.log.debug(tostring(Clockwork.ADDING_WP))
+            --            Clockwork.log.debug(tostring(Clockwork.waypointListIndex))
 
             local index = 0;
             local finished = true
@@ -217,25 +217,25 @@ end
 
 local function onEvent(...)
 
-    -- Clockwork.printDebug("local function onEvent(")
+    -- Clockwork.log.debug("local function onEvent(")
 
-    --Clockwork.printDebug(event)
+    --Clockwork.log.debug(event)
 
     --local numberOfArguments = select('#', ...)
-    --Clockwork.printDebug(numberOfArguments)
+    --Clockwork.log.debug(numberOfArguments)
 
     --for index = 1, numberOfArguments do
-    --    Clockwork.printDebug(select(index, ...))
+    --    Clockwork.log.debug(select(index, ...))
     --end
 
     --local frame = select(1, ...)
     local event = select(2, ...)
-    --Clockwork.printDebug(event)
+    --Clockwork.log.debug(event)
 
     if event == nil then
         return
     else
-        --Clockwork.printDebug(event)
+        --Clockwork.log.debug(event)
     end
 
     if (Clockwork.player.GUID == nil) then
@@ -275,7 +275,7 @@ local function onEvent(...)
 
         if addonName == "Clockwork" then
 
-            Clockwork.printDebug(select(3, ...) .. " Loaded")
+            Clockwork.log.debug(select(3, ...) .. " Loaded")
             Clockwork.playerEnteringWorld()
             Clockwork.addonLoaded()
             Clockwork.resetCombat()
@@ -285,19 +285,19 @@ local function onEvent(...)
 
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 
-        --Clockwork.printDebug("COMBAT_LOG_EVENT Values : ")
+        --Clockwork.log.debug("COMBAT_LOG_EVENT Values : ")
 
         local args = { CombatLogGetCurrentEventInfo() }
         --local numberOfArguments = select('#', args)
 
         --for i, value in pairs(args) do
-        --    Clockwork.printDebug(tostring (i) .. " = "  ..tostring(value))
+        --    Clockwork.log.debug(tostring (i) .. " = "  ..tostring(value))
         --end
         local subevent = args[2]
-        --Clockwork.printDebug("subevent = " .. tostring(subevent))
+        --Clockwork.log.debug("subevent = " .. tostring(subevent))
         local sourceGUID = args[4]
         local sourceName = args[5]
-        --Clockwork.printDebug("sourceGUID = " .. tostring(sourceGUID))
+        --Clockwork.log.debug("sourceGUID = " .. tostring(sourceGUID))
         local destGUID = args[8]
         local destName = args[9]
 
@@ -309,11 +309,11 @@ local function onEvent(...)
         then
 
             if Clockwork.targets.list[tostring(destGUID)] == nil then
-                --Clockwork.printDebug("Unit added")
-                --Clockwork.printDebug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
+                --Clockwork.log.debug("Unit added")
+                --Clockwork.log.debug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
 
             else
-                --Clockwork.printDebug("Unit updated")
+                --Clockwork.log.debug("Unit updated")
             end
 
             Clockwork.targets.list[tostring(destGUID)] = GetTime()
@@ -335,12 +335,12 @@ local function onEvent(...)
                 --subevent == "PARTY_KILL" or 
                 subevent == "UNIT_DISSIPATES" then
 
-            --Clockwork.printDebug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
+            --Clockwork.log.debug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
 
             if Clockwork.targets.list[tostring(destGUID)] ~= nil then
 
                 Clockwork.targets.list[tostring(destGUID)] = nil
-                --Clockwork.printDebug("Unit removed")
+                --Clockwork.log.debug("Unit removed")
                 Clockwork.updateNumberOfTargets()
             end
         end
@@ -383,7 +383,7 @@ function Clockwork.updateNumberOfTargets()
     multiTarget = Clockwork.targets.count >= Clockwork.targets.multiTargetModTrigger
 
     if (Clockwork.targets.multiTargetMod ~= multiTarget) then
-        Clockwork.printDebug(Clockwork.ternary(multiTarget, "Multi targets mod", "Single target mod"))
+        Clockwork.log.debug(Clockwork.ternary(multiTarget, "Multi targets mod", "Single target mod"))
     end
 
     Clockwork.targets.multiTargetMod = multiTarget

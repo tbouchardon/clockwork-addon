@@ -9,7 +9,7 @@
 local function rotation1()
 
     priority = 100
-    --Clockwork.printDebug("function Clockwork.warlockAfflictionRotation")
+    --Clockwork.log.debug("function Clockwork.warlockAfflictionRotation")
 
     -- if (Clockwork.DEBUG_MOD) then Clockwork.playerHasBuff(, "for debug purpose") end
 
@@ -124,7 +124,7 @@ local function rotation1()
     elseif (Clockwork.outOfCombat()) then
         -- hors combat
 
-        --Clockwork.printDebug("Clockwork.outOfCombat()")
+        --Clockwork.log.debug("Clockwork.outOfCombat()")
 
         --Clockwork.shouldHitKey(Clockwork.keyQ, Clockwork.playerManaPct() < 33 and Clockwork.playerHealthPct() > 66) -- Life Tap
 
