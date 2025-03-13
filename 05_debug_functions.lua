@@ -4,7 +4,7 @@ function Clockwork.printDebug(text)
 
     if Clockwork.DEBUG_MOD then
 
-        DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockWork\124r \124cFF8eacbb(Debug)\124r: " .. tostring(text))
+        DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r \124cFF8eacbb(Debug)\124r: " .. tostring(text))
     end
 end
 

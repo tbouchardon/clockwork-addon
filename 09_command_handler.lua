@@ -82,8 +82,8 @@ local function commandHandler(msg)
         Clockwork.reportActionButtons()
 
     else
-        Clockwork.log.notice("------------ ClockWork ------------")
-        Clockwork.log.notice("/clockWork toggle       -- Turn ClockWork On [Blush]/Off")
+        Clockwork.log.notice("------------ Clockwork ------------")
+        Clockwork.log.notice("/clockWork toggle       -- Turn Clockwork On [Blush]/Off")
         Clockwork.log.notice("/clockWork spe1         -- Select spe (1/2/3)")
         Clockwork.log.notice("/clockWork tne          -- Target Nearest Enemy : On/Off")
         Clockwork.log.notice("/clockWork 05,21-63,30; -- Add new waypoint(s)")

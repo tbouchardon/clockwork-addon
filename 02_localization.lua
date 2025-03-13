@@ -7,7 +7,7 @@
 --
 --
 
-BINDING_HEADER_CLOCKWORK = "ClockWork"
+BINDING_HEADER_CLOCKWORK = "Clockwork"
 BINDING_NAME_TEST_BINDING = "Test Bindings"
 
 function Clockwork.createLocalizedText(english, french)

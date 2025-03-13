@@ -8,8 +8,8 @@
 
 function Clockwork.addonLoaded()
 
-    if ClockWork_ROTATIONS == nil then
-        ClockWork_ROTATIONS = {};
+    if Clockwork_ROTATIONS == nil then
+        Clockwork_ROTATIONS = {};
     end
 end
 
@@ -273,7 +273,7 @@ local function onEvent(...)
 
         local addonName = select(3, ...)
 
-        if addonName == "ClockWork" then
+        if addonName == "Clockwork" then
 
             Clockwork.printDebug(select(3, ...) .. " Loaded")
             Clockwork.playerEnteringWorld()

@@ -69,7 +69,7 @@ local function rotation1()
             end
         end
         if not afflictionInstableTargetFound then
-            Clockwork.log.debug("Unstable Affliction : afflictionInstableTarget Not Found : clearing")
+            Clockwork.log.debug("Unstable Affliction : afflictionInstable Target Not Found : clearing")
             Clockwork.afflictionInstableTarget = nil
             Clockwork.afflictionInstableEndTime = nil
         end

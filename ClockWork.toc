@@ -1,6 +1,6 @@
 ## Interface:90205 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
-## Title: ClockWork - |cffffffffSmartCast|r
-## Author: ClockWork
+## Title: Clockwork - |cffffffffSmartCast|r
+## Author: Clockwork
 ## Notes: My Smart Addon
 ## X-Category: Interface Enhancements
 ## OptionalDeps: -- Optional dependencies.

@@ -8,9 +8,9 @@
 
 function initRotationsFrame()
 
-    for action in ClockWork_ROTATIONS.actions do
+    for action in Clockwork_ROTATIONS.actions do
 
-        local line = CreateFrame("Frame", action.shift .. action.ctrl .. action.alt .. action.key, "ClockWorkRotationFrame")
+        local line = CreateFrame("Frame", action.shift .. action.ctrl .. action.alt .. action.key, "ClockworkRotationFrame")
     end
 end
 

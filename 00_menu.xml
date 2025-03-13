@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/"
 >
-    <Frame name="ClockWorkMenuFrame"
+    <Frame name="ClockworkMenuFrame"
            parent="WorldFrame"
            movable="true"
            hidden="false"
@@ -14,9 +14,9 @@
             <OnLoad>
                 self:RegisterForDrag("LeftButton")
 
-                ClockWorkMenuFrame.Expand = function()
-                ClockWorkMenuFrame:SetWidth(137)
-                ClockWorkMenuFrame:SetHeight(204)
+                ClockworkMenuFrame.Expand = function()
+                ClockworkMenuFrame:SetWidth(137)
+                ClockworkMenuFrame:SetHeight(204)
 
                 MyScriptOptionsButtonToggle:Show()
                 MyScriptOptionsButtonTNE:Show()
@@ -28,9 +28,9 @@
                 MyScriptOptionsButtonAggro:Show()
                 end
 
-                ClockWorkMenuFrame.Collapse = function()
-                ClockWorkMenuFrame:SetWidth(137)
-                ClockWorkMenuFrame:SetHeight(20)
+                ClockworkMenuFrame.Collapse = function()
+                ClockworkMenuFrame:SetWidth(137)
+                ClockworkMenuFrame:SetHeight(20)
 
                 MyScriptOptionsButtonToggle:Hide()
                 MyScriptOptionsButtonTNE:Hide()
@@ -46,10 +46,10 @@
                 self:OnBackdropSizeChanged()
             </OnLoad>
             <OnEnter>
-                ClockWorkMenuFrame:Expand()
+                ClockworkMenuFrame:Expand()
             </OnEnter>
             <OnLeave>
-                -- ClockWorkMenuFrame.Collapse()
+                -- ClockworkMenuFrame.Collapse()
             </OnLeave>
             <OnDragStart>
                 self:StartMoving()
@@ -87,7 +87,7 @@
                     <Layer level="ARTWORK">
                         <FontString name="$parent_Title"
                                     inherits="GameFontNormalSmall"
-                                    text="ClockWork"
+                                    text="Clockwork"
                                     justifyH="CENTER">
                             <Color r="1"
                                    g="1"
@@ -109,12 +109,12 @@
 
                         local found = false
                         while (f:GetParent() and f:GetParent() ~= UIParent) do
-                        if (f == ClockWorkMenuFrame) then found = true end
+                        if (f == ClockworkMenuFrame) then found = true end
                         f = f:GetParent()
                         end
 
                         if (not found) then
-                        ClockWorkMenuFrame:Collapse()
+                        ClockworkMenuFrame:Collapse()
                         end
                         end
                     </OnUpdate>
@@ -147,7 +147,7 @@
                         </Anchors>
                         <Scripts>
                             <OnLoad>
-                                self.tooltip = "Toggle ClockWork On/Off";
+                                self.tooltip = "Toggle Clockwork On/Off";
                             </OnLoad>
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
