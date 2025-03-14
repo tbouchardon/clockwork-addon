@@ -154,33 +154,29 @@ function Clockwork.playerHasBuff(effect)
     return Clockwork.unitHasBuff("player", effect)
 end
 
-function Clockwork.findSpellSlotIndex(spellName, bookType)
+function Clockwork.findSpellSlotIndex(spellEnum, bookType)
     -- Clockwork.log.debug("function Clockwork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
     --local i, s
-    local found = false
     for spellTabIndex = 1, C_SpellBook.GetNumSpellBookSkillLines() do
         local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(spellTabIndex)
         if (not skillLineInfo.name) then
             break
         end
-        for spellIndex = skillLineInfo.itemIndexOffset + 1, skillLineInfo.itemIndexOffset + skillLineInfo.numSpellBookItems do
-            local name, subName = C_SpellBook.GetSpellBookItemName(spellIndex, bookType)
-            if (name == spellName) then
-                found = true
-            end
-            if (found and name ~= spellName) then
-                return spellIndex - 1
+        for spellSlotIndex = skillLineInfo.itemIndexOffset + 1, skillLineInfo.itemIndexOffset + skillLineInfo.numSpellBookItems do
+            local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(spellSlotIndex, bookType)
+            if (spellBookItemInfo.spellID == spellEnum.id) then
+                return spellSlotIndex
             end
         end
     end
     return nil
 end
 
-function Clockwork.dropSpellInBarSlot(spellName, slot)
+function Clockwork.dropSpellInBarSlot(spellEnum, slot)
     -- Clockwork.log.debug("function Clockwork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
-
-    local spellSlotIndex = Clockwork.findSpellSlotIndex(spellName, Enum.SpellBookSpellBank.Player)
-    Clockwork.log.notice(tostring(spellSlotIndex))
+    PutItemInBackpack()
+    local spellSlotIndex = Clockwork.findSpellSlotIndex(spellEnum, Enum.SpellBookSpellBank.Player)
+    Clockwork.log.notice(spellEnum.name .. " book spell slot : " .. tostring(spellSlotIndex))
     if spellSlotIndex then
         C_SpellBook.PickupSpellBookItem(spellSlotIndex, Enum.SpellBookSpellBank.Player)
         PlaceAction(slot)

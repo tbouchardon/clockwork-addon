@@ -10,11 +10,11 @@ function Clockwork.updateActionButtons()
     local className, classFilename, classID = UnitClass("player")
 
     if classID == Clockwork.Enum.Class.WARLOCK then
-        Clockwork.dropSpellInBarSlot("Curse of Agony", 5)
-        Clockwork.dropSpellInBarSlot("Corruption", 4)
-        Clockwork.dropSpellInBarSlot("Immolate", 3)
-        Clockwork.dropSpellInBarSlot("Shadow Bolt", 1)
-    elseif classID == Clockwork.Enum.Class.WARRIOR then
-
+        Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.AGONIE_980, 5)
+        Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.CORRUPTION_172, 4)
+        Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.IMMOLATION_348, 3)
+        Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.TRAIT_DE_L_OMBRE_686, 1)
+    elseif classID == Clockwork.Enum.Class.MAGE then
+        Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Mage.ECLAIR_DE_GIVRE_116, 1)
     end
 end
