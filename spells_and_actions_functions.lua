@@ -174,7 +174,9 @@ end
 
 function Clockwork.dropSpellInBarSlot(spellEnum, slot)
     -- Clockwork.log.debug("function Clockwork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
-    PutItemInBackpack()
+    ClearCursor()
+    PickupAction(slot)
+    ClearCursor()
     local spellSlotIndex = Clockwork.findSpellSlotIndex(spellEnum, Enum.SpellBookSpellBank.Player)
     Clockwork.log.notice(spellEnum.name .. " book spell slot : " .. tostring(spellSlotIndex))
     if spellSlotIndex then

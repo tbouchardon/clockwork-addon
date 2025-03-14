@@ -8,6 +8,8 @@
 
 local function initial() -- no Sp
 end
+local function initialActions() -- no Sp
+end
 
 ---------------------------------------------------------------------------------------------------
 local function affliction()
@@ -139,16 +141,34 @@ local function affliction()
         --Clockwork.shouldHitShiftKey(Clockwork.keyQ, Clockwork.playerHealthPct() < 25 and not Clockwork.playerHasBuff("Food")) -- Manger
     end
 end
+local function afflictionActions()
+    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.AGONIE_980, 5)
+    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.CORRUPTION_172, 4)
+    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.TRAIT_DE_L_OMBRE_686, 1)
+end
 
 ---------------------------------------------------------------------------------------------------
 local function demonology()
 end
+local function demonologyActions()
+end
 
 ---------------------------------------------------------------------------------------------------
 local function destruction()
+end
+local function destructionActions()
+    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.AGONIE_980, 5)
+    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.IMMOLATION_348, 4)
+    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Warlock.TRAIT_DE_L_OMBRE_686, 1)
 end
 
 Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Affliction] = affliction
 Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Demonology] = demonology
 Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Destruction] = destruction
 Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Initial] = initial
+
+Clockwork.rotationsActions[Clockwork.Enum.Specialization.Warlock.Affliction] = afflictionActions
+Clockwork.rotationsActions[Clockwork.Enum.Specialization.Warlock.Demonology] = demonologyActions
+Clockwork.rotationsActions[Clockwork.Enum.Specialization.Warlock.Destruction] = destructionActions
+Clockwork.rotationsActions[Clockwork.Enum.Specialization.Warlock.Initial] = initialActions
+
