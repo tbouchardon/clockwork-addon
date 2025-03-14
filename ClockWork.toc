@@ -18,6 +18,7 @@ logger.lua
 core_functions.lua
 localization.lua
 spells.lua
+specializations.lua
 spells_and_actions_functions.lua
 coordinates_functions.lua
 debug_functions.lua

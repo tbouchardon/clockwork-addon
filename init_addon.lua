@@ -7,14 +7,12 @@
 --
 
 function Clockwork.addonLoaded()
-
     if Clockwork_ROTATIONS == nil then
         Clockwork_ROTATIONS = {};
     end
 end
 
 function Clockwork.playerEnteringWorld()
-
     -- init Frames
 
     Clockwork.frame:SetWidth(16)
@@ -138,7 +136,6 @@ function Clockwork.playerEnteringWorld()
 end
 
 function Clockwork.damageDone(arg1)
-
     --if (not Clockwork.isPassiveDamage(arg1)) then
     Clockwork.lastTimePlayerHit = time()
     Clockwork.durationBeingHitWithoutRetaliating = Clockwork.lastTimePlayerHasBeenHit - Clockwork.lastTimePlayerHit
@@ -147,7 +144,6 @@ function Clockwork.damageDone(arg1)
 end
 
 function Clockwork.damageReceived(arg1)
-
     --        if UnitAffectingCombat("player") then
     Clockwork.lastTimePlayerHasBeenHit = time()
     Clockwork.durationBeingHitWithoutRetaliating = Clockwork.lastTimePlayerHasBeenHit - Clockwork.lastTimePlayerHit
@@ -156,13 +152,11 @@ function Clockwork.damageReceived(arg1)
 end
 
 local function onUpdate()
-
     -- Clockwork.log.debug("local function onUpdate(")
 
     local now = GetTime()
 
     if (Clockwork.nextUpdate < now) then
-
         if (C_Map.GetBestMapForUnit("player") == nil) then
             Clockwork.log.debug("Player is nowhere to be found.")
             --return
@@ -171,7 +165,6 @@ local function onUpdate()
         --        Clockwork.log.debug(Clockwork.nextUpdate)
 
         if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
-
             if (C_Map.GetBestMapForUnit("player") ~= nil) then
                 Clockwork.updatePositionCoordinates()
             end
@@ -179,8 +172,7 @@ local function onUpdate()
         end
 
         if Clockwork.addWaypointList ~= nil and
-                Clockwork.ADDING_WP == false then
-
+            Clockwork.ADDING_WP == false then
             --            Clockwork.log.debug(tostring(Clockwork.addWaypointList))
             --            Clockwork.log.debug(tostring(Clockwork.ADDING_WP))
             --            Clockwork.log.debug(tostring(Clockwork.waypointListIndex))
@@ -189,9 +181,7 @@ local function onUpdate()
             local finished = true
 
             for coords in string.gmatch(Clockwork.addWaypointList, ".-;") do
-
                 if index == Clockwork.waypointListIndex then
-
                     finished = false
                     Clockwork.log.notice("Adding Waypoint : " .. coords)
                     Clockwork.updatePositionFromCoordinates(coords)
@@ -205,7 +195,6 @@ local function onUpdate()
             Clockwork.waypointListIndex = Clockwork.waypointListIndex + 1
 
             if (finished) then
-
                 Clockwork.addWaypointList = nil
                 Clockwork.waypointListIndex = 0
             end
@@ -216,7 +205,6 @@ local function onUpdate()
 end
 
 local function onEvent(...)
-
     -- Clockwork.log.debug("local function onEvent(")
 
     --Clockwork.log.debug(event)
@@ -241,9 +229,10 @@ local function onEvent(...)
     if (Clockwork.player.GUID == nil) then
         Clockwork.player.GUID = UnitGUID("player")
         local className, classFilename, classID = UnitClass("player")
-        Clockwork.player.className = className
-        Clockwork.player.classFilename = classFilename
-        Clockwork.player.classID = classID
+        Clockwork.player.class = { className = className, filename = classFilename, classID = classID }
+        local id, name, description, icon, role = GetSpecializationInfoForClassID(Clockwork.player.class.classID,
+            GetSpecialization())
+        Clockwork.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
     end
 
     if (Clockwork.pet.GUID == nil) then
@@ -257,28 +246,22 @@ local function onEvent(...)
     end
 
     if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
-
         Clockwork.CASTING = true
         Clockwork.casting.texture:SetColorTexture(1, 1, 1, 1)
-
     elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_FAILED" or event == "SPELLCAST_INTERRUPTED" then
-
         Clockwork.CASTING = false
         Clockwork.casting.texture:SetColorTexture(0, 0, 0, 1)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
-
         --Clockwork.playerEnteringWorld()
         --return
     end
 
     if event == "ADDON_LOADED" then
-
         local addonName = select(3, ...)
 
         if addonName == "Clockwork" then
-
             Clockwork.log.debug(select(3, ...) .. " Loaded")
             Clockwork.playerEnteringWorld()
             Clockwork.addonLoaded()
@@ -287,8 +270,15 @@ local function onEvent(...)
         end
     end
 
-    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+    Clockwork.log.text(event)
 
+    if event == "PLAYER_SPECIALIZATION_CHANGED" then
+        local id, name, description, icon, role = GetSpecializationInfoForClassID(Clockwork.player.class.classID,
+            GetSpecialization())
+        Clockwork.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
+    end
+
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         --Clockwork.log.debug("COMBAT_LOG_EVENT Values : ")
 
         local args = { CombatLogGetCurrentEventInfo() }
@@ -307,15 +297,13 @@ local function onEvent(...)
 
         --string.find(sourceGUID, "Pet") == true or
         if (sourceGUID == Clockwork.player.GUID or sourceGUID == Clockwork.pet.GUID)
-                and destGUID ~= Clockwork.pet.GUID
-                and destGUID ~= Clockwork.player.GUID
-                and not Clockwork.emptyOrNil(destGUID)
+            and destGUID ~= Clockwork.pet.GUID
+            and destGUID ~= Clockwork.player.GUID
+            and not Clockwork.emptyOrNil(destGUID)
         then
-
             if Clockwork.targets.list[tostring(destGUID)] == nil then
                 --Clockwork.log.debug("Unit added")
                 --Clockwork.log.debug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
-
             else
                 --Clockwork.log.debug("Unit updated")
             end
@@ -334,15 +322,13 @@ local function onEvent(...)
         --if (sourceGUID ~= Clockwork.player.GUID and string.find(sourceGUID, "Pet") == false) then
 
         if subevent == "UNIT_DIED" or
-                subevent == "UNIT_DESTROYED" or
-                subevent == "SPELL_INSTAKILL" or
-                --subevent == "PARTY_KILL" or 
-                subevent == "UNIT_DISSIPATES" then
-
+            subevent == "UNIT_DESTROYED" or
+            subevent == "SPELL_INSTAKILL" or
+            --subevent == "PARTY_KILL" or
+            subevent == "UNIT_DISSIPATES" then
             --Clockwork.log.debug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
 
             if Clockwork.targets.list[tostring(destGUID)] ~= nil then
-
                 Clockwork.targets.list[tostring(destGUID)] = nil
                 --Clockwork.log.debug("Unit removed")
                 Clockwork.updateNumberOfTargets()
@@ -368,7 +354,6 @@ local function onEvent(...)
 end
 
 function Clockwork.updateNumberOfTargets()
-
     if Clockwork.targets.list ~= nil then
         for i, time in pairs(Clockwork.targets.list) do
             if (GetTime() - time > 5) then
@@ -426,6 +411,8 @@ Clockwork.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 Clockwork.frame:RegisterEvent("ADDON_LOADED")
 
 Clockwork.frame:RegisterEvent("PLAYER_DEAD")
+
+Clockwork.frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 
 Clockwork.frame.texture = Clockwork.frame:CreateTexture("MEDIUM")
 Clockwork.frame.texture:SetAllPoints()

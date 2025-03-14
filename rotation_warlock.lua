@@ -6,7 +6,11 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function rotation1()
+local function initial() -- no Sp
+end
+
+---------------------------------------------------------------------------------------------------
+local function affliction()
     local priority = 100
     --Clockwork.log.debug("function Clockwork.warlockAfflictionRotation")
 
@@ -137,21 +141,14 @@ local function rotation1()
 end
 
 ---------------------------------------------------------------------------------------------------
-local function rotation2()
+local function demonology()
 end
 
 ---------------------------------------------------------------------------------------------------
-local function rotation3()
+local function destruction()
 end
 
-local function rotations()
-    if Clockwork.spe == 1 then
-        rotation1()
-    elseif Clockwork.spe == 2 then
-        rotation2()
-    elseif Clockwork.spe == 3 then
-        rotation3()
-    end
-end
-
-Clockwork.rotations[Clockwork.Enum.Class.WARLOCK] = rotations
+Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Affliction] = affliction
+Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Demonology] = demonology
+Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Destruction] = destruction
+Clockwork.rotations[Clockwork.Enum.Specialization.Warlock.Initial] = initial

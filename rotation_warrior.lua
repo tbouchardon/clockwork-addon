@@ -8,25 +8,22 @@
 
 local regen = 53
 
-local function rotation1()
+local function initial() -- no Sp
 end
 
 ---------------------------------------------------------------------------------------------------
-local function rotation2()
+local function arms()
 end
 
 ---------------------------------------------------------------------------------------------------
-local function rotation3()
+local function fury()
 end
 
-local function rotations()
-    if Clockwork.spe == 1 then
-        rotation1()
-    elseif Clockwork.spe == 2 then
-        rotation2()
-    elseif Clockwork.spe == 3 then
-        rotation3()
-    end
+---------------------------------------------------------------------------------------------------
+local function protection()
 end
 
-Clockwork.rotations[Clockwork.Enum.Class.WARRIOR] = rotations
+Clockwork.rotations[Clockwork.Enum.Specialization.Warrior.Arms] = arms
+Clockwork.rotations[Clockwork.Enum.Specialization.Warrior.Fury] = fury
+Clockwork.rotations[Clockwork.Enum.Specialization.Warrior.Protection] = protection
+Clockwork.rotations[Clockwork.Enum.Specialization.Warrior.Initial] = initial

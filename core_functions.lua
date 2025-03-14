@@ -27,7 +27,6 @@ Clockwork.targets.multiTargetMod = false
 Clockwork.targets.multiTargetModTrigger = 3
 
 function Clockwork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
-
     -- Clockwork.log.debug("function Clockwork.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
 
     local dotFrame = CreateFrame("FRAME", "clockWork_" .. name, Clockwork.frame)
@@ -36,7 +35,7 @@ function Clockwork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
     dotFrame:SetHeight(1)
     dotFrame:SetFrameStrata("HIGH");
 
-    dotFrame.texture = dotFrame:CreateTexture(nil, "HIGHLIGHT")
+    dotFrame.texture = dotFrame:CreateTexture(nil, "OVERLAY")
     dotFrame.texture:SetAllPoints()
     dotFrame.texture:SetColorTexture(0, 0, 0, 1)
     dotFrame.slot = slot;
@@ -49,7 +48,6 @@ function Clockwork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
 end
 
 function Clockwork.tableLength(T)
-
     if T == nil then
         return 0
     end
@@ -61,7 +59,6 @@ function Clockwork.tableLength(T)
 end
 
 function Clockwork.emptyOrNil(s)
-
     if s == nil then
         return true
     end

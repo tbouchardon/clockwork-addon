@@ -7,8 +7,6 @@ local function commandHandler(msg)
 
     local coordinates
     if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d.%d%d,%d%d;') end
-    local spe
-    if msg ~= nil then spe = string.find(msg, 'spe%d') end
 
     --Clockwork.log.debug("msg : " .. msg)
     if msg == 'toggle' then
@@ -23,14 +21,6 @@ local function commandHandler(msg)
         end
 
         Clockwork.addWaypointList = coordinates;
-    elseif spe ~= nil then
-        for spe in string.gmatch(msg, 'spe%d') do
-            Clockwork.spe = tonumber(string.sub(spe, 4, 4))
-        end
-
-        if (Clockwork.spe > 3) then Clockwork.spe = 3 end
-
-        Clockwork.log.debug("spe : " .. Clockwork.spe)
     elseif (msg == 'tne') then
         Clockwork.clickTNE()
     elseif (msg == 'addwp') then
@@ -59,7 +49,6 @@ local function commandHandler(msg)
     else
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
-        Clockwork.log.notice("/clockWork spe1           -- Select spe (1/2/3)")
         Clockwork.log.notice("/clockWork tne            -- Target Nearest Enemy : On/Off")
         Clockwork.log.notice("/clockWork 05,21-63,30;   -- Add new waypoint(s)")
         Clockwork.log.notice("/clockWork addwp          -- Add new waypoint")

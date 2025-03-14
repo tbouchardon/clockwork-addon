@@ -6,25 +6,22 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function rotation1()
+local function initial() -- no Sp
 end
 
 ---------------------------------------------------------------------------------------------------
-local function rotation2()
+local function discipline()
 end
 
 ---------------------------------------------------------------------------------------------------
-local function rotation3()
+local function holy()
 end
 
-local function rotations()
-    if Clockwork.spe == 1 then
-        rotation1()
-    elseif Clockwork.spe == 2 then
-        rotation2()
-    elseif Clockwork.spe == 3 then
-        rotation3()
-    end
+---------------------------------------------------------------------------------------------------
+local function shadow()
 end
 
-Clockwork.rotations[Clockwork.Enum.Class.PRIEST] = rotations
+Clockwork.rotations[Clockwork.Enum.Specialization.Priest.Discipline] = discipline
+Clockwork.rotations[Clockwork.Enum.Specialization.Priest.Holy] = holy
+Clockwork.rotations[Clockwork.Enum.Specialization.Priest.Shadow] = shadow
+Clockwork.rotations[Clockwork.Enum.Specialization.Priest.Initial] = initial

@@ -3,7 +3,6 @@ Clockwork.TRADE = 2   --11.11 yards
 Clockwork.DUEL = 3    --9.9 yards
 Clockwork.FOLLOW = 4  --28 yards
 
-Clockwork.spe = 1
 Clockwork.rotations = {}
 
 function Clockwork.rotation()
@@ -71,8 +70,7 @@ function Clockwork.rotation()
 
     -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
     if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
-        if not Clockwork.player.classID then return end
-        local rotation = Clockwork.rotations[Clockwork.player.classID]
+        local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
         if rotation then rotation() end
     end
 end
@@ -125,8 +123,14 @@ function Clockwork.actionCanBeCast(slot)
 
     Clockwork.log.debug("slot = " .. tostring(slot))
     local actionType, id, subType = GetActionInfo(slot)
-    local name, rank, icon, castTime, minRange, maxRange, spellID = C_Spell.GetSpellInfo(id)
-    Clockwork.log.debug(tostring(actionType) .. ": " .. tostring(name) .. " (" .. tostring(spellID) .. ") ")
+    if not id then
+        Clockwork.log.debug("No action in slot")
+        return false
+    end
+    Clockwork.log.debug("id = " .. id)
+    local spellInfo = C_Spell.GetSpellInfo(id)
+    Clockwork.log.debug(tostring(actionType) ..
+        ": " .. tostring(spellInfo.name) .. " (" .. tostring(spellInfo.spellID) .. ") ")
     Clockwork.log.debug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
     Clockwork.log.debug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
 
@@ -160,7 +164,7 @@ function Clockwork.actionCanBeCast(slot)
     end
 
     if (canBeCast == true) then
-        if castTime ~= 0 then
+        if spellInfo.castTime ~= 0 then
             canBeCast = Clockwork.player.isMoving == false
         end
     end
@@ -223,9 +227,9 @@ end
 function Clockwork.unitExistCanAndShouldDie()
     return UnitExists("target") and
         not UnitIsDeadOrGhost("target") and
-        not UnitIsDeadOrGhost("player") and                             -- > La cible ET le joueur sont vivants (>_<)
-        (not UnitIsTapDenied("target")) and                             -- > La cible peut être marquée par le joueur.
-        (Clockwork.targetNeutral() or Clockwork.targetUnfriendly())     -- > La cible est un enemi (rouge uniquement)
+        not UnitIsDeadOrGhost("player") and                         -- > La cible ET le joueur sont vivants (>_<)
+        (not UnitIsTapDenied("target")) and                         -- > La cible peut être marquée par le joueur.
+        (Clockwork.targetNeutral() or Clockwork.targetUnfriendly()) -- > La cible est un enemi (rouge uniquement)
 end
 
 function Clockwork.targetUnfriendly()
@@ -318,7 +322,7 @@ end
 
 function Clockwork.hasMainHandEnchant()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges =
-    GetWeaponEnchantInfo()
+        GetWeaponEnchantInfo()
 
     -- if hasMainHandEnchant then Clockwork.log.debug("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
     -- if mainHandExpiration then Clockwork.log.debug("mainHandExpiration = "..tostring(mainHandExpiration)) end
@@ -335,7 +339,7 @@ end
 
 function Clockwork.hasOffHandEnchant()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges =
-    GetWeaponEnchantInfo()
+        GetWeaponEnchantInfo()
 
     return hasOffHandEnchant
 end
