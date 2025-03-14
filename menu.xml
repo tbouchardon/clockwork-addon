@@ -104,7 +104,7 @@
             <Frame name="$parent_Controls">
                 <Scripts>
                     <OnUpdate>
-                        local f = GetMouseFocus()
+                        local f = GetMouseFoci()[1]
                         if (f) then
 
                         local found = false
@@ -134,7 +134,7 @@
                 <Frames>
 
                     <Button name="MyScriptOptionsButtonToggle"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Off - Toggle">
                         <Size x="120"
                               y="25"/>
@@ -171,7 +171,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonAggro"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="On - Aggro">
                         <Size x="120"
                               y="25"/>
@@ -210,7 +210,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonTNE"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Off - TNE">
                         <Size x="120"
                               y="25"/>
@@ -246,7 +246,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonDrive"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Off - Drive">
                         <Size x="120"
                               y="25"/>
@@ -282,7 +282,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonLoop"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Off - Loop WP">
                         <Size x="120"
                               y="25"/>
@@ -318,7 +318,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonDebug"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Off - Debug">
                         <Size x="120"
                               y="25"/>
@@ -354,7 +354,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonAddWP"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Add Waypoint">
                         <Size x="120"
                               y="25"/>
@@ -384,7 +384,7 @@
                     </Button>
 
                     <Button name="MyScriptOptionsButtonClearWP"
-                            inherits="OptionsButtonTemplate"
+                            inherits="UIPanelButtonTemplate"
                             text="Clear Waypoints">
                         <Size x="120"
                               y="25"/>

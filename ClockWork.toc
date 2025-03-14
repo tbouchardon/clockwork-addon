@@ -1,4 +1,4 @@
-## Interface:90205 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
+## Interface: 110007 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
 ## Title: Clockwork - |cffffffffSmartCast|r
 ## Author: Clockwork
 ## Notes: My Smart Addon
@@ -7,7 +7,7 @@
 ## DefaultState: Enabled
 ## SavedVariables: CLOCKWORK_ROTATIONS
 
-## Dependencies:
+## Dependencies: 
 
 core.lua
 conditions.xml

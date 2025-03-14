@@ -14,7 +14,7 @@ function Clockwork.updateActionButtons()
         Clockwork.dropSpellInBarSlot("Corruption", 4)
         Clockwork.dropSpellInBarSlot("Immolate", 3)
         Clockwork.dropSpellInBarSlot("Shadow Bolt", 1)
-    elseif classID == Clockwork.Enum.Class.WARRIORLOCK then
+    elseif classID == Clockwork.Enum.Class.WARRIOR then
 
     end
 end

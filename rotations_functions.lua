@@ -27,8 +27,6 @@ function Clockwork.rotation()
     Clockwork.playerHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("player"), 0, 0, 1)
     Clockwork.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("player"), 1)
 
-    Clockwork.log.debug(tostring(Clockwork.targetHostile()) .. tostring(Clockwork.targetNeutral()))
-
     if (UnitExists("target") and not UnitIsUnit("player", "target")) then
         if (Clockwork.targetUnfriendly()) then
             Clockwork.targetReaction.texture:SetColorTexture(1, 0, 0, 1)

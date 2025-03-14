@@ -31,4 +31,3 @@ function testRotation(spe)
         if condition.unitReaction then end
     end
 end
-
