@@ -228,11 +228,20 @@ local function onEvent(...)
 
     if (Clockwork.player.GUID == nil) then
         Clockwork.player.GUID = UnitGUID("player")
+    end
+
+    if (Clockwork.player.class == nil) then
         local className, classFilename, classID = UnitClass("player")
         Clockwork.player.class = { className = className, filename = classFilename, classID = classID }
-        local id, name, description, icon, role = GetSpecializationInfoForClassID(Clockwork.player.class.classID,
-            GetSpecialization())
-        Clockwork.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
+    end
+
+    if (Clockwork.player.specialization == nil and Clockwork.player.class.classID ~= nil) then
+        local currentSpec = GetSpecialization()
+        if currentSpec ~= nil then
+            local id, name, description, icon, role = GetSpecializationInfoForClassID(Clockwork.player.class.classID,
+                currentSpec)
+            Clockwork.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
+        end
     end
 
     if (Clockwork.pet.GUID == nil) then
@@ -270,9 +279,8 @@ local function onEvent(...)
         end
     end
 
-    Clockwork.log.text(event)
-
-    if event == "PLAYER_SPECIALIZATION_CHANGED" then
+    if event == "PLAYER_SPECIALIZATION_CHANGED" and Clockwork.player.class.classID ~= nil then
+        Clockwork.log.critical("Specialization changed")
         local id, name, description, icon, role = GetSpecializationInfoForClassID(Clockwork.player.class.classID,
             GetSpecialization())
         Clockwork.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
