@@ -280,7 +280,7 @@ local function onEvent(...)
     end
 
     if event == "PLAYER_SPECIALIZATION_CHANGED" and Clockwork.player.class.classID ~= nil then
-        Clockwork.log.critical("Specialization changed")
+        Clockwork.log.debug("Specialization changed")
         local id, name, description, icon, role = GetSpecializationInfoForClassID(Clockwork.player.class.classID,
             GetSpecialization())
         Clockwork.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
