@@ -4,6 +4,7 @@ Clockwork.DUEL = 3    --9.9 yards
 Clockwork.FOLLOW = 4  --28 yards
 
 Clockwork.rotations = {}
+Clockwork.rotationsActions = {}
 
 function Clockwork.rotation()
     --Clockwork.log.debug("function Clockwork.rotation()")
