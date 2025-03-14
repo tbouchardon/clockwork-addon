@@ -3,7 +3,6 @@ Clockwork.CTRL = 519254
 Clockwork.ALT = 919836
 
 function Clockwork.initKeys()
-
     -- Clockwork.log.debug("function Clockwork.initKeys(")
 
     --Clockwork.keyMaj = Clockwork.createDot("clockWork_keyMaj", 2, -2)
@@ -32,7 +31,6 @@ function Clockwork.initKeys()
 end
 
 function Clockwork.resetKeys()
-
     -- Clockwork.log.debug("function Clockwork.resetKeys(")
 
     Clockwork.keyQ.texture:SetColorTexture(0, 0, 0, 1)
@@ -73,36 +71,34 @@ function Clockwork.resetKeys()
     Clockwork.key1.priority = -1
 end
 
-function Clockwork.shouldHitKey(key, condition, priority)
-
+function Clockwork.shouldHitKey(params)
     -- Clockwork.log.debug("function Clockwork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
 
-    Clockwork.shouldHitKeyWithModifier(key, condition, priority, nil)
+    Clockwork.shouldHitKeyWithModifier(params, nil)
 end
 
-function Clockwork.shouldHitKeyWithModifier(key, condition, priority, keyModificator)
-
-    priority = Clockwork.ternary(Clockwork.emptyOrNil(priority), 0, priority)
+function Clockwork.shouldHitKeyWithModifier(params, keyModificator)
+    params.priority = Clockwork.ternary(Clockwork.emptyOrNil(params.priority), 1, params.priority)
 
     --Clockwork.log.debug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
-    Clockwork.log.debug("key.slot = " .. tostring(key.slot))
-    Clockwork.log.debug("should = " .. tostring(condition))
+    Clockwork.log.debug("key.slot = " .. tostring(params.key.slot))
+    Clockwork.log.debug("should = " .. tostring(params.condition))
     Clockwork.log.debug("modificator = " .. tostring(keyModificator))
 
-    if (condition == false) then
+    if (params.condition == false) then
         return false
     end
 
-    if (condition == nil or condition == true) then
+    if (params.condition == nil or params.condition == true) then
         if not keyModificator then
-            condition = Clockwork.actionCanBeCast(key.slot)
+            params.condition = Clockwork.actionCanBeCast(params.key.slot)
         end
-        if keyModificator == Clockwork.SHIFT and key.shiftslot then
-            condition = Clockwork.actionCanBeCast(key.shiftslot)
+        if keyModificator == Clockwork.SHIFT and params.key.shiftslot then
+            params.condition = Clockwork.actionCanBeCast(params.key.shiftslot)
         end
-        if keyModificator == Clockwork.ALT and key.altslot then
-            condition = Clockwork.actionCanBeCast(key.altslot)
+        if keyModificator == Clockwork.ALT and params.key.altslot then
+            params.condition = Clockwork.actionCanBeCast(params.key.altslot)
         end
     end
 
@@ -113,15 +109,18 @@ function Clockwork.shouldHitKeyWithModifier(key, condition, priority, keyModific
     --
 
     local sum = 0 +
-            Clockwork.ternary(keyModificator == Clockwork.CTRL, 1, 0) +
-            Clockwork.ternary(keyModificator == Clockwork.ALT, 2, 0) +
-            Clockwork.ternary(keyModificator == Clockwork.SHIFT, 4, 0)
+        Clockwork.ternary(keyModificator == Clockwork.CTRL, 1, 0) +
+        Clockwork.ternary(keyModificator == Clockwork.ALT, 2, 0) +
+        Clockwork.ternary(keyModificator == Clockwork.SHIFT, 4, 0)
 
-    if condition and priority > key.priority
+
+    local duration = Clockwork.ternary(params.duration == nil, 0, params.duration)
+
+    if params.condition and params.priority > (params.key.priority or 0)
     --and not modificator
     then
-        key.texture:SetColorTexture(sum / 255, priority / 255, 1, 1)
-        key.priority = priority
+        params.key.texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
+        params.key.priority = params.priority
         --elseif condition and modificator == Clockwork.SHIFT then key.texture:SetColorTexture(1, 0, 0, 1)
         --elseif condition and modificator == Clockwork.CTRL then key.texture:SetColorTexture(0, 1, 0, 1)
         --elseif condition and modificator == Clockwork.ALT then key.texture:SetColorTexture(0, 0, 1, 1)
@@ -131,17 +130,14 @@ function Clockwork.shouldHitKeyWithModifier(key, condition, priority, keyModific
     end
 end
 
-function Clockwork.shouldHitShiftKey(key, condition, priority)
-
-    Clockwork.shouldHitKeyWithModifier(key, condition, priority, Clockwork.SHIFT)
+function Clockwork.shouldHitShiftKey(params)
+    Clockwork.shouldHitKeyWithModifier(params, Clockwork.SHIFT)
 end
 
-function Clockwork.shouldHitCtrlKey(key, condition, priority)
-
-    Clockwork.shouldHitKeyWithModifier(key, condition, priority, Clockwork.CTRL)
+function Clockwork.shouldHitCtrlKey(params)
+    Clockwork.shouldHitKeyWithModifier(params, Clockwork.CTRL)
 end
 
-function Clockwork.shouldHitAltKey(key, condition, priority)
-
-    Clockwork.shouldHitKeyWithModifier(key, condition, priority, Clockwork.ALT)
+function Clockwork.shouldHitAltKey(params)
+    Clockwork.shouldHitKeyWithModifier(params, Clockwork.ALT)
 end
