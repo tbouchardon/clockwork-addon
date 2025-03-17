@@ -6,20 +6,20 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function initial() -- no Sp
+local function initial()        -- no Sp
 end
 local function initialActions() -- no Sp
-Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Mage.ECLAIR_DE_GIVRE_116, 1)
+    Clockwork.dropSpellInShortcut(Clockwork.Enum.Spell.Mage.ECLAIR_DE_GIVRE_116, 1)
 end
 
 ---------------------------------------------------------------------------------------------------
-local function arcane() -- Sp Feu
+local function arcane()        -- Sp Feu
 end
 local function arcaneActions() -- Sp Feu
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function fire() -- Sp Givre
+local function fire()        -- Sp Givre
 end
 local function fireActions() -- Sp Givre
 end
@@ -28,7 +28,7 @@ end
 local function frost()
 end
 local function frostActions()
-    Clockwork.dropSpellInBarSlot(Clockwork.Enum.Spell.Mage.ECLAIR_DE_GIVRE_116, 1)
+    Clockwork.dropSpellInShortcut(Clockwork.Enum.Spell.Mage.ECLAIR_DE_GIVRE_116, 1)
 end
 
 Clockwork.rotations[Clockwork.Enum.Specialization.Mage.Arcane] = arcane

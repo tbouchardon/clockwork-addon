@@ -6,58 +6,58 @@ Clockwork.FOLLOW = 4  --28 yards
 Clockwork.rotations = {}
 Clockwork.rotationsActions = {}
 
-function Clockwork.rotation()
+function Clockwork:rotation()
     --Clockwork.log.debug("function Clockwork.rotation()")
 
     if UnitAffectingCombat("player") then
-        Clockwork.inCombat.texture:SetColorTexture(1, 1, 1, 1)
-        Clockwork.wasInCombat = true
+        self.inCombat.texture:SetColorTexture(1, 1, 1, 1)
+        self.wasInCombat = true
     else
-        Clockwork.resetCombat()
+        self:resetCombat()
     end
 
     if UnitExists("raid1") then
-        Clockwork.updateRaidHealth()
+        self:updateRaidHealth()
     elseif UnitExists("party1") then
-        Clockwork.updatePartyHealth()
+        self:updatePartyHealth()
     else
-        Clockwork.checkUnitHealth("player", -1)
+        self:checkUnitHealth("player", -1)
     end
 
-    Clockwork.playerHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("player"), 0, 0, 1)
-    Clockwork.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("player"), 1)
+    self.playerHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("player"), 0, 0, 1)
+    self.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("player"), 1)
 
     if (UnitExists("target") and not UnitIsUnit("player", "target")) then
-        if (Clockwork.targetUnfriendly()) then
-            Clockwork.targetReaction.texture:SetColorTexture(1, 0, 0, 1)
-        elseif (Clockwork.targetNeutral()) then
-            Clockwork.targetReaction.texture:SetColorTexture(1, 1, 0, 1)
-        elseif (Clockwork.targetFriendly()) then
-            Clockwork.targetReaction.texture:SetColorTexture(0, 1, 0, 1)
+        if (Clockwork.targetIsUnfriendly()) then
+            self.targetReaction.texture:SetColorTexture(1, 0, 0, 1)
+        elseif (Clockwork.targetIsNeutral()) then
+            self.targetReaction.texture:SetColorTexture(1, 1, 0, 1)
+        elseif (Clockwork.targetIsFriendly()) then
+            self.targetReaction.texture:SetColorTexture(0, 1, 0, 1)
         else
-            Clockwork.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
+            self.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
         end
 
-        Clockwork.targetHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("target"), 0, 0, 1)
-        Clockwork.targetMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("target"), 1)
+        self.targetHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("target"), 0, 0, 1)
+        self.targetMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("target"), 1)
     else
-        Clockwork.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
-        Clockwork.targetHealth.texture:SetColorTexture(0, 0, 0, 1)
-        Clockwork.targetMana.texture:SetColorTexture(0, 0, 0, 1)
+        self.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
+        self.targetHealth.texture:SetColorTexture(0, 0, 0, 1)
+        self.targetMana.texture:SetColorTexture(0, 0, 0, 1)
     end
 
     if Clockwork.DRIVE_MOD == true
         and ((Clockwork.unitHasBuff("player", "Food") and (Clockwork.playerHealthPct() < 100))
             or (Clockwork.unitHasBuff("player", "Drink") and (Clockwork.playerManaPct() < 100))) then
-        Clockwork.drive.texture:SetColorTexture(0, 0, 0, 1)
+        self.drive.texture:SetColorTexture(0, 0, 0, 1)
     elseif Clockwork.DRIVE_MOD == true then
-        Clockwork.drive.texture:SetColorTexture(1, 1, 1, 1)
+        self.drive.texture:SetColorTexture(1, 1, 1, 1)
     end
 
-    Clockwork.resetKeys()
+    Clockwork:resetKeys()
 
     -- Ne rien faire si un cast est déjà en cours
-    if (Clockwork.CASTING == true) then
+    if (self.CASTING == true) then
         return;
     end
 
@@ -115,15 +115,17 @@ function Clockwork.targetInRange(distance)
     end
 end
 
-function Clockwork.actionCanBeCast(slot)
-    Clockwork.log.debug("function Clockwork.actionCanBeCast(" .. tostring(slot))
+---comment
+---@param actionSlot number
+---@return boolean
+function Clockwork.actionCanBeCast(actionSlot)
+    Clockwork.log.debug("function Clockwork.actionCanBeCast(" .. tostring(actionSlot))
 
     if (Clockwork.CHECK_ACTIONS_CAST == false) then
         return true
     end
 
-    Clockwork.log.debug("slot = " .. tostring(slot))
-    local actionType, id, subType = GetActionInfo(slot)
+    local actionType, id, subType = GetActionInfo(actionSlot)
     if not id then
         Clockwork.log.debug("No action in slot")
         return false
@@ -132,19 +134,19 @@ function Clockwork.actionCanBeCast(slot)
     local spellInfo = C_Spell.GetSpellInfo(id)
     Clockwork.log.debug(tostring(actionType) ..
         ": " .. tostring(spellInfo.name) .. " (" .. tostring(spellInfo.spellID) .. ") ")
-    Clockwork.log.debug("ActionHasRange(slot) = " .. tostring(ActionHasRange(slot)))
-    Clockwork.log.debug("IsActionInRange(slot) = " .. tostring(IsActionInRange(slot)))
+    Clockwork.log.debug("ActionHasRange(slot) = " .. tostring(ActionHasRange(actionSlot)))
+    Clockwork.log.debug("IsActionInRange(slot) = " .. tostring(IsActionInRange(actionSlot)))
 
     local canBeCast = true
 
-    if ActionHasRange(slot) then
-        canBeCast = IsActionInRange(slot) ~= false -- Can be true or nil
+    if ActionHasRange(actionSlot) then
+        canBeCast = IsActionInRange(actionSlot) ~= false -- Can be true or nil
     end
 
     --Clockwork.log.debug("canBeCast1 : " .. tostring(canBeCast))
 
     if canBeCast == true then
-        local start, duration, enable = GetActionCooldown(slot)
+        local start, duration, enable = GetActionCooldown(actionSlot)
 
         --         Clockwork.log.debug("GetActionCooldown(slot) start = " .. tostring(start))
         --         Clockwork.log.debug("GetActionCooldown(slot) duration = " .. tostring(duration))
@@ -156,7 +158,7 @@ function Clockwork.actionCanBeCast(slot)
     --Clockwork.log.debug("canBeCast2 : " .. tostring(canBeCast))
 
     if canBeCast == true then
-        local isUsable, notEnoughMana = IsUsableAction(slot)
+        local isUsable, notEnoughMana = IsUsableAction(actionSlot)
 
         --         Clockwork.log.debug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
         --         Clockwork.log.debug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
@@ -228,12 +230,12 @@ end
 function Clockwork.unitExistCanAndShouldDie()
     return UnitExists("target") and
         not UnitIsDeadOrGhost("target") and
-        not UnitIsDeadOrGhost("player") and                         -- > La cible ET le joueur sont vivants (>_<)
-        (not UnitIsTapDenied("target")) and                         -- > La cible peut être marquée par le joueur.
-        (Clockwork.targetNeutral() or Clockwork.targetUnfriendly()) -- > La cible est un enemi (rouge uniquement)
+        not UnitIsDeadOrGhost("player") and                             -- > La cible ET le joueur sont vivants (>_<)
+        (not UnitIsTapDenied("target")) and                             -- > La cible peut être marquée par le joueur.
+        (Clockwork.targetIsNeutral() or Clockwork.targetIsUnfriendly()) -- > La cible est un enemi (rouge uniquement)
 end
 
-function Clockwork.targetUnfriendly()
+function Clockwork.targetIsUnfriendly()
     if not UnitExists("target") then
         return false
     end
@@ -241,7 +243,7 @@ function Clockwork.targetUnfriendly()
     return UnitReaction("player", "target") < 4
 end
 
-function Clockwork.targetNeutral()
+function Clockwork.targetIsNeutral()
     if not UnitExists("target") then
         return false
     end
@@ -249,7 +251,7 @@ function Clockwork.targetNeutral()
     return UnitReaction("player", "target") == 4
 end
 
-function Clockwork.targetFriendly()
+function Clockwork.targetIsFriendly()
     if not UnitExists("target") then
         return false
     end
@@ -257,53 +259,54 @@ function Clockwork.targetFriendly()
     return UnitReaction("player", "target") > 4
 end
 
-function Clockwork.resetCombat()
-    Clockwork.inCombat.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.wasInCombat = false
-    Clockwork.lastTimePlayerHit = time()
-    Clockwork.lastTimePlayerHasBeenHit = time()
-    Clockwork.durationBeingHitWithoutRetaliating = 0
+function Clockwork:resetCombat()
+    self.inCombat.texture:SetColorTexture(0, 0, 0, 1)
+    self.wasInCombat = false
+    self.lastTimePlayerHit = time()
+    self.lastTimePlayerHasBeenHit = time()
+    self.durationBeingHitWithoutRetaliating = 0
 end
 
 Clockwork.lowestMemberHealth = 100
 Clockwork.lowestMemberHealthIndex = nil
 
-function Clockwork.updatePartyHealth()
-    Clockwork.lowestMemberHealth = 100
-    Clockwork.lowestMemberHealthIndex = nil
+function Clockwork:updatePartyHealth()
+    self.lowestMemberHealth = 100
+    self.lowestMemberHealthIndex = nil
 
-    Clockwork.checkUnitHealth("player", -1)
+    self:checkUnitHealth("player", -1)
 
     for index = 1, 4 do
-        Clockwork.checkUnitHealth("party" .. tostring(index), index)
-        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("party" .. tostring(index)), 0,
+        self:checkUnitHealth("party" .. tostring(index), index)
+        self.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("party" .. tostring(index)), 0,
             0, 1)
     end
 end
 
-function Clockwork.updateRaidHealth()
-    Clockwork.lowestMemberHealth = 100
-    Clockwork.lowestMemberHealthIndex = nil
+function Clockwork:updateRaidHealth()
+    self.lowestMemberHealth = 100
+    self.lowestMemberHealthIndex = nil
 
-    Clockwork.checkUnitHealth("player", -1)
+    Clockwork:checkUnitHealth("player", -1)
 
     for index = 1, 40 do
-        Clockwork.checkUnitHealth("raid" .. tostring(index), index)
-        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("raid" .. tostring(index)), 0,
+        Clockwork:checkUnitHealth("raid" .. tostring(index), index)
+        self.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("raid" .. tostring(index)), 0,
             0, 1)
     end
 end
 
-function Clockwork.checkUnitHealth(unit, index)
+function Clockwork:checkUnitHealth(unit, index)
     if UnitExists(unit) then
         if Clockwork.healthPercentage(unit) < Clockwork.lowestMemberHealth then
-            Clockwork.lowestMemberHealth = Clockwork.healthPercentage(unit)
-            Clockwork.lowestMemberHealthIndex = index
+            self.lowestMemberHealth = Clockwork.healthPercentage(unit)
+            self.lowestMemberHealthIndex = index
         end
     end
 end
 
-function Clockwork.targetMember(index)
+---@return boolean
+function Clockwork:targetMember(index)
     local root = ""
     if UnitExists("raid1") then
         root = "raid"
@@ -315,14 +318,15 @@ function Clockwork.targetMember(index)
 
     if not index == -1 and inRange then
         local percent = Clockwork.healthPercentage(root .. tostring(index))
-        Clockwork.raid[index].texture:SetColorTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
+        self.raid[index].texture:SetColorTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
     end
 
     return inRange
 end
 
+---@return boolean
 function Clockwork.hasMainHandEnchant()
-    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges =
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
         GetWeaponEnchantInfo()
 
     -- if hasMainHandEnchant then Clockwork.log.debug("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
@@ -338,23 +342,56 @@ function Clockwork.hasMainHandEnchant()
     return hasMainHandEnchant
 end
 
+---@return boolean
 function Clockwork.hasOffHandEnchant()
-    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges, hasThrownEnchant, thrownExpiration, thrownCharges =
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
         GetWeaponEnchantInfo()
 
     return hasOffHandEnchant
 end
 
-function Clockwork.targetMemberIfHealthLessThan(health)
-    if Clockwork.lowestMemberHealthIndex and
-        not Clockwork.lowestMemberHealthIndex == -1
-        and Clockwork.lowestMemberHealth < health then
-        return Clockwork.targetMember(Clockwork.lowestMemberHealthIndex)
+---@param health number
+---@return boolean
+function Clockwork:targetMemberIfHealthLessThan(health)
+    if self.lowestMemberHealthIndex and
+        not self.lowestMemberHealthIndex == -1
+        and self.lowestMemberHealth < health then
+        return self:targetMember(Clockwork.lowestMemberHealthIndex)
     end
 
     return false
 end
 
+---@return boolean
 function Clockwork.outOfCombat()
     return (not UnitIsDeadOrGhost("player")) and (not UnitAffectingCombat("player"))
+end
+
+---@param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
+function Clockwork:castSpellIfConditionsMet(params)
+    local action = self:getBindingForSpellId(params.spell.id)
+
+    if not action then
+        return
+    end
+
+    local modifier = nil
+    if action.alt then
+        modifier = Clockwork.ALT
+    end
+    if action.ctrl then
+        modifier = Clockwork.ALT
+    end
+    if action.shift then
+        modifier = Clockwork.ALT
+    end
+
+    Clockwork.log.debug(action.key .. " => " .. tostring(action.spellId) .. " => " .. tostring(params.condition))
+
+    self:shouldHitKeyWithModifier({
+        actionParameters = action,
+        condition = params.condition,
+        priority = params.priority or 1,
+        duration = params.duration
+    }, modifier)
 end

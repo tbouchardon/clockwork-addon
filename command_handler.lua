@@ -1,6 +1,6 @@
 --Chat commands
 
-local function commandHandler(msg)
+function Clockwork:commandHandler(msg)
     -- Clockwork.log.debug("local function commandHandler(" .. tostring(msg))
 
     Clockwork.log.debug("Command Handler")
@@ -8,9 +8,9 @@ local function commandHandler(msg)
     local coordinates
     if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d.%d%d,%d%d;') end
 
-    --Clockwork.log.debug("msg : " .. msg)
+    Clockwork.log.debug("msg : " .. tostring(msg))
     if msg == 'toggle' then
-        Clockwork.clickToggle()
+        self:clickToggle()
     elseif coordinates ~= nil then
         coordinates = ""
 
@@ -20,32 +20,32 @@ local function commandHandler(msg)
             coordinates = coordinates .. coords
         end
 
-        Clockwork.addWaypointList = coordinates;
+        self.addWaypointList = coordinates;
     elseif (msg == 'tne') then
-        Clockwork.clickTNE()
+        self:clickTNE()
     elseif (msg == 'addwp') then
-        Clockwork.clickAddWp()
+        self:clickAddWp()
     elseif (msg == 'wpadded') then
-        Clockwork.addWaypoint.texture:SetColorTexture(0, 0, 0, 1)
+        self.addWaypoint.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.ADDING_WP = false
         Clockwork.log.notice("Waypoint Added")
     elseif (msg == 'clearwp') then
-        Clockwork.clickClearWp()
+        self:clickClearWp()
     elseif (msg == 'wpcleared') then
-        Clockwork.clearWaypoints.texture:SetColorTexture(0, 0, 0, 1)
+        self.clearWaypoints.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Waypoint cleared")
     elseif (msg == 'drive') then
-        Clockwork.clickDrive()
+        self:clickDrive()
     elseif (msg == 'loop') then
-        Clockwork.clickLoop()
+        self:clickLoop()
     elseif (msg == 'debug') then
-        Clockwork.clickDebug()
+        self:clickDebug()
     elseif (msg == 'listspells') then
-        Clockwork.listAllSpells()
+        self:listAllSpells()
     elseif (msg == 'listactions') then
-        Clockwork.reportActionButtons()
+        self:reportActionButtons()
     elseif (msg == 'update actions') then
-        Clockwork.updateActionButtons()
+        self:updateActionButtons()
     else
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
@@ -62,28 +62,28 @@ local function commandHandler(msg)
     end
 end
 
-SlashCmdList['CLOCKWORK_SLASHCMD'] = commandHandler
+SlashCmdList['CLOCKWORK_SLASHCMD'] = function (...) Clockwork.commandHandler(Clockwork, ...) end
 SLASH_CLOCKWORK_SLASHCMD1 = '/clockwork'
 SLASH_CLOCKWORK_SLASHCMD2 = '/clk'
 
-function Clockwork.clickToggle()
+function Clockwork:clickToggle()
     if Clockwork.TOGGLE_ON_OFF == false then
         Clockwork.TOGGLE_ON_OFF = true
-        Clockwork.toggle.texture:SetColorTexture(1, 1, 1, 1)
-        Clockwork.onOff:Hide()
+        self.toggle.texture:SetColorTexture(1, 1, 1, 1)
+        self.onOff:Hide()
         Clockwork.log.notice("On")
     else
         Clockwork.TOGGLE_ON_OFF = false
-        Clockwork.toggle.texture:SetColorTexture(0, 0, 0, 1)
-        Clockwork.onOff:Show()
+        self.toggle.texture:SetColorTexture(0, 0, 0, 1)
+        self.onOff:Show()
         Clockwork.log.notice("Off")
     end
 end
 
-function Clockwork.clickTNE()
+function Clockwork:clickTNE()
     if Clockwork.TARGET_NEAREST_ENEMY == false then
         Clockwork.TARGET_NEAREST_ENEMY = true
-        Clockwork.targetNearestEnemy.texture:SetColorTexture(1, 1, 1, 1)
+        self.targetNearestEnemy.texture:SetColorTexture(1, 1, 1, 1)
         Clockwork.log.notice("Target Nearest Enemy : On")
     else
         Clockwork.TARGET_NEAREST_ENEMY = false
@@ -92,50 +92,52 @@ function Clockwork.clickTNE()
     end
 end
 
-function Clockwork.clickAddWp()
+function Clockwork:clickAddWp()
     Clockwork.log.notice("Adding Waypoint")
-    Clockwork.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
+    self.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
     Clockwork.ADDING_WP = true
 end
 
-function Clockwork.clickClearWp()
+function Clockwork:clickClearWp()
     Clockwork.log.notice("Clearing Waypoints")
-    Clockwork.clearWaypoints.texture:SetColorTexture(1, 1, 1, 1)
+    self.clearWaypoints.texture:SetColorTexture(1, 1, 1, 1)
 end
 
-function Clockwork.clickDrive()
+function Clockwork:clickDrive()
     if Clockwork.DRIVE_MOD == false then
         Clockwork.DRIVE_MOD = true
-        Clockwork.drive.texture:SetColorTexture(1, 1, 1, 1)
+        self.drive.texture:SetColorTexture(1, 1, 1, 1)
         Clockwork.log.notice("Drive Mod : On")
     else
         Clockwork.DRIVE_MOD = false
-        Clockwork.drive.texture:SetColorTexture(0, 0, 0, 1)
+        self.drive.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Drive Mod : Off")
     end
 end
 
-function Clockwork.clickLoop()
+function Clockwork:clickLoop()
     if Clockwork.DRIVE_LOOP == false then
         Clockwork.DRIVE_LOOP = true
-        Clockwork.driveLoop.texture:SetColorTexture(1, 1, 1, 1)
+        self.driveLoop.texture:SetColorTexture(1, 1, 1, 1)
         Clockwork.log.notice("Drive Loop : On")
     else
         Clockwork.DRIVE_LOOP = false
-        Clockwork.driveLoop.texture:SetColorTexture(0, 0, 0, 1)
+        self.driveLoop.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Drive Loop : Off")
     end
 end
 
-function Clockwork.clickDebug()
+function Clockwork:clickDebug()
     if Clockwork.DEBUG_MOD == false then
         Clockwork.DEBUG_MOD = true
-        Clockwork.debug.texture:SetColorTexture(1, 0, 0, 1)
+        Clockwork.LOG_LEVEL = 'DEBUG'
+        self.debug.texture:SetColorTexture(1, 0, 0, 1)
         Clockwork.log.notice("Debug Mod : On")
         Clockwork.log.debug("UnitClass : " .. UnitClass("player"))
     else
         Clockwork.DEBUG_MOD = false
-        Clockwork.debug.texture:SetColorTexture(0, 0, 0, 1)
+        Clockwork.LOG_LEVEL = 'NOTICE'
+        self.debug.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Debug Mod : Off")
     end
 end

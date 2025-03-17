@@ -172,9 +172,16 @@ function Clockwork.findSpellSlotIndex(spellEnum, bookType)
     return nil
 end
 
-function Clockwork.dropSpellInBarSlot(spellEnum, slot)
-    -- Clockwork.log.debug("function Clockwork.dropSpellInBarSlot(" .. tostring(spellName) .. ", " .. tostring(slot))
+function Clockwork.dropSpellInShortcut(spellEnum, shortcut)
     ClearCursor()
+    local slot = Clockwork:findActionSlotByKeyAndModifiers(
+        shortcut.key,
+        shortcut.shift or false,
+        shortcut.alt or false,
+        shortcut.ctrl or false)
+    if (slot == nil) then
+        return
+    end
     PickupAction(slot)
     ClearCursor()
     local spellSlotIndex = Clockwork.findSpellSlotIndex(spellEnum, Enum.SpellBookSpellBank.Player)
@@ -183,8 +190,4 @@ function Clockwork.dropSpellInBarSlot(spellEnum, slot)
         C_SpellBook.PickupSpellBookItem(spellSlotIndex, Enum.SpellBookSpellBank.Player)
         PlaceAction(slot)
     end
-end
-
-function Clockwork.isPassiveDamage(arg1)
-    return string.find(arg1, Clockwork.lightningShield)
 end

@@ -1,88 +1,68 @@
+---@alias SHIFT 927620
 Clockwork.SHIFT = 927620
+---@alias CTRL 519254
 Clockwork.CTRL = 519254
+---@alias ALT 919836
 Clockwork.ALT = 919836
 
-function Clockwork.initKeys()
+function Clockwork:initKeys()
+    self.keys = {}
     -- Clockwork.log.debug("function Clockwork.initKeys(")
 
-    --Clockwork.keyMaj = Clockwork.createDot("clockWork_keyMaj", 2, -2)
-    --Clockwork.keyCtrl = Clockwork.createDot("clockWork_keyCtrl", 3, -2)
-    --Clockwork.keyAlt = Clockwork.createDot("clockWork_keyAlt", 4, -2)
+    --Clockwork.keys["Maj"] = self:createDot("Clockwork.keys["Maj","] 2, -2)
+    --Clockwork.keys["Ctrl"] = self:createDot("Clockwork.keys["Ctrl","] 3, -2)
+    --Clockwork.keys["Alt"] = self:createDot("Clockwork.keys["Alt","] 4, -2)
 
-    Clockwork.keyQ = Clockwork.createDot("clockWork_keyQ", 2, -4, 13, 14)
-    Clockwork.keyD = Clockwork.createDot("clockWork_keyD", 3, -4, 15, 16)
-    Clockwork.keyR = Clockwork.createDot("clockWork_keyR", 4, -4, 17, 18)
-    Clockwork.keyT = Clockwork.createDot("clockWork_keyT", 5, -4, 19, 20)
-    Clockwork.keyF = Clockwork.createDot("clockWork_keyF", 6, -4, 21, 22)
-    Clockwork.keyG = Clockwork.createDot("clockWork_keyG", 7, -4, 23, 24)
-
-    Clockwork.key1 = Clockwork.createDot("clockWork_key1", 2, -5, 1)
-    Clockwork.key2 = Clockwork.createDot("clockWork_key2", 3, -5, 2)
-    Clockwork.key3 = Clockwork.createDot("clockWork_key3", 4, -5, 3)
-    Clockwork.key4 = Clockwork.createDot("clockWork_key4", 5, -5, 4)
-    Clockwork.key5 = Clockwork.createDot("clockWork_key5", 6, -5, 5)
-    Clockwork.key6 = Clockwork.createDot("clockWork_key6", 7, -5, 6)
-    Clockwork.key7 = Clockwork.createDot("clockWork_key7", 8, -5, 7)
-    Clockwork.key8 = Clockwork.createDot("clockWork_key8", 9, -5, 8)
-    Clockwork.key9 = Clockwork.createDot("clockWork_key9", 10, -5, 9)
-    Clockwork.key0 = Clockwork.createDot("clockWork_key0", 11, -5, 10)
-    Clockwork.keyPar = Clockwork.createDot("clockWork_keyPar", 12, -5, 11)
-    Clockwork.keyEq = Clockwork.createDot("clockWork_keyEq", 13, -5, 12)
+    self.keys["Q"] = self:createDot("Q", 2, -4)
+    self.keys["D"] = self:createDot("D", 3, -4)
+    self.keys["R"] = self:createDot("R", 4, -4)
+    self.keys["T"] = self:createDot("T", 5, -4)
+    self.keys["F"] = self:createDot("F", 6, -4)
+    self.keys["G"] = self:createDot("G", 7, -4)
+    self.keys["1"] = self:createDot("1", 2, -5)
+    self.keys["2"] = self:createDot("2", 3, -5)
+    self.keys["3"] = self:createDot("3", 4, -5)
+    self.keys["4"] = self:createDot("4", 5, -5)
+    self.keys["5"] = self:createDot("5", 6, -5)
+    self.keys["6"] = self:createDot("6", 7, -5)
+    self.keys["7"] = self:createDot("7", 8, -5)
+    self.keys["8"] = self:createDot("8", 9, -5)
+    self.keys["9"] = self:createDot("9", 10, -5)
+    self.keys["0"] = self:createDot("0", 11, -5)
+    self.keys[")"] = self:createDot(")", 12, -5)
+    self.keys["="] = self:createDot("=", 13, -5)
 end
 
-function Clockwork.resetKeys()
+function Clockwork:resetKeys()
     -- Clockwork.log.debug("function Clockwork.resetKeys(")
 
-    Clockwork.keyQ.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyQ.priority = -1
-    Clockwork.keyD.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyD.priority = -1
-    Clockwork.keyR.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyR.priority = -1
-    Clockwork.keyT.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyT.priority = -1
-    Clockwork.keyF.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyF.priority = -1
-    Clockwork.keyG.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyG.priority = -1
-    Clockwork.keyEq.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyEq.priority = -1
-    Clockwork.keyPar.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.keyPar.priority = -1
-    Clockwork.key0.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key0.priority = -1
-    Clockwork.key9.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key9.priority = -1
-    Clockwork.key8.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key8.priority = -1
-    Clockwork.key7.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key7.priority = -1
-    Clockwork.key6.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key6.priority = -1
-    Clockwork.key5.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key5.priority = -1
-    Clockwork.key4.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key4.priority = -1
-    Clockwork.key3.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key3.priority = -1
-    Clockwork.key2.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key2.priority = -1
-    Clockwork.key1.texture:SetColorTexture(0, 0, 0, 1)
-    Clockwork.key1.priority = -1
+    self.keys["Q"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["D"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["R"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["T"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["F"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["G"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["="].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys[")"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["0"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["9"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["8"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["7"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["6"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["5"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["4"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["3"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["2"].texture:SetColorTexture(0, 0, 0, 1)
+    self.keys["1"].texture:SetColorTexture(0, 0, 0, 1)
 end
 
-function Clockwork.shouldHitKey(params)
-    -- Clockwork.log.debug("function Clockwork.shouldHitAltKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot))
-
-    Clockwork.shouldHitKeyWithModifier(params, nil)
-end
-
-function Clockwork.shouldHitKeyWithModifier(params, keyModificator)
-    params.priority = Clockwork.ternary(Clockwork.emptyOrNil(params.priority), 1, params.priority)
-
+---@param params {actionParameters:{key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean},condition:boolean|nil,priority:number, duration:number|nil}
+---@param keyModificator SHIFT|ALT|CTRL|nil
+---@return boolean
+function Clockwork:shouldHitKeyWithModifier(params, keyModificator)
     --Clockwork.log.debug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
-    Clockwork.log.debug("key.slot = " .. tostring(params.key.slot))
+    Clockwork.log.debug("key = " .. tostring(params.actionParameters.key))
     Clockwork.log.debug("should = " .. tostring(params.condition))
     Clockwork.log.debug("modificator = " .. tostring(keyModificator))
 
@@ -91,15 +71,7 @@ function Clockwork.shouldHitKeyWithModifier(params, keyModificator)
     end
 
     if (params.condition == nil or params.condition == true) then
-        if not keyModificator then
-            params.condition = Clockwork.actionCanBeCast(params.key.slot)
-        end
-        if keyModificator == Clockwork.SHIFT and params.key.shiftslot then
-            params.condition = Clockwork.actionCanBeCast(params.key.shiftslot)
-        end
-        if keyModificator == Clockwork.ALT and params.key.altslot then
-            params.condition = Clockwork.actionCanBeCast(params.key.altslot)
-        end
+        params.condition = Clockwork.actionCanBeCast(params.actionParameters.slot)
     end
 
     -- Mode octal
@@ -116,28 +88,139 @@ function Clockwork.shouldHitKeyWithModifier(params, keyModificator)
 
     local duration = Clockwork.ternary(params.duration == nil, 0, params.duration)
 
-    if params.condition and params.priority > (params.key.priority or 0)
-    --and not modificator
+    if params.condition
     then
-        params.key.texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
-        params.key.priority = params.priority
-        --elseif condition and modificator == Clockwork.SHIFT then key.texture:SetColorTexture(1, 0, 0, 1)
-        --elseif condition and modificator == Clockwork.CTRL then key.texture:SetColorTexture(0, 1, 0, 1)
-        --elseif condition and modificator == Clockwork.ALT then key.texture:SetColorTexture(0, 0, 1, 1)
+        Clockwork.keys[params.actionParameters.key].texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
         return true
     else
         return false
     end
 end
 
-function Clockwork.shouldHitShiftKey(params)
-    Clockwork.shouldHitKeyWithModifier(params, Clockwork.SHIFT)
+---Function to find the shortcut key for a specific action slot and parse modifiers.
+---@param actionSlot number
+---@return {key:string, shift:boolean, alt:boolean, ctrl:boolean}|nil, string|nil
+function Clockwork.getActionSlotBinding(actionSlot)
+    if not actionSlot or type(actionSlot) ~= "number" then
+        return nil, "Invalid action slot."
+    end
+
+    local internalSlot = actionSlot - 1;
+
+    if internalSlot < 0 or internalSlot >= 120 then
+        return nil, "Action slot out of range."
+    end
+
+    local binding = GetBindingKey("ACTIONBUTTON" .. actionSlot);
+
+    if not binding or binding == "" then
+        return nil, "No shortcut assigned to this slot."
+    end
+
+    local shift = binding:match("^SHIFT%-")
+    if shift then
+        binding = binding:sub(7) -- Remove "SHIFT-" from the binding
+    end
+
+    local alt = binding:match("^ALT%-")
+    if alt then
+        binding = binding:sub(5) -- Remove "ALT-" from the binding
+    end
+
+    local ctrl = binding:match("^CTRL%-")
+    if ctrl then
+        binding = binding:sub(6) -- Remove "CTRL-" from the binding
+    end
+
+    local key = binding -- The remaining part is the key
+
+    return {
+        key = key,
+        shift = shift ~= nil,
+        alt = alt ~= nil,
+        ctrl = ctrl ~= nil,
+    };
 end
 
-function Clockwork.shouldHitCtrlKey(params)
-    Clockwork.shouldHitKeyWithModifier(params, Clockwork.CTRL)
+---@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
+function Clockwork:createAllActionSlotBindings()
+    local bindings = {};
+
+    for i = 1, 120 do
+        local binding, errorMessage = self.getActionSlotBinding(i);
+        Clockwork.log.info("Action slot " .. i .. " binding: " .. tostring(binding))
+        local actionType, id, subType = GetActionInfo(i)
+
+        if binding then
+            bindings[i] = {
+                key = binding.key,
+                shift = binding.shift,
+                alt = binding.alt,
+                ctrl = binding.ctrl,
+                spellId = id,
+                slot = i
+            };
+        else
+            -- If you want to store slots with no bindings, you may want to insert a nil or an object with nil values
+            --table.insert(bindings, nil);
+            bindings[i] = { key = nil, spellId = nil, shift = false, alt = false, ctrl = false };
+        end
+    end
+
+    self.actionSlotBindings = bindings
+    return bindings;
 end
 
-function Clockwork.shouldHitAltKey(params)
-    Clockwork.shouldHitKeyWithModifier(params, Clockwork.ALT)
+---@return nil
+function Clockwork:createSpellIdToSlotLookup()
+    if not self.actionSlotBindings then
+        self:createAllActionSlotBindings()
+    end
+
+    for i, binding in ipairs(self.actionSlotBindings) do
+        if binding.spellId then
+            self.spellIdToSlot[binding.spellId] = i
+        end
+    end
+end
+
+---@param spellId number
+---@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}|nil
+function Clockwork:getBindingForSpellId(spellId)
+    if next(self.spellIdToSlot) == nil then
+        self:createSpellIdToSlotLookup()
+    end
+
+    local slotNumber = self.spellIdToSlot[spellId]
+
+    if slotNumber then
+        return self.actionSlotBindings[slotNumber]
+    else
+        return nil
+    end
+end
+
+---@param key string
+---@param shift boolean
+---@param alt boolean
+---@param ctrl boolean
+---@return number|nil, string|nil
+function Clockwork:findActionSlotByKeyAndModifiers(key, shift, alt, ctrl)
+    if (Clockwork.actionSlotBindings == nil) then
+        self:createAllActionSlotBindings()
+    end
+
+    if not self.actionSlotBindings then
+        return nil, "Could not retrieve bindings.";
+    end
+
+    for slotNumber, binding in pairs(self.actionSlotBindings) do
+        if binding then
+            if binding.key == key and binding.shift == shift and binding.alt == alt and binding.ctrl == ctrl then
+                return slotNumber; -- Found the slot!
+            end
+        end
+    end
+
+    return nil, "No matching slot found."; -- No matching slot
 end

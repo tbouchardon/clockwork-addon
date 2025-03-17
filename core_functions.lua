@@ -26,8 +26,8 @@ Clockwork.targets.count = 0
 Clockwork.targets.multiTargetMod = false
 Clockwork.targets.multiTargetModTrigger = 3
 
-function Clockwork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
-    -- Clockwork.log.debug("function Clockwork.createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
+function Clockwork:createDot(name, xPos, yPos)
+    -- Clockwork.log.debug("function self:createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
 
     local dotFrame = CreateFrame("FRAME", "clockWork_" .. name, Clockwork.frame)
     dotFrame:SetPoint("TOPLEFT", xPos, yPos)
@@ -38,9 +38,9 @@ function Clockwork.createDot(name, xPos, yPos, slot, shiftslot, altslot)
     dotFrame.texture = dotFrame:CreateTexture(nil, "OVERLAY")
     dotFrame.texture:SetAllPoints()
     dotFrame.texture:SetColorTexture(0, 0, 0, 1)
-    dotFrame.slot = slot;
-    dotFrame.shiftslot = shiftslot;
-    dotFrame.altslot = altslot;
+    dotFrame.slot = self:findActionSlotByKeyAndModifiers(name, false, false, false);
+    dotFrame.shiftslot = self:findActionSlotByKeyAndModifiers(name, true, false, false);
+    dotFrame.altslot = self:findActionSlotByKeyAndModifiers(name, false, true, false);
 
     dotFrame.priority = -1
 

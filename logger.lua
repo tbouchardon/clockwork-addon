@@ -1,6 +1,4 @@
 function Clockwork.getLogLevel()
-
-
     if (Clockwork.LOG_LEVEL == 'EMERGENCY') then return 1 end -- Emergency is unusable (Unfixable)
     if (Clockwork.LOG_LEVEL == 'ALERT') then return 2 end     -- Alert is unsecure
     if (Clockwork.LOG_LEVEL == 'CRITICAL') then return 3 end  -- Critical is stateful
@@ -15,7 +13,6 @@ end
 Clockwork.log = {}
 
 function Clockwork.log.text(text)
-
     DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: " .. tostring(text))
 end
 
@@ -72,5 +69,34 @@ function Clockwork.log.debug(text)
     if Clockwork.getLogLevel() >= 8 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFF696969DEBUG:\124r     " ..
             tostring(text))
+    end
+end
+
+function Clockwork.log.dump(value, indent, depth)
+    indent = indent or ""
+    depth = depth or 0
+
+    if depth > 5 then -- Limit recursion depth
+        print(indent .. "...")
+        return
+    end
+
+    if type(value) == "table" then
+        print(indent .. "{")
+        for k, v in pairs(value) do
+            if type(k) == "number" then
+                print(indent .. "  [" .. k .. "] = " .. tostring(v))
+            else
+                print(indent .. "  " .. k .. " = " .. tostring(v))
+            end
+            if type(v) == "table" then
+                Clockwork.log.dump(v, indent .. "  ", depth + 1)
+            end
+        end
+        print(indent .. "}")
+    elseif type(value) == "string" then
+        print(indent .. "\"" .. value .. "\"")
+    else
+        print(indent .. tostring(value))
     end
 end

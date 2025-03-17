@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-function Clockwork.setAllBindings()
+function Clockwork:setAllBindings()
 
     --    local key = "ALT-CTRL-SHIFT-Y"
     --    local action = "TEST_BINDING"
