@@ -133,8 +133,8 @@ function Clockwork.actionCanBeCast(actionSlot)
     Clockwork.log.debug("id = " .. id)
     local spellInfo = C_Spell.GetSpellInfo(id)
     Clockwork.log.debug(tostring(actionType) .. ": " .. tostring(spellInfo.name) .. " (" .. tostring(spellInfo.spellID) .. ") ")
-    Clockwork.log.debug("ActionHasRange(slot) = " .. tostring(ActionHasRange(actionSlot)))
-    Clockwork.log.debug("IsActionInRange(slot) = " .. tostring(IsActionInRange(actionSlot)))
+    Clockwork.log.debug("ActionHasRange(" .. actionSlot .. ") = " .. tostring(ActionHasRange(actionSlot)))
+    Clockwork.log.debug("IsActionInRange(" .. actionSlot .. ") = " .. tostring(IsActionInRange(actionSlot)))
 
     local canBeCast = true
 
@@ -147,9 +147,10 @@ function Clockwork.actionCanBeCast(actionSlot)
     if canBeCast == true then
         local start, duration, enable = GetActionCooldown(actionSlot)
 
-        --         Clockwork.log.debug("GetActionCooldown(slot) start = " .. tostring(start))
-        --         Clockwork.log.debug("GetActionCooldown(slot) duration = " .. tostring(duration))
-        --         Clockwork.log.debug("GetActionCooldown(slot) enable = " .. tostring(enable))
+        Clockwork.log.debug("GetActionCooldown(" .. actionSlot .. ")" ..
+            " start = " .. tostring(start) ..
+            " duration = " .. tostring(duration) ..
+            " enable = " .. tostring(enable))
 
         canBeCast = (start == 0)
     end
@@ -159,10 +160,10 @@ function Clockwork.actionCanBeCast(actionSlot)
     if canBeCast == true then
         local isUsable, notEnoughMana = IsUsableAction(actionSlot)
 
-        --         Clockwork.log.debug("IsUsableAction(slot) = isUsable " .. tostring(isUsable))
-        --         Clockwork.log.debug("IsUsableAction(slot) = notEnoughMana " .. tostring(notEnoughMana))
+        Clockwork.log.debug("IsUsableAction(" .. actionSlot .. ") = isUsable " .. tostring(isUsable))
+        --         Clockwork.log.debug("IsUsableAction("..actionSlot..") = notEnoughMana " .. tostring(notEnoughMana))
 
-        canBeCast = (isUsable ~= nil)
+        canBeCast = isUsable ~= nil and isUsable == true
     end
 
     if (canBeCast == true) then
