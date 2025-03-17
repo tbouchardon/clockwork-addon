@@ -28,6 +28,7 @@ rotation_warlock.lua
 rotation_warrior.lua
 rotation_shaman.lua
 rotation_mage.lua
+rotation_druid.lua
 rotation_priest.lua
 command_handler.lua
 init_quickbar.lua
