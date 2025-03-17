@@ -267,7 +267,7 @@ function Clockwork:onEvent(...)
 
     if event == "ADDON_LOADED" then
         local addonName = select(2, ...)
-        
+
         if addonName == "Clockwork" then
             Clockwork.log.debug(select(2, ...) .. " Loaded")
             Clockwork:playerEnteringWorld()
@@ -275,6 +275,22 @@ function Clockwork:onEvent(...)
             Clockwork:resetCombat()
             return
         end
+    end
+
+    if event == "UPDATE_SHAPESHIFT_FORM" then
+        local index = GetShapeshiftForm()
+        Clockwork.log.debug("Shapeshift form changed to " .. tostring(index))
+        if index == 1 then
+            Clockwork.actionSlotOffset = 8 * 12
+        elseif index == 2 then
+            Clockwork.actionSlotOffset = 6 * 12
+        elseif index == 3 then
+            Clockwork.actionSlotOffset = 0
+        else
+            Clockwork.actionSlotOffset = 0
+        end
+        Clockwork:createAllActionSlotBindings()
+        Clockwork:createSpellIdToSlotLookup()
     end
 
     if event == "ACTIONBAR_SLOT_CHANGED" then
@@ -400,6 +416,9 @@ Clockwork.frame:SetScript("OnEvent", function (self, event, ...) Clockwork:onEve
 Clockwork.frame:SetScript("OnUpdate", function () Clockwork:onUpdate() end);
 
 Clockwork.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+
+Clockwork.frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+
 Clockwork.frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED");
 
 Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_START")

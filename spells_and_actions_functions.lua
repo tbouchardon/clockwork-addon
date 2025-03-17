@@ -154,7 +154,8 @@ function Clockwork.playerHasBuff(effect)
     return Clockwork.unitHasBuff("player", effect)
 end
 
-function Clockwork.findSpellSlotIndex(spellEnum, bookType)
+---@return number|nil
+function Clockwork.findSpellBookSlotIndex(spellEnum, bookType)
     -- Clockwork.log.debug("function Clockwork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
     --local i, s
     for spellTabIndex = 1, C_SpellBook.GetNumSpellBookSkillLines() do
@@ -184,7 +185,7 @@ function Clockwork.dropSpellInShortcut(spellEnum, shortcut)
     end
     PickupAction(slot)
     ClearCursor()
-    local spellSlotIndex = Clockwork.findSpellSlotIndex(spellEnum, Enum.SpellBookSpellBank.Player)
+    local spellSlotIndex = Clockwork.findSpellBookSlotIndex(spellEnum, Enum.SpellBookSpellBank.Player)
     Clockwork.log.notice(spellEnum.name .. " book spell slot : " .. tostring(spellSlotIndex))
     if spellSlotIndex then
         C_SpellBook.PickupSpellBookItem(spellSlotIndex, Enum.SpellBookSpellBank.Player)

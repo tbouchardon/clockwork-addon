@@ -130,9 +130,11 @@ function Clockwork:createAllActionSlotBindings()
     local bindings = {};
 
     for i = 1, 120 do
-        local binding, errorMessage = self.getActionSlotBinding(i);
-        Clockwork.log.debug("Action slot " .. i .. " binding: " .. tostring(binding))
-        local actionType, id, subType = GetActionInfo(i)
+        local binding, errorMessage = self.getActionSlotBinding(i)
+        if binding ~= nil then Clockwork.log.debug("Action slot " .. i .. " binding: " .. tostring(binding.key)) end
+        local actionIndex = i
+        if actionIndex < 13 then actionIndex = i + Clockwork.actionSlotOffset end
+        local actionType, id, subType = GetActionInfo(actionIndex)
 
         if binding then
             bindings[i] = {
@@ -141,7 +143,7 @@ function Clockwork:createAllActionSlotBindings()
                 alt = binding.alt,
                 ctrl = binding.ctrl,
                 spellId = id,
-                slot = i
+                slot = actionIndex
             };
         else
             -- If you want to store slots with no bindings, you may want to insert a nil or an object with nil values
@@ -159,6 +161,8 @@ function Clockwork:createSpellIdToSlotLookup()
     if not self.actionSlotBindings then
         self:createAllActionSlotBindings()
     end
+
+    self.spellIdToSlot = {}
 
     for i, binding in ipairs(self.actionSlotBindings) do
         if binding.spellId then

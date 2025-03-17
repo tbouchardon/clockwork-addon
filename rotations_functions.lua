@@ -127,7 +127,7 @@ function Clockwork.actionCanBeCast(actionSlot)
 
     local actionType, id, subType = GetActionInfo(actionSlot)
     if not id then
-        Clockwork.log.debug("No action in slot")
+        Clockwork.log.debug("No action in slot" .. tostring(actionSlot))
         return false
     end
     Clockwork.log.debug("id = " .. id)
