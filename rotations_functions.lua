@@ -132,8 +132,7 @@ function Clockwork.actionCanBeCast(actionSlot)
     end
     Clockwork.log.debug("id = " .. id)
     local spellInfo = C_Spell.GetSpellInfo(id)
-    Clockwork.log.debug(tostring(actionType) ..
-        ": " .. tostring(spellInfo.name) .. " (" .. tostring(spellInfo.spellID) .. ") ")
+    Clockwork.log.debug(tostring(actionType) .. ": " .. tostring(spellInfo.name) .. " (" .. tostring(spellInfo.spellID) .. ") ")
     Clockwork.log.debug("ActionHasRange(slot) = " .. tostring(ActionHasRange(actionSlot)))
     Clockwork.log.debug("IsActionInRange(slot) = " .. tostring(IsActionInRange(actionSlot)))
 
@@ -368,12 +367,17 @@ function Clockwork.outOfCombat()
 end
 
 ---@param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
-function Clockwork:castSpellIfConditionsMet(params)
+---@return nil
+function Clockwork:castSpellIfPossible(params)
     local action = self:getBindingForSpellId(params.spell.id)
 
     if not action then
         return
     end
+
+    Clockwork.log.debug(action.key .. " => " .. tostring(action.spellId) .. " => " .. tostring(params.condition))
+
+    if (params.condition == false or not Clockwork.actionCanBeCast(action.slot)) then return end
 
     local modifier = nil
     if action.alt then
@@ -386,11 +390,8 @@ function Clockwork:castSpellIfConditionsMet(params)
         modifier = Clockwork.ALT
     end
 
-    Clockwork.log.debug(action.key .. " => " .. tostring(action.spellId) .. " => " .. tostring(params.condition))
-
-    self:shouldHitKeyWithModifier({
+    self:hitKeyWithModifier({
         actionParameters = action,
-        condition = params.condition,
         priority = params.priority or 1,
         duration = params.duration
     }, modifier)

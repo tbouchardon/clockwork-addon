@@ -56,29 +56,18 @@ function Clockwork:resetKeys()
     self.keys["1"].texture:SetColorTexture(0, 0, 0, 1)
 end
 
----@param params {actionParameters:{key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean},condition:boolean|nil,priority:number, duration:number|nil}
+---@param params {actionParameters:{key:string, shift:boolean, alt:boolean, ctrl:boolean},priority:number, duration:number|nil}
 ---@param keyModificator SHIFT|ALT|CTRL|nil
----@return boolean
-function Clockwork:shouldHitKeyWithModifier(params, keyModificator)
+---@return nil
+function Clockwork:hitKeyWithModifier(params, keyModificator)
     --Clockwork.log.debug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
-    Clockwork.log.debug("key = " .. tostring(params.actionParameters.key))
-    Clockwork.log.debug("should = " .. tostring(params.condition))
-    Clockwork.log.debug("modificator = " .. tostring(keyModificator))
-
-    if (params.condition == false) then
-        return false
-    end
-
-    if (params.condition == nil or params.condition == true) then
-        params.condition = Clockwork.actionCanBeCast(params.actionParameters.slot)
-    end
+    Clockwork.log.debug("Hit \"" .. tostring(params.actionParameters.key) .. "\" with mod " .. tostring(keyModificator))
 
     -- Mode octal
     -- CTRL  = 1
     -- ALT   = 2
     -- SHIFT = 4
-    --
 
     local sum = 0 +
         Clockwork.ternary(keyModificator == Clockwork.CTRL, 1, 0) +
@@ -88,13 +77,7 @@ function Clockwork:shouldHitKeyWithModifier(params, keyModificator)
 
     local duration = Clockwork.ternary(params.duration == nil, 0, params.duration)
 
-    if params.condition
-    then
-        Clockwork.keys[params.actionParameters.key].texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
-        return true
-    else
-        return false
-    end
+    Clockwork.keys[params.actionParameters.key].texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
 end
 
 ---Function to find the shortcut key for a specific action slot and parse modifiers.

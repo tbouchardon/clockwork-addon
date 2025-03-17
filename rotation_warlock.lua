@@ -17,21 +17,20 @@ local function affliction()
         local hasDebuff, hasAnyDebuff, remainingTime
 
         hasDebuff, remainingTime = Clockwork.targetHasDebuff("Agonie")
-        Clockwork:castSpellIfConditionsMet({
+        Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warlock.AGONIE_980,
             condition = not hasDebuff or remainingTime < 4,
             priority = 90
         })
 
         hasDebuff, remainingTime = Clockwork.targetHasDebuff("Corruption")
-        Clockwork:castSpellIfConditionsMet({
+        Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warlock.CORRUPTION_172,
-            key = Clockwork.key3,
             condition = not hasDebuff or remainingTime < 2,
             priority = 85
         })
 
-        Clockwork:castSpellIfConditionsMet({
+        Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warlock.TRAIT_DE_L_OMBRE_686
         })
     end
