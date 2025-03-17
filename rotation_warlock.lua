@@ -16,14 +16,14 @@ local function affliction()
     if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
         local hasDebuff, hasAnyDebuff, remainingTime
 
-        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Agonie")
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff(Clockwork.Enum.Spell.Warlock.AGONIE_980.name)
         Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warlock.AGONIE_980,
             condition = not hasDebuff or remainingTime < 4,
             priority = 90
         })
 
-        hasDebuff, remainingTime = Clockwork.targetHasDebuff("Corruption")
+        hasDebuff, remainingTime = Clockwork.targetHasDebuff(Clockwork.Enum.Spell.Warlock.CORRUPTION_172.name)
         Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warlock.CORRUPTION_172,
             condition = not hasDebuff or remainingTime < 2,
