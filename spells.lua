@@ -1403,7 +1403,332 @@ Clockwork.Enum.Spell = {
 
     },
     Monk = {},
-    Druid = {},
+    Druid = {
+        BALAYAGE_213764 = {
+            name = "Balayage",
+            id = 213764,
+        },
+        CELERITE_1850 = {
+            name = "Célérité",
+            id = 1850,
+        },
+        COLERE_190984 = {
+            name = "Colère",
+            id = 190984,
+        },
+        ECLAT_LUNAIRE_8921 = {
+            name = "Éclat lunaire",
+            id = 8921,
+        },
+        ECORCE_22812 = {
+            name = "Ecorce",
+            id = 22812,
+        },
+        ERUPTION_STELLAIRE_78674 = {
+            name = "Éruption stellaire",
+            id = 78674,
+        },
+        FEU_STELLAIRE_194153 = {
+            name = "Feu stellaire",
+            id = 194153,
+        },
+        FORME_D_OURS_5487 = {
+            name = "Forme d'ours",
+            id = 5487,
+        },
+        FORME_DE_FELIN_768 = {
+            name = "Forme de félin",
+            id = 768,
+        },
+        FORME_DE_SELENIEN_24858 = {
+            name = "Forme de sélénien",
+            id = 24858,
+        },
+        FORME_DE_VOYAGE_783 = {
+            name = "Forme de voyage",
+            id = 783,
+        },
+        GRONDEMENT_6795 = {
+            name = "Grondement",
+            id = 6795,
+        },
+        LAMBEAU_5221 = {
+            name = "Lambeau",
+            id = 5221,
+        },
+        MARQUE_DU_FAUVE_1126 = {
+            name = "Marque du fauve",
+            id = 1126,
+        },
+        MORSURE_FEROCE_22568 = {
+            name = "Morsure féroce",
+            id = 22568,
+        },
+        MUTILATION_33917 = {
+            name = "Mutilation",
+            id = 33917,
+        },
+        REGENERATION_FRENETIQUE_22842 = {
+            name = "Régénération frénétique",
+            id = 22842,
+        },
+        RETABLISSEMENT_8936 = {
+            name = "Rétablissement",
+            id = 8936,
+        },
+        SARMENTS_339 = {
+            name = "Sarments",
+            id = 339,
+        },
+        RESSUSCITER_50769 = {
+            name = "Ressusciter",
+            id = 50769,
+        },
+        RODER_5215 = {
+            name = "Rôder",
+            id = 5215,
+        },
+        FORME_AQUATIQUE_276012 = {
+            name = "Forme aquatique",
+            id = 276012,
+        },
+        RENAISSANCE_20484 = {
+            name = "Renaissance",
+            id = 20484,
+        },
+        FORME_DE_VOL_276029 = {
+            name = "Forme de vol",
+            id = 276029,
+        },
+        FORME_DE_VOYAGE_159456 = {
+            name = "Forme de voyage",
+            id = 159456,
+        },
+        TELEPORTATION_REFLET_DE_LUNE_18960 = {
+            name = "Téléportation : Reflet-de-Lune",
+            id = 18960,
+        },
+        SARMENTS_343238 = {
+            name = "Sarments",
+            id = 343238,
+        },
+        MAITRISE_INVOCATION_ASTRALE_393014 = {
+            name = "Maîtrise : invocation astrale",
+            id = 393014,
+        },
+        ECLAT_LUNAIRE_326646 = {
+            name = "Éclat lunaire",
+            id = 326646,
+        },
+        METEORES_191034 = {
+            name = "Météores",
+            id = 191034,
+        },
+        FRENESIE_DE_CHOUETTIDE_231042 = {
+            name = "Frénésie de chouettide",
+            id = 231042,
+        },
+        BERSERK_106951 = {
+            name = "Berserk",
+            id = 106951,
+        },
+        COLERE_PRIMITIVE_285381 = {
+            name = "Colère primitive",
+            id = 285381,
+        },
+        ENTAILLE_BRUTALE_202028 = {
+            name = "Entaille brutale",
+            id = 202028,
+        },
+        ESSAIM_ADAPTATIF_391888 = {
+            name = "Essaim adaptatif",
+            id = 391888,
+        },
+        FRENESIE_FAROUCHE_274837 = {
+            name = "Frénésie farouche",
+            id = 274837,
+        },
+        FUREUR_DU_TIGRE_5217 = {
+            name = "Fureur du tigre",
+            id = 5217,
+        },
+        INCARNATION_AVATAR_D_ASHAMANE_102543 = {
+            name = "Incarnation : avatar d’Ashamane",
+            id = 102543,
+        },
+        MAITRISE_GRIFFES_RASOIR_77493 = {
+            name = "Maîtrise : Griffes rasoir",
+            id = 77493,
+        },
+        INSTINCT_FAROUCHE_16949 = {
+            name = "Instinct farouche",
+            id = 16949,
+        },
+        ADEPTE_FELIN_300349 = {
+            name = "Adepte félin",
+            id = 300349,
+        },
+        COUP_DE_CRANE_106839 = {
+            name = "Coup de crâne",
+            id = 106839,
+        },
+        BERSERK_50334 = {
+            name = "Berserk",
+            id = 50334,
+        },
+        DESTRUCTION_MASSIVE_400254 = {
+            name = "Destruction massive",
+            id = 400254,
+        },
+        INCARNATION_GARDIEN_D_URSOC_102558 = {
+            name = "Incarnation : Gardien d’Ursoc",
+            id = 102558,
+        },
+        MUTILER_6807 = {
+            name = "Mutiler",
+            id = 6807,
+        },
+        POILS_HERISSES_155835 = {
+            name = "Poils hérissés",
+            id = 155835,
+        },
+        PULVERISATION_80313 = {
+            name = "Pulvérisation",
+            id = 80313,
+        },
+        RAGE_DU_DORMEUR_200851 = {
+            name = "Rage du dormeur",
+            id = 200851,
+        },
+        RAYON_LUNAIRE_204066 = {
+            name = "Rayon lunaire",
+            id = 204066,
+        },
+        ADEPTE_URSIN_300346 = {
+            name = "Adepte ursin",
+            id = 300346,
+        },
+        MAITRISE_GARDIEN_DE_LA_NATURE_155783 = {
+            name = "Maîtrise : Gardien de la nature",
+            id = 155783,
+        },
+        FORME_D_OURS_270100 = {
+            name = "Forme d’ours",
+            id = 270100,
+        },
+        INSTINCTS_DE_SURVIE_61336 = {
+            name = "Instincts de survie",
+            id = 61336,
+        },
+        REFLEXES_ECLAIRS_231065 = {
+            name = "Réflexes-éclairs",
+            id = 231065,
+        },
+        CONVOQUER_LES_ESPRITS_391528 = {
+            name = "Convoquer les esprits",
+            id = 391528,
+        },
+        BALAYAGE_106785 = {
+            name = "Balayage",
+            id = 106785,
+        },
+        COLERE_5176 = {
+            name = "Colère",
+            id = 5176,
+        },
+        DECHIRURE_1079 = {
+            name = "Déchirure",
+            id = 1079,
+        },
+        GRIFFURE_1822 = {
+            name = "Griffure",
+            id = 1822,
+        },
+        ROSSER_106830 = {
+            name = "Rosser",
+            id = 106830,
+        },
+        ALIGNEMENT_CELESTE_194223 = {
+            name = "Alignement céleste",
+            id = 194223,
+        },
+        CHAMPIGNON_SAUVAGE_88747 = {
+            name = "Champignon sauvage",
+            id = 88747,
+        },
+        FLAMBOIEMENT_STELLAIRE_202347 = {
+            name = "Flamboiement stellaire",
+            id = 202347,
+        },
+        FORCE_DE_LA_NATURE_205636 = {
+            name = "Force de la nature",
+            id = 205636,
+        },
+        FUREUR_D_ELUNE_202770 = {
+            name = "Fureur d’Élune",
+            id = 202770,
+        },
+        GUERRIER_D_ELUNE_202425 = {
+            name = "Guerrier d’Elune",
+            id = 202425,
+        },
+        INCARNATION_APPELE_D_ELUNE_102560 = {
+            name = "Incarnation : Appelé d’Élune",
+            id = 102560,
+        },
+        NOUVELLE_LUNE_274281 = {
+            name = "Nouvelle lune",
+            id = 274281,
+        },
+        RAYON_SOLAIRE_78675 = {
+            name = "Rayon solaire",
+            id = 78675,
+        },
+        BALAYAGE_213771 = {
+            name = "Balayage",
+            id = 213771,
+        },
+        ROSSER_106832 = {
+            name = "Rosser",
+            id = 106832,
+        },
+        CROISSANCE_SAUVAGE_48438 = {
+            name = "Croissance sauvage",
+            id = 48438,
+        },
+        FEU_STELLAIRE_197628 = {
+            name = "Feu stellaire",
+            id = 197628,
+        },
+        RECUPERATION_774 = {
+            name = "Récupération",
+            id = 774,
+        },
+        SOINS_NATURELS_88423 = {
+            name = "Soins naturels",
+            id = 88423,
+        },
+        MAITRISE_HARMONIE_77495 = {
+            name = "Maîtrise : Harmonie",
+            id = 77495,
+        },
+        PROMPTE_GUERISON_18562 = {
+            name = "Prompte guérison",
+            id = 18562,
+        },
+        AUGURE_DE_CLARTE_113043 = {
+            name = "Augure de clarté",
+            id = 113043,
+        },
+        REVITALISATION_212040 = {
+            name = "Revitalisation",
+            id = 212040,
+        },
+        RESINE_REACTIVE_468146 = {
+            name = "Résine réactive",
+            id = 468146,
+        },    
+    },
     DemonHunter = {},
     Evoker = {}
 }
