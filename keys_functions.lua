@@ -131,7 +131,7 @@ function Clockwork:createAllActionSlotBindings()
 
     for i = 1, 120 do
         local binding, errorMessage = self.getActionSlotBinding(i);
-        Clockwork.log.info("Action slot " .. i .. " binding: " .. tostring(binding))
+        Clockwork.log.debug("Action slot " .. i .. " binding: " .. tostring(binding))
         local actionType, id, subType = GetActionInfo(i)
 
         if binding then

@@ -271,7 +271,6 @@ function Clockwork:onEvent(...)
         if addonName == "Clockwork" then
             Clockwork.log.debug(select(2, ...) .. " Loaded")
             Clockwork:playerEnteringWorld()
-            Clockwork.log.dump(Clockwork)
             Clockwork:addonLoaded()
             Clockwork:resetCombat()
             return

@@ -15,41 +15,59 @@
                 self:RegisterForDrag("LeftButton")
 
                 ClockworkMenuFrame.Expand = function()
-                ClockworkMenuFrame:SetWidth(137)
-                ClockworkMenuFrame:SetHeight(204)
+                    ClockworkMenuFrame:SetWidth(137)
+                    ClockworkMenuFrame:SetHeight(204)
 
-                MyScriptOptionsButtonToggle:Show()
-                MyScriptOptionsButtonTNE:Show()
-                MyScriptOptionsButtonAddWP:Show()
-                MyScriptOptionsButtonClearWP:Show()
-                MyScriptOptionsButtonDrive:Show()
-                MyScriptOptionsButtonLoop:Show()
-                MyScriptOptionsButtonDebug:Show()
-                MyScriptOptionsButtonAggro:Show()
+                    ClockworkMenuButtonToggle:Show()
+                    ClockworkMenuButtonTNE:Show()
+                    ClockworkMenuButtonAddWP:Show()
+                    ClockworkMenuButtonClearWP:Show()
+                    ClockworkMenuButtonDrive:Show()
+                    ClockworkMenuButtonLoop:Show()
+                    ClockworkMenuButtonDebug:Show()
+                    ClockworkMenuButtonAggro:Show()
                 end
 
                 ClockworkMenuFrame.Collapse = function()
-                ClockworkMenuFrame:SetWidth(137)
-                ClockworkMenuFrame:SetHeight(20)
+                    ClockworkMenuFrame:SetWidth(137)
+                    ClockworkMenuFrame:SetHeight(20)
 
-                MyScriptOptionsButtonToggle:Hide()
-                MyScriptOptionsButtonTNE:Hide()
-                MyScriptOptionsButtonAddWP:Hide()
-                MyScriptOptionsButtonClearWP:Hide()
-                MyScriptOptionsButtonDrive:Hide()
-                MyScriptOptionsButtonLoop:Hide()
-                MyScriptOptionsButtonDebug:Hide()
-                MyScriptOptionsButtonAggro:Hide()
+                    ClockworkMenuButtonToggle:Hide()
+                    ClockworkMenuButtonTNE:Hide()
+                    ClockworkMenuButtonAddWP:Hide()
+                    ClockworkMenuButtonClearWP:Hide()
+                    ClockworkMenuButtonDrive:Hide()
+                    ClockworkMenuButtonLoop:Hide()
+                    ClockworkMenuButtonDebug:Hide()
+                    ClockworkMenuButtonAggro:Hide()
+                end
+
+                self.clearTimer = function () 
+                    if Clockwork.menuFrameTimer and type(Clockwork.menuFrameTimer) == "userdata" then
+                        Clockwork.log.debug("ClockworkMenuFrame : Clear timer")
+                        Clockwork.menuFrameTimer:Cancel()
+                    end
+                end
+
+                self.startTimer = function () 
+                    Clockwork.log.debug("ClockworkMenuFrame : Leave (Set timer)")
+                    Clockwork.menuFrameTimer = C_Timer.NewTimer(1, function()
+                        Clockwork.log.debug("ClockworkMenuFrame : Hiding menu")
+                        ClockworkMenuFrame:Collapse()
+                    end)
                 end
 
                 self:OnBackdropLoaded()
                 self:OnBackdropSizeChanged()
+                ClockworkMenuFrame:Collapse()
             </OnLoad>
             <OnEnter>
+                Clockwork.log.debug("ClockworkMenuFrame : Enter")
                 ClockworkMenuFrame:Expand()
+                ClockworkMenuFrame:clearTimer()
             </OnEnter>
             <OnLeave>
-                -- ClockworkMenuFrame.Collapse()
+                ClockworkMenuFrame.startTimer()
             </OnLeave>
             <OnDragStart>
                 self:StartMoving()
@@ -106,16 +124,17 @@
                     <OnUpdate>
                         local f = GetMouseFoci()[1]
                         if (f) then
+                            local found = false
+                            while (f:GetParent() and f:GetParent() ~= UIParent) do
+                                if (f == ClockworkMenuFrame) then 
+                                    found = true 
+                                end
+                                f = f:GetParent()
+                            end
 
-                        local found = false
-                        while (f:GetParent() and f:GetParent() ~= UIParent) do
-                        if (f == ClockworkMenuFrame) then found = true end
-                        f = f:GetParent()
-                        end
-
-                        if (not found) then
-                        ClockworkMenuFrame:Collapse()
-                        end
+                            if (not found) then
+                                ClockworkMenuFrame:Collapse()
+                            end
                         end
                     </OnUpdate>
                 </Scripts>
@@ -133,7 +152,7 @@
 
                 <Frames>
 
-                    <Button name="MyScriptOptionsButtonToggle"
+                    <Button name="ClockworkMenuButtonToggle"
                             inherits="UIPanelButtonTemplate"
                             text="Off - Toggle">
                         <Size x="120"
@@ -152,32 +171,34 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickToggle(Clockwork)
                                 if Clockwork.TOGGLE_ON_OFF == false
                                 then
-                                MyScriptOptionsButtonToggle:SetText("Off - Toggle")
+                                ClockworkMenuButtonToggle:SetText("Off - Toggle")
                                 else
-                                MyScriptOptionsButtonToggle:SetText("On - Toggle")
+                                ClockworkMenuButtonToggle:SetText("On - Toggle")
                                 end
-                                Clockwork.log.debug(tostring(MyScriptOptionsButtonToggle:GetPushedTexture()))
-                                Clockwork.log.debug(tostring(MyScriptOptionsButtonToggle:GetNormalTexture()))
+                                Clockwork.log.debug(tostring(ClockworkMenuButtonToggle:GetPushedTexture()))
+                                Clockwork.log.debug(tostring(ClockworkMenuButtonToggle:GetNormalTexture()))
                             </OnClick>
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonAggro"
+                    <Button name="ClockworkMenuButtonAggro"
                             inherits="UIPanelButtonTemplate"
                             text="On - Aggro">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonToggle"
+                                    relativeTo="ClockworkMenuButtonToggle"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -190,33 +211,35 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 if Clockwork.AGGRO_MOD == false
                                 then
                                 Clockwork.AGGRO_MOD = true
-                                MyScriptOptionsButtonAggro:SetText("On - Aggro")
+                                ClockworkMenuButtonAggro:SetText("On - Aggro")
                                 Clockwork.log.notice("Aggro Mod : On")
                                 else
                                 Clockwork.AGGRO_MOD = false
-                                MyScriptOptionsButtonAggro:SetText("Off - Aggro")
+                                ClockworkMenuButtonAggro:SetText("Off - Aggro")
                                 Clockwork.log.notice("Aggro Mod : Off")
                                 end
                             </OnClick>
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonTNE"
+                    <Button name="ClockworkMenuButtonTNE"
                             inherits="UIPanelButtonTemplate"
                             text="Off - TNE">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonAggro"
+                                    relativeTo="ClockworkMenuButtonAggro"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -229,30 +252,32 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickTNE(Clockwork)
                                 if Clockwork.TARGET_NEAREST_ENEMY == false
                                 then
-                                MyScriptOptionsButtonTNE:SetText("Off - TNE")
+                                ClockworkMenuButtonTNE:SetText("Off - TNE")
                                 else
-                                MyScriptOptionsButtonTNE:SetText("On - TNE")
+                                ClockworkMenuButtonTNE:SetText("On - TNE")
                                 end
                             </OnClick>
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonDrive"
+                    <Button name="ClockworkMenuButtonDrive"
                             inherits="UIPanelButtonTemplate"
                             text="Off - Drive">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonTNE"
+                                    relativeTo="ClockworkMenuButtonTNE"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -265,30 +290,32 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickDrive(Clockwork)
                                 if Clockwork.DRIVE_MOD == false
                                 then
-                                MyScriptOptionsButtonDrive:SetText("Off - Drive")
+                                ClockworkMenuButtonDrive:SetText("Off - Drive")
                                 else
-                                MyScriptOptionsButtonDrive:SetText("On - Drive")
+                                ClockworkMenuButtonDrive:SetText("On - Drive")
                                 end
                             </OnClick>
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonLoop"
+                    <Button name="ClockworkMenuButtonLoop"
                             inherits="UIPanelButtonTemplate"
                             text="Off - Loop WP">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonDrive"
+                                    relativeTo="ClockworkMenuButtonDrive"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -301,30 +328,32 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickLoop(Clockwork)
                                 if Clockwork.DRIVE_LOOP == false
                                 then
-                                MyScriptOptionsButtonLoop:SetText("Off - Loop WP")
+                                ClockworkMenuButtonLoop:SetText("Off - Loop WP")
                                 else
-                                MyScriptOptionsButtonLoop:SetText("On - Loop WP")
+                                ClockworkMenuButtonLoop:SetText("On - Loop WP")
                                 end
                             </OnClick>
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonDebug"
+                    <Button name="ClockworkMenuButtonDebug"
                             inherits="UIPanelButtonTemplate"
                             text="Off - Debug">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonLoop"
+                                    relativeTo="ClockworkMenuButtonLoop"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -337,30 +366,32 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickDebug(Clockwork)
                                 if Clockwork.DEBUG_MOD == false
                                 then
-                                MyScriptOptionsButtonDebug:SetText("Off - Debug")
+                                ClockworkMenuButtonDebug:SetText("Off - Debug")
                                 else
-                                MyScriptOptionsButtonDebug:SetText("On - Debug")
+                                ClockworkMenuButtonDebug:SetText("On - Debug")
                                 end
                             </OnClick>
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonAddWP"
+                    <Button name="ClockworkMenuButtonAddWP"
                             inherits="UIPanelButtonTemplate"
                             text="Add Waypoint">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonDebug"
+                                    relativeTo="ClockworkMenuButtonDebug"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -373,9 +404,11 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickAddWp(Clockwork)
@@ -383,14 +416,14 @@
                         </Scripts>
                     </Button>
 
-                    <Button name="MyScriptOptionsButtonClearWP"
+                    <Button name="ClockworkMenuButtonClearWP"
                             inherits="UIPanelButtonTemplate"
                             text="Clear Waypoints">
                         <Size x="120"
                               y="25"/>
                         <Anchors>
                             <Anchor point="TOPLEFT"
-                                    relativeTo="MyScriptOptionsButtonAddWP"
+                                    relativeTo="ClockworkMenuButtonAddWP"
                                     relativePoint="BOTTOMLEFT">
                                 <Offset x="0"
                                         y="0"/>
@@ -403,9 +436,11 @@
                             <OnEnter>
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT");
                                 GameTooltip:SetText(self.tooltip);
+                                ClockworkMenuFrame:clearTimer()
                             </OnEnter>
                             <OnLeave>
                                 GameTooltip:Hide();
+                                ClockworkMenuFrame.startTimer()
                             </OnLeave>
                             <OnClick>
                                 Clockwork.clickClearWp(Clockwork)
