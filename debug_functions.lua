@@ -30,14 +30,14 @@ function Clockwork.reportActionButtons()
     -- Clockwork.log.debug("function Clockwork.reportActionButtons(")
 
     for actionSlot = 1, 120 do
-        local actionText = GetActionText(actionSlot);
-        local actionTexture = GetActionTexture(actionSlot);
+        local actionType, id, subType = GetActionInfo(actionSlot);
 
-        if actionTexture then
-            local message = "Slot " .. actionSlot .. " : [" .. actionTexture .. "]";
+        if id then
+            local spellInfo = C_Spell.GetSpellInfo(id)
+            local message = "Slot " .. actionSlot .. " : [" .. id .. "]";
 
-            if actionText then
-                message = message .. " \"" .. actionText .. "\"";
+            if spellInfo then
+                message = message .. " \"" .. spellInfo.name .. "\"";
             end
 
             Clockwork.log.info(message);
