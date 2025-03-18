@@ -1,9 +1,8 @@
-## Interface: 110100 -- This is the "level" of the interface. In the case of 1.12.1 it's 11200
+## Interface: 110100 -- "level" of the interface. In the case of 1.12.1 it's 11200
 ## Title: Clockwork - |cffffffffSmartCast|r
-## Author: Clockwork
+## Author: Ksuto
 ## Notes: My Smart Addon
-## X-Category: Interface Enhancements
-## OptionalDeps: -- Optional dependencies.
+## Category: Combat
 ## DefaultState: Enabled
 ## SavedVariables: CLOCKWORK_ROTATIONS
 

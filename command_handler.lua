@@ -40,12 +40,12 @@ function Clockwork:commandHandler(msg)
         self:clickLoop()
     elseif (msg == 'debug') then
         self:clickDebug()
-    elseif (msg == 'listspells') then
-        self:listAllSpells()
-    elseif (msg == 'listactions') then
+    elseif (msg == 'list spells') then
+        self:reportAllSpells()
+    elseif (msg == 'list actions') then
         self:reportActionButtons()
-    elseif (msg == 'update actions') then
-        self:updateActionButtons()
+    elseif (msg == 'list bindings') then
+        self:reportBindings()
     else
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
@@ -57,8 +57,10 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")
-        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork listspells   -- List all spells") end
-        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork listactions  -- List all actions slots") end
+        Clockwork.log.notice("Debug : ")
+        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list spells    -- List all spells") end
+        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list actions   -- List all actions slots") end
+        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list bindings  -- List all bindings") end
     end
 end
 

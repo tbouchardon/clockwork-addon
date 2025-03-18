@@ -126,7 +126,7 @@ function Clockwork.getActionSlotBinding(actionSlot)
 end
 
 ---@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
-function Clockwork:createAllActionSlotBindings()
+function Clockwork:getAllActionSlotBindings()
     local bindings = {};
 
     for i = 1, 120 do
@@ -152,14 +152,19 @@ function Clockwork:createAllActionSlotBindings()
         end
     end
 
-    self.actionSlotBindings = bindings
-    return bindings;
+    return bindings
 end
 
----@return nil
-function Clockwork:createSpellIdToSlotLookup()
+---@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
+function Clockwork:updateAllActionSlotBindings()
+    self.actionSlotBindings = self:getAllActionSlotBindings()
+    return self.actionSlotBindings;
+end
+
+---@return table
+function Clockwork:updateSpellIdToSlotLookup()
     if not self.actionSlotBindings then
-        self:createAllActionSlotBindings()
+        self:updateAllActionSlotBindings()
     end
 
     self.spellIdToSlot = {}
@@ -169,13 +174,15 @@ function Clockwork:createSpellIdToSlotLookup()
             self.spellIdToSlot[binding.spellId] = i
         end
     end
+
+    return self.spellIdToSlot
 end
 
 ---@param spellId number
 ---@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}|nil
 function Clockwork:getBindingForSpellId(spellId)
     if next(self.spellIdToSlot) == nil then
-        self:createSpellIdToSlotLookup()
+        self:updateSpellIdToSlotLookup()
     end
 
     local slotNumber = self.spellIdToSlot[spellId]
@@ -194,7 +201,7 @@ end
 ---@return number|nil, string|nil
 function Clockwork:findActionSlotByKeyAndModifiers(key, shift, alt, ctrl)
     if (Clockwork.actionSlotBindings == nil) then
-        self:createAllActionSlotBindings()
+        self:updateAllActionSlotBindings()
     end
 
     if not self.actionSlotBindings then

@@ -261,8 +261,8 @@ function Clockwork:onEvent(...)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
-        Clockwork:createAllActionSlotBindings()
-        Clockwork:createSpellIdToSlotLookup()
+        Clockwork:updateAllActionSlotBindings()
+        Clockwork:updateSpellIdToSlotLookup()
     end
 
     if event == "ADDON_LOADED" then
@@ -289,13 +289,13 @@ function Clockwork:onEvent(...)
         else
             Clockwork.actionSlotOffset = 0
         end
-        Clockwork:createAllActionSlotBindings()
-        Clockwork:createSpellIdToSlotLookup()
+        Clockwork:updateAllActionSlotBindings()
+        Clockwork:updateSpellIdToSlotLookup()
     end
 
     if event == "ACTIONBAR_SLOT_CHANGED" then
-        Clockwork:createAllActionSlotBindings()
-        Clockwork:createSpellIdToSlotLookup()
+        Clockwork:updateAllActionSlotBindings()
+        Clockwork:updateSpellIdToSlotLookup()
     end
 
     if event == "PLAYER_SPECIALIZATION_CHANGED" and self.player.class.classID ~= nil then
@@ -303,7 +303,7 @@ function Clockwork:onEvent(...)
         local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classID,
             GetSpecialization())
         self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
-        Clockwork:createAllActionSlotBindings()
+        Clockwork:updateAllActionSlotBindings()
     end
 
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
