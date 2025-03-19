@@ -1,5 +1,290 @@
 Clockwork.Enum.Spell = {
-    Warrior = {},
+    Warrior = {
+        HEURTOIR_1464 = {
+            name = "Heurtoir",
+            id = 1464,
+        },
+        CHARGE_100 = {
+            name = "Charge",
+            id = 100,
+        },
+        HEURT_DE_BOUCLIER_23922 = {
+            name = "Heurt de bouclier",
+            id = 23922,
+        },
+        BRISE_GENOU_1715 = {
+            name = "Brise-genou",
+            id = 1715,
+        },
+        IVRESSE_DE_LA_VICTOIRE_34428 = {
+            name = "Ivresse de la victoire",
+            id = 34428,
+        },
+        MAITRISE_DU_BLOCAGE_2565 = {
+            name = "Maîtrise du blocage",
+            id = 2565,
+        },
+        VOLEE_DE_COUPS_6552 = {
+            name = "Volée de coups",
+            id = 6552,
+        },
+        PROVOCATION_355 = {
+            name = "Provocation",
+            id = 355,
+        },
+        TOURBILLON_1680 = {
+            name = "Tourbillon",
+            id = 1680,
+        },
+        CRI_DE_GUERRE_6673 = {
+            name = "Cri de guerre",
+            id = 6673,
+        },
+        EXECUTION_163201 = {
+            name = "Exécution",
+            id = 163201,
+        },
+        LANCER_HEROIQUE_57755 = {
+            name = "Lancer héroïque",
+            id = 57755,
+        },
+        IVRESSE_DE_LA_VICTOIRE_319158 = {
+            name = "Ivresse de la victoire",
+            id = 319158,
+        },
+        RAGE_DE_BERSERKER_18499 = {
+            name = "Rage de berserker",
+            id = 18499,
+        },
+        ATTAQUES_CIRCULAIRES_260708 = {
+            name = "Attaques circulaires",
+            id = 260708,
+        },
+        BRISE_GUERRE_262161 = {
+            name = "Brise-guerre",
+            id = 262161,
+        },
+        CASSE_CRANE_260643 = {
+            name = "Casse-crâne",
+            id = 260643,
+        },
+        COUPS_EXALTANTS_383219 = {
+            name = "Coups exaltants",
+            id = 383219,
+        },
+        DEMOLISSAGE_436358 = {
+            name = "Démolissage",
+            id = 436358,
+        },
+        DUR_AU_MAL_190456 = {
+            name = "Dur au mal",
+            id = 190456,
+        },
+        ENCHAINEMENT_845 = {
+            name = "Enchaînement",
+            id = 845,
+        },
+        FRAPPE_DU_COLOSSE_167105 = {
+            name = "Frappe du colosse",
+            id = 167105,
+        },
+        FRAPPE_MORTELLE_12294 = {
+            name = "Frappe mortelle",
+            id = 12294,
+        },
+        FULGURANCE_7384 = {
+            name = "Fulgurance",
+            id = 7384,
+        },
+        PAR_LE_FIL_DE_L_EPEE_118038 = {
+            name = "Par le fil de l’épée",
+            id = 118038,
+        },
+        POURFENDRE_772 = {
+            name = "Pourfendre",
+            id = 772,
+        },
+        PROUESSES_MARTIALES_316440 = {
+            name = "Prouesses martiales",
+            id = 316440,
+        },
+        RAVAGEUR_228920 = {
+            name = "Ravageur",
+            id = 228920,
+        },
+        TEMPETE_DE_LAMES_227847 = {
+            name = "Tempête de lames",
+            id = 227847,
+        },
+        MAITRISE_BLESSURES_PROFONDES_262111 = {
+            name = "Maîtrise : Blessures profondes",
+            id = 262111,
+        },
+        SOLDAT_AGUERRI_279423 = {
+            name = "Soldat aguerri",
+            id = 279423,
+        },
+        ASSAUT_315720 = {
+            name = "Assaut",
+            id = 315720,
+        },
+        COUP_DECHAINE_85288 = {
+            name = "Coup déchaîné",
+            id = 85288,
+        },
+        COUP_DECHAINE_AMELIORE_383854 = {
+            name = "Coup déchaîné amélioré",
+            id = 383854,
+        },
+        COURROUX_ET_FUREUR_392936 = {
+            name = "Courroux et fureur",
+            id = 392936,
+        },
+        EXECUTION_AMELIOREE_316402 = {
+            name = "Exécution améliorée",
+            id = 316402,
+        },
+        FRAPPES_MASSACRANTES_388004 = {
+            name = "Frappes massacrantes",
+            id = 388004,
+        },
+        FUREUR_D_ODYN_385059 = {
+            name = "Fureur d’Odyn",
+            id = 385059,
+        },
+        RAGE_FRENETIQUE_383848 = {
+            name = "Rage frénétique",
+            id = 383848,
+        },
+        SACCAGER_184367 = {
+            name = "Saccager",
+            id = 184367,
+        },
+        SANGUINAIRE_23881 = {
+            name = "Sanguinaire",
+            id = 23881,
+        },
+        SANGUINAIRE_AMELIORE_383852 = {
+            name = "Sanguinaire amélioré",
+            id = 383852,
+        },
+        TEMERITE_1719 = {
+            name = "Témérité",
+            id = 1719,
+        },
+        FUREUR_OBSESSIONNELLE_81099 = {
+            name = "Fureur obsessionnelle",
+            id = 81099,
+        },
+        LAME_FROIDE_SANG_CHAUD_383959 = {
+            name = "Lame froide, sang chaud",
+            id = 383959,
+        },
+        RAGE_SURPUISSANTE_440277 = {
+            name = "Rage surpuissante",
+            id = 440277,
+        },
+        REGENERATION_ENRAGEE_184364 = {
+            name = "Régénération enragée",
+            id = 184364,
+        },
+        TAILLADER_ET_TRANCHER_383877 = {
+            name = "Taillader et trancher",
+            id = 383877,
+        },
+        TOURBILLON_AMELIORE_12950 = {
+            name = "Tourbillon amélioré",
+            id = 12950,
+        },
+        EXECUTION_5308 = {
+            name = "Exécution",
+            id = 5308,
+        },
+        TOURBILLON_190411 = {
+            name = "Tourbillon",
+            id = 190411,
+        },
+        AMBIDEXTRIE_231842 = {
+            name = "Ambidextrie",
+            id = 231842,
+        },
+        ENRAGER_184361 = {
+            name = "Enrager",
+            id = 184361,
+        },
+        MAITRISE_FUREUR_DECHAINEE_76856 = {
+            name = "Maîtrise : Fureur déchaînée",
+            id = 76856,
+        },
+        POIGNE_DU_TITAN_46917 = {
+            name = "Poigne du titan",
+            id = 46917,
+        },
+        BLOCAGE_DE_SORTS_392966 = {
+            name = "Blocage de sorts",
+            id = 392966,
+        },
+        CRI_DE_DEFI_1161 = {
+            name = "Cri de défi",
+            id = 1161,
+        },
+        CRI_DEMORALISANT_1160 = {
+            name = "Cri démoralisant",
+            id = 1160,
+        },
+        CRI_PERTURBANT_386071 = {
+            name = "Cri perturbant",
+            id = 386071,
+        },
+        DERNIER_REMPART_12975 = {
+            name = "Dernier rempart",
+            id = 12975,
+        },
+        MUR_PROTECTEUR_871 = {
+            name = "Mur protecteur",
+            id = 871,
+        },
+        POURFENDRE_394062 = {
+            name = "Pourfendre",
+            id = 394062,
+        },
+        REVANCHE_6572 = {
+            name = "Revanche",
+            id = 6572,
+        },
+        CHARGE_DE_BOUCLIER_385952 = {
+            name = "Charge de bouclier",
+            id = 385952,
+        },
+        DEVASTER_20243 = {
+            name = "Dévaster",
+            id = 20243,
+        },
+        AVANT_GARDE_71 = {
+            name = "Avant-garde",
+            id = 71,
+        },
+        BLESSURES_PROFONDES_115768 = {
+            name = "Blessures profondes",
+            id = 115768,
+        },
+        EXECUTION_AMELIOREE_397708 = {
+            name = "Exécution améliorée",
+            id = 397708,
+        },
+        MAITRISE_DU_BLOCAGE_231847 = {
+            name = "Maîtrise du blocage",
+            id = 231847,
+        },
+        MAITRISE_BLOCAGE_CRITIQUE_76857 = {
+            name = "Maîtrise : Blocage critique",
+            id = 76857,
+        },
+        RIPOSTE_161798 = {
+            name = "Riposte",
+            id = 161798,
+        },    
+    },
     Paladin = {
         AURA_DE_CONCENTRATION_317920 = {
             name = "Aura de concentration",
