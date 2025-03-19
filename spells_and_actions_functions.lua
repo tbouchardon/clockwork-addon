@@ -27,7 +27,7 @@ function Clockwork.isUnitCastingEffect(unit, effect)
         return name ~= nil
     end
 
-    return string.find(name, effect)
+    return string.find(name, effect) ~= nil
 end
 
 function Clockwork.isCastingEffect(effect)
@@ -171,24 +171,4 @@ function Clockwork.findSpellBookSlotIndex(spellEnum, bookType)
         end
     end
     return nil
-end
-
-function Clockwork.dropSpellInShortcut(spellEnum, shortcut)
-    ClearCursor()
-    local slot = Clockwork:findActionSlotByKeyAndModifiers(
-        shortcut.key,
-        shortcut.shift or false,
-        shortcut.alt or false,
-        shortcut.ctrl or false)
-    if (slot == nil) then
-        return
-    end
-    PickupAction(slot)
-    ClearCursor()
-    local spellSlotIndex = Clockwork.findSpellBookSlotIndex(spellEnum, Enum.SpellBookSpellBank.Player)
-    Clockwork.log.notice(spellEnum.name .. " book spell slot : " .. tostring(spellSlotIndex))
-    if spellSlotIndex then
-        C_SpellBook.PickupSpellBookItem(spellSlotIndex, Enum.SpellBookSpellBank.Player)
-        PlaceAction(slot)
-    end
 end

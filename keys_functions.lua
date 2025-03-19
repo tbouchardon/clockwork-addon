@@ -1,8 +1,11 @@
 ---@alias SHIFT 927620
+---@type SHIFT
 Clockwork.SHIFT = 927620
 ---@alias CTRL 519254
+---@type CTRL
 Clockwork.CTRL = 519254
 ---@alias ALT 919836
+---@type ALT
 Clockwork.ALT = 919836
 
 function Clockwork:initKeys()
@@ -56,13 +59,13 @@ function Clockwork:resetKeys()
     self.keys["1"].texture:SetColorTexture(0, 0, 0, 1)
 end
 
----@param params {actionParameters:{key:string, shift:boolean, alt:boolean, ctrl:boolean},priority:number, duration:number|nil}
+---@param params {key:string,priority:number, duration:number|nil}
 ---@param keyModificator SHIFT|ALT|CTRL|nil
 ---@return nil
 function Clockwork:hitKeyWithModifier(params, keyModificator)
     --Clockwork.log.debug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
-    Clockwork.log.debug("Hit \"" .. tostring(params.actionParameters.key) .. "\" with mod " .. tostring(keyModificator))
+    Clockwork.log.debug("Hit \"" .. tostring(params.key) .. "\" with mod " .. tostring(keyModificator))
 
     -- Mode octal
     -- CTRL  = 1
@@ -77,27 +80,39 @@ function Clockwork:hitKeyWithModifier(params, keyModificator)
 
     local duration = Clockwork.ternary(params.duration == nil, 0, params.duration)
 
-    Clockwork.keys[params.actionParameters.key].texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
+    Clockwork.keys[params.key].texture:SetColorTexture(sum / 255, params.priority / 255, duration / 30, 1)
 end
 
+-- | Binding |       Spell        | Action                 | Slot | Shape       |
+-- | :-----: | :----------------: | ---------------------- | ---- | ----------- |
+-- |    1    |      Balayage      | ACTIONBUTTON1          | 1    | Voyage(3)   |
+-- |    1    |                    | ACTIONBUTTON1          | 13   | Second Page |
+-- |    Y    |      Sarments      | MULTIACTIONBAR3BUTTON1 | 25   |             |
+-- |    W    |     Mutilation     | MULTIACTIONBAR4BUTTON1 | 37   |             |
+-- |    T    |       Colère       | MULTIACTIONBAR2BUTTON1 | 49   |             |
+-- |    Q    |      Célérité      | MULTIACTIONBAR1BUTTON1 | 61   |             |
+-- |    1    |      Lambeau       | ACTIONBUTTON1          | 73   | Félin(2)    |
+-- |         |   Rétablissement   |                        | 85   |             |
+-- |    1    |     Grondement     | ACTIONBUTTON1          | 97   | Ours(1)     |
+-- |    1    |  Marque du fauve   | ACTIONBUTTON1          | 109  | Sélénien(4) |
+-- |         |                    |                        | 121  |             |
+-- |         |                    |                        | 133  |             |
+-- |    G    |   Feu stellaire    | MULTIACTIONBAR5BUTTON1 | 145  |             |
+-- |    F    | Eruption stellaire | MULTIACTIONBAR6BUTTON1 | 157  |             |
+-- |    D    |   Eclat lunaire    | MULTIACTIONBAR7BUTTON1 | 169  |             |
+
 ---Function to find the shortcut key for a specific action slot and parse modifiers.
----@param actionSlot number
----@return {key:string, shift:boolean, alt:boolean, ctrl:boolean}|nil, string|nil
-function Clockwork.getActionSlotBinding(actionSlot)
-    if not actionSlot or type(actionSlot) ~= "number" then
-        return nil, "Invalid action slot."
+---@param command string
+---@return {key:string, shift:boolean, alt:boolean, ctrl:boolean, toString:string}|nil, string|nil
+function Clockwork.getActionSlotBinding(command)
+    if not command or type(command) ~= "string" then
+        return nil, "Invalid command."
     end
 
-    local internalSlot = actionSlot - 1;
-
-    if internalSlot < 0 or internalSlot >= 120 then
-        return nil, "Action slot out of range."
-    end
-
-    local binding = GetBindingKey("ACTIONBUTTON" .. actionSlot);
+    local binding = GetBindingKey(command);
 
     if not binding or binding == "" then
-        return nil, "No shortcut assigned to this slot."
+        return nil, "No shortcut assigned to this command."
     end
 
     local shift = binding:match("^SHIFT%-")
@@ -117,81 +132,129 @@ function Clockwork.getActionSlotBinding(actionSlot)
 
     local key = binding -- The remaining part is the key
 
+    local combinaison = {}
+    if shift ~= nil then
+        table.insert(combinaison, "Shift")
+    end
+    if alt ~= nil then
+        table.insert(combinaison, "Alt")
+    end
+    if ctrl ~= nil then
+        table.insert(combinaison, "Ctrl")
+    end
+    table.insert(combinaison, key)
+    local modifiersString = table.concat(combinaison, "-")
+
     return {
         key = key,
         shift = shift ~= nil,
         alt = alt ~= nil,
         ctrl = ctrl ~= nil,
+        toString = modifiersString
     };
 end
 
----@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
-function Clockwork:getAllActionSlotBindings()
-    local bindings = {};
+---@return {key:string, shift:boolean, alt:boolean, ctrl:boolean, toString:string}[]
+function Clockwork.getCommandBindingMap()
+    local bindings = {}
+    local keyString = ""
 
-    for i = 1, 120 do
-        local binding, errorMessage = self.getActionSlotBinding(i)
-        if binding ~= nil then Clockwork.log.debug("Action slot " .. i .. " binding: " .. tostring(binding.key)) end
-        local actionIndex = i
-        if actionIndex < 13 then actionIndex = i + Clockwork.actionSlotOffset end
-        local actionType, id, subType = GetActionInfo(actionIndex)
+    for button = 1, 12 do
+        keyString = "ACTIONBUTTON" .. button
+        local binding = Clockwork.getActionSlotBinding(keyString)
+        if binding ~= nil then bindings[keyString] = binding end
+    end
 
-        if binding then
-            bindings[i] = {
-                key = binding.key,
-                shift = binding.shift,
-                alt = binding.alt,
-                ctrl = binding.ctrl,
-                spellId = id,
-                slot = actionIndex
-            };
-        else
-            -- If you want to store slots with no bindings, you may want to insert a nil or an object with nil values
-            --table.insert(bindings, nil);
-            bindings[i] = { key = nil, spellId = nil, shift = false, alt = false, ctrl = false };
+    for bar = 1, 7 do
+        for button = 1, 12 do
+            keyString = "MULTIACTIONBAR" .. bar .. "BUTTON" .. button
+            local binding = Clockwork.getActionSlotBinding(keyString)
+            if binding ~= nil then bindings[keyString] = binding end
         end
     end
 
     return bindings
 end
 
----@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
-function Clockwork:updateAllActionSlotBindings()
-    self.actionSlotBindings = self:getAllActionSlotBindings()
-    return self.actionSlotBindings;
-end
+---@return {name:string, slot:number}[]
+function Clockwork.getSpellIdActionSlotMap()
+    local spells = {}
 
----@return table
-function Clockwork:updateSpellIdToSlotLookup()
-    if not self.actionSlotBindings then
-        self:updateAllActionSlotBindings()
-    end
+    for actionSlot = 1, 180 do
+        local actionType, id, subType = GetActionInfo(actionSlot);
 
-    self.spellIdToSlot = {}
+        if id then
+            local spellInfo = C_Spell.GetSpellInfo(id)
 
-    for i, binding in ipairs(self.actionSlotBindings) do
-        if binding.spellId then
-            self.spellIdToSlot[binding.spellId] = i
+            if spellInfo then
+                spells[spellInfo.spellID] = { name = spellInfo.name, slot = actionSlot }
+            end
         end
     end
-
-    return self.spellIdToSlot
+    return spells
 end
 
----@param spellId number
----@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}|nil
-function Clockwork:getBindingForSpellId(spellId)
-    if next(self.spellIdToSlot) == nil then
-        self:updateSpellIdToSlotLookup()
-    end
+---@return {slot:number, key:string, shift:string, alt:string, ctrl:string}|nil, nil|string
+function Clockwork:getActionSlotAndBindingForSpell(spellID)
+    local spell = self.spellIdactionSlotMap[spellID]
+    if spell.slot == nil then return nil, "Spell not found" end
+    local command = Clockwork.getActionSlotCommand(spell.slot)
+    if command == nil then return nil, "No command found." end
+    local binding = self.commandBindingMap[command]
+    if binding == nil then return nil, "No Binding found." end
+    return { slot = spell.slot, key = binding.key, shift = binding.shift, alt = binding.alt, ctrl = binding.ctrl }
+end
 
-    local slotNumber = self.spellIdToSlot[spellId]
+function Clockwork.getActionSlotCommand(actionSlot)
+    local button, bar = Clockwork.modulo(actionSlot)
+    local keyString = ""
 
-    if slotNumber then
-        return self.actionSlotBindings[slotNumber]
+    -- actionSlot >= 13 and actionSlot < 25 or     -- Secondary page
+    local shapeIndex = GetShapeshiftForm()
+    if actionSlot < 13 and (shapeIndex == 0 or (Clockwork.player.class.classFilename == "DRUID" and shapeIndex == 3)) then -- Stance 3 (Voyage)
+        keyString = "ACTIONBUTTON" .. button
+    elseif actionSlot >= 25 and actionSlot < 37 then
+        keyString = "MULTIACTIONBAR" .. "3" .. "BUTTON" .. button
+    elseif actionSlot >= 37 and actionSlot < 49 then
+        keyString = "MULTIACTIONBAR" .. "4" .. "BUTTON" .. button
+    elseif actionSlot >= 49 and actionSlot < 61 then
+        keyString = "MULTIACTIONBAR" .. "2" .. "BUTTON" .. button
+    elseif actionSlot >= 61 and actionSlot < 73 then
+        keyString = "MULTIACTIONBAR" .. "1" .. "BUTTON" .. button
+    elseif actionSlot >= 73 and actionSlot < 85 and Clockwork.player.class.classFilename == "DRUID" and shapeIndex == 2 then   -- Stance 2 (Félin)
+        keyString = "ACTIONBUTTON" .. button
+    elseif actionSlot >= 97 and actionSlot < 109 and Clockwork.player.class.classFilename == "DRUID" and shapeIndex == 1 then  -- Stance 1 (Ours)
+        keyString = "ACTIONBUTTON" .. button
+    elseif actionSlot >= 109 and actionSlot < 121 and Clockwork.player.class.classFilename == "DRUID" and shapeIndex == 4 then -- Stance 4 (Sélénien)
+        keyString = "ACTIONBUTTON" .. button
+    elseif actionSlot >= 145 and actionSlot < 157 then
+        keyString = "MULTIACTIONBAR" .. "5" .. "BUTTON" .. button
+    elseif actionSlot >= 157 and actionSlot < 169 then
+        keyString = "MULTIACTIONBAR" .. "6" .. "BUTTON" .. button
+    elseif actionSlot >= 169 and actionSlot < 181 then
+        keyString = "MULTIACTIONBAR" .. "7" .. "BUTTON" .. button
     else
-        return nil
+        return nil, "Action slot not found."
     end
+
+    return keyString
+end
+
+---@return {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
+function Clockwork:updateCommandBindingMap()
+    self.commandBindingMap = self:getCommandBindingMap()
+    return self.commandBindingMap;
+end
+
+---@return {name:string, slot:number}[]
+function Clockwork:updateActionSlotSpells()
+    self.spellIdactionSlotMap = self:getSpellIdActionSlotMap()
+    return self.spellIdactionSlotMap;
+end
+
+function Clockwork:updateBindings()
+    self:updateCommandBindingMap()
+    self:updateActionSlotSpells()
 end
 
 ---@param key string
@@ -200,15 +263,15 @@ end
 ---@param ctrl boolean
 ---@return number|nil, string|nil
 function Clockwork:findActionSlotByKeyAndModifiers(key, shift, alt, ctrl)
-    if (Clockwork.actionSlotBindings == nil) then
-        self:updateAllActionSlotBindings()
+    if (Clockwork.commandsBindings == nil) then
+        self:updateCommandBindingMap()
     end
 
-    if not self.actionSlotBindings then
+    if not self.commandsBindings then
         return nil, "Could not retrieve bindings.";
     end
 
-    for slotNumber, binding in pairs(self.actionSlotBindings) do
+    for slotNumber, binding in pairs(self.commandsBindings) do
         if binding then
             if binding.key == key and binding.shift == shift and binding.alt == alt and binding.ctrl == ctrl then
                 return slotNumber; -- Found the slot!

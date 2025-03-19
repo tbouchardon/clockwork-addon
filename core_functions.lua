@@ -11,6 +11,9 @@ Clockwork.AGGRO_MOD = true
 Clockwork.DRIVE_LOOP = false
 
 Clockwork.player = {}
+---@alias PlayerClass { className:string, classFilename:string, classId:number }
+---@type PlayerClass
+Clockwork.player.class = nil
 Clockwork.player.position = {}
 Clockwork.player.position.posX = 0
 Clockwork.player.position.posY = 0
@@ -78,3 +81,10 @@ function Clockwork.ternary(condition, if_true, if_false)
         return if_false
     end
 end
+
+function Clockwork.modulo(number)
+    local modulo = number % 12  -- Get the modulo 12
+    local quotient = math.floor(number / 12) -- Get the integer quotient (Lua 5.1 compatible)
+  
+    return modulo, quotient
+  end

@@ -369,13 +369,13 @@ end
 ---@param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
 ---@return nil
 function Clockwork:castSpellIfPossible(params)
-    local action = self:getBindingForSpellId(params.spell.id)
+    local action = self:getActionSlotAndBindingForSpell(params.spell.id)
 
     if not action then
         return
     end
 
-    Clockwork.log.debug(action.key .. " => " .. tostring(action.spellId) .. " => " .. tostring(params.condition))
+    Clockwork.log.debug(action.key .. " => " .. tostring(params.spell.id) .. " => " .. tostring(params.condition))
 
     if (params.condition == false or not Clockwork.actionCanBeCast(action.slot)) then return end
 
@@ -391,7 +391,7 @@ function Clockwork:castSpellIfPossible(params)
     end
 
     self:hitKeyWithModifier({
-        actionParameters = action,
+        key = action.key,
         priority = params.priority or 1,
         duration = params.duration
     }, modifier)

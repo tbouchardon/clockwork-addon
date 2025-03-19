@@ -221,7 +221,7 @@ function Clockwork:onEvent(...)
     if event == nil then
         return
     else
-        --Clockwork.log.debug(event)
+        Clockwork.log.debug(event)
     end
 
     if (self.player.GUID == nil) then
@@ -230,13 +230,13 @@ function Clockwork:onEvent(...)
 
     if (self.player.class == nil) then
         local className, classFilename, classID = UnitClass("player")
-        self.player.class = { className = className, filename = classFilename, classID = classID }
+        self.player.class = { className = className, classFilename = classFilename, classId = classID }
     end
 
-    if (self.player.specialization == nil and self.player.class.classID ~= nil) then
+    if (self.player.specialization == nil and self.player.class.classId ~= nil) then
         local currentSpec = GetSpecialization()
         if currentSpec ~= nil then
-            local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classID,
+            local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId,
                 currentSpec)
             self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
         end
@@ -261,8 +261,6 @@ function Clockwork:onEvent(...)
     end
 
     if event == "PLAYER_ENTERING_WORLD" then
-        Clockwork:updateAllActionSlotBindings()
-        Clockwork:updateSpellIdToSlotLookup()
     end
 
     if event == "ADDON_LOADED" then
@@ -277,33 +275,26 @@ function Clockwork:onEvent(...)
         end
     end
 
+    if event == "ACTIONBAR_SLOT_CHANGED" then
+    end
+
     if event == "UPDATE_SHAPESHIFT_FORM" then
         local index = GetShapeshiftForm()
         Clockwork.log.debug("Shapeshift form changed to " .. tostring(index))
-        if index == 1 then
-            Clockwork.actionSlotOffset = 8 * 12
-        elseif index == 2 then
-            Clockwork.actionSlotOffset = 6 * 12
-        elseif index == 3 then
-            Clockwork.actionSlotOffset = 0
-        else
-            Clockwork.actionSlotOffset = 0
-        end
-        Clockwork:updateAllActionSlotBindings()
-        Clockwork:updateSpellIdToSlotLookup()
     end
 
-    if event == "ACTIONBAR_SLOT_CHANGED" then
-        Clockwork:updateAllActionSlotBindings()
-        Clockwork:updateSpellIdToSlotLookup()
+    if event == "PLAYER_ENTERING_WORLD" or
+        event == "ACTIONBAR_SLOT_CHANGED" or
+        event == "UPDATE_SHAPESHIFT_FORM" then
+        Clockwork:updateBindings()
     end
 
-    if event == "PLAYER_SPECIALIZATION_CHANGED" and self.player.class.classID ~= nil then
+    if event == "PLAYER_SPECIALIZATION_CHANGED" and self.player.class.classId ~= nil then
         Clockwork.log.debug("Specialization changed")
-        local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classID,
+        local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId,
             GetSpecialization())
         self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
-        Clockwork:updateAllActionSlotBindings()
+        Clockwork:updateCommandBindingMap()
     end
 
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
@@ -416,9 +407,7 @@ Clockwork.frame:SetScript("OnEvent", function (self, event, ...) Clockwork:onEve
 Clockwork.frame:SetScript("OnUpdate", function () Clockwork:onUpdate() end);
 
 Clockwork.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-
 Clockwork.frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
-
 Clockwork.frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED");
 
 Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_START")
@@ -447,6 +436,9 @@ Clockwork.frame:RegisterEvent("ADDON_LOADED")
 Clockwork.frame:RegisterEvent("PLAYER_DEAD")
 
 Clockwork.frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+
+-- For debug purpose :
+-- Clockwork.frame:RegisterAllEvents()
 
 Clockwork.frame.texture = Clockwork.frame:CreateTexture("MEDIUM")
 Clockwork.frame.texture:SetAllPoints()

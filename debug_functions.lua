@@ -9,7 +9,7 @@ function Clockwork.reportAllSpells()
         -- /dump C_SpellBook.GetSpellBookItemInfo(6, Enum.SpellBookSpellBank.Player)
         local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player)
 
-        if not spellBookItemInfo.name then
+        if not spellBookItemInfo or not spellBookItemInfo.name then
             do
                 break
             end
@@ -30,7 +30,7 @@ end
 function Clockwork.reportActionButtons()
     Clockwork.log.info("function Clockwork.reportActionButtons()")
 
-    for actionSlot = 1, 120 do
+    for actionSlot = 1, 180 do
         local actionType, id, subType = GetActionInfo(actionSlot);
 
         if id then
@@ -48,25 +48,55 @@ end
 
 function Clockwork.reportBindings()
     Clockwork.log.info("function Clockwork.reportBindings()")
-    local bindings = Clockwork.getAllActionSlotBindings(Clockwork)
 
-    for _, binding in ipairs(bindings) do
-        local combinaison = {}
-        if binding.shift then
-            table.insert(combinaison, "Shift")
-        end
-        if binding.alt then
-            table.insert(combinaison, "Alt")
-        end
-        if binding.ctrl then
-            table.insert(combinaison, "Ctrl")
-        end
-        table.insert(combinaison, binding.key)
-
-        local modifiersString = table.concat(combinaison, "+")
-
-        Clockwork.log.info("Key:" .. modifiersString .. ", Spell ID:" .. binding.spellId .. ", Slot:" .. binding.slot)
+    for command, binding in pairs(Clockwork.getCommandBindingMap()) do
+        Clockwork.log.info("Command: " .. command .. " Key:" .. tostring(binding.toString))
     end
+end
+
+function Clockwork.reportCurrentBindingConfig()
+
+    local sortedSpellIdactionSlotMap = {}
+    for key, value in pairs(Clockwork.spellIdactionSlotMap) do
+      table.insert(sortedSpellIdactionSlotMap, { spellId = key, action = value })
+    end
+    
+    table.sort(sortedSpellIdactionSlotMap, function(a, b)
+      return a.action.slot < b.action.slot -- Sort by slot
+    end)
+
+    for _, item in pairs(sortedSpellIdactionSlotMap) do
+        local command = Clockwork.getActionSlotCommand(item.action.slot)
+        if command then
+            local binding = Clockwork.commandBindingMap[command]
+            if binding then
+                Clockwork.log.info(
+                 "Command: " .. command ..
+                    " Binding:" .. binding.toString ..
+                    " Spell:" .. item.action.name .. " (" .. item.spellId .. ")" ..
+                    " Slot:" .. item.action.slot)
+            end
+        end
+    end
+end
+
+function Clockwork.reportBindingsByKeys()
+    Clockwork.log.info("Q")
+    Clockwork.log.dump(GetBindingByKey("Q"))
+    Clockwork.log.info("T")
+    Clockwork.log.dump(GetBindingByKey("T"))
+    Clockwork.log.info("D")
+    Clockwork.log.dump(GetBindingByKey("D"))
+    Clockwork.log.info("F")
+    Clockwork.log.dump(GetBindingByKey("F"))
+    Clockwork.log.info("G")
+    Clockwork.log.dump(GetBindingByKey("G"))
+    Clockwork.log.info("R")
+    Clockwork.log.dump(GetBindingByKey("R"))
+    Clockwork.log.info("W")
+    Clockwork.log.dump(GetBindingByKey("W"))
+    Clockwork.log.info("Y")
+    Clockwork.log.dump(GetBindingByKey("Y"))
 end
 
 function Clockwork.getCoord()

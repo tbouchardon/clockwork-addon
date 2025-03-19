@@ -9,6 +9,33 @@
 local regen = 53
 
 local function initial() -- no Sp
+    if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.HEURTOIR_1464,
+        })
+
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.CHARGE_100,
+        })
+
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.HEURT_DE_BOUCLIER_23922,
+        })
+
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.VOLEE_DE_COUPS_6552,
+            condition = Clockwork.isUnitCasting("target")
+        })
+
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.IVRESSE_DE_LA_VICTOIRE_34428,
+            priority = 100
+        })
+
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.LANCER_HEROIQUE_57755,
+        })
+    end
 end
 
 ---------------------------------------------------------------------------------------------------
