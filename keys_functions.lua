@@ -197,7 +197,7 @@ end
 ---@return {slot:number, key:string, shift:string, alt:string, ctrl:string}|nil, nil|string
 function Clockwork:getActionSlotAndBindingForSpell(spellID)
     local spell = self.spellIdactionSlotMap[spellID]
-    if spell.slot == nil then return nil, "Spell not found" end
+    if spell == nil or spell.slot == nil then return nil, "Spell " .. spellID .. " not found" end
     local command = Clockwork.getActionSlotCommand(spell.slot)
     if command == nil then return nil, "No command found." end
     local binding = self.commandBindingMap[command]
@@ -211,7 +211,7 @@ function Clockwork.getActionSlotCommand(actionSlot)
 
     -- actionSlot >= 13 and actionSlot < 25 or     -- Secondary page
     local shapeIndex = GetShapeshiftForm()
-    if actionSlot < 13 and (shapeIndex == 0 or (Clockwork.player.class.classFilename == "DRUID" and shapeIndex == 3)) then -- Stance 3 (Voyage)
+    if actionSlot < 13 or (Clockwork.player.class.classFilename == "DRUID" and shapeIndex == 3) then -- Stance 3 (Voyage)
         keyString = "ACTIONBUTTON" .. button
     elseif actionSlot >= 25 and actionSlot < 37 then
         keyString = "MULTIACTIONBAR" .. "3" .. "BUTTON" .. button
