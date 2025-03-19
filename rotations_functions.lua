@@ -6,7 +6,7 @@ Clockwork.FOLLOW = 4  --28 yards
 Clockwork.rotations = {}
 
 function Clockwork:rotation()
-    --Clockwork.log.debug("function Clockwork.rotation()")
+    -- Clockwork.log.debug("function Clockwork.rotation()")
 
     if UnitAffectingCombat("player") then
         self.inCombat.texture:SetColorTexture(1, 1, 1, 1)
@@ -104,9 +104,20 @@ function Clockwork.debuffCanBeCast(spell, slot)
     end
 end
 
+function Clockwork.targetInMeeleRange()
+    return Clockwork.targetInRange(2)
+end
+
 function Clockwork.targetInRange(distance)
     -- Clockwork.log.debug("function Clockwork.targetInRange(" .. tostring(distance))
 
+    -- distance - A value from 1 to 5:
+    -- 1 = Compare Achievements, 28 yards
+    -- 2 = Trade, 8 yards
+    -- 3 = Duel, 7 yards
+    -- 4 = Follow, 28 yards
+    -- 5 = Pet-battle Duel, 7 yards
+    
     if CheckInteractDistance("target", distance) then
         return true
     else
@@ -369,7 +380,9 @@ end
 ---@param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
 ---@return nil
 function Clockwork:castSpellIfPossible(params)
-    local action = self:getActionSlotAndBindingForSpell(params.spell.id)
+    local action, error = self:getActionSlotAndBindingForSpell(params.spell.id)
+
+    -- Clockwork.log.error(error)
 
     if not action then
         return
@@ -384,10 +397,10 @@ function Clockwork:castSpellIfPossible(params)
         modifier = Clockwork.ALT
     end
     if action.ctrl then
-        modifier = Clockwork.ALT
+        modifier = Clockwork.CTRL
     end
     if action.shift then
-        modifier = Clockwork.ALT
+        modifier = Clockwork.SHIFT
     end
 
     self:hitKeyWithModifier({
