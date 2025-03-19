@@ -161,7 +161,7 @@ function Clockwork:onUpdate()
             --return
         end
 
-        --        Clockwork.log.debug(Clockwork.nextUpdate)
+        -- Clockwork.log.debug(Clockwork.nextUpdate)
 
         if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
             if (C_Map.GetBestMapForUnit("player") ~= nil) then
@@ -260,8 +260,8 @@ function Clockwork:onEvent(...)
         self.casting.texture:SetColorTexture(0, 0, 0, 1)
     end
 
-    if event == "PLAYER_ENTERING_WORLD" then
-    end
+    --if event == "PLAYER_ENTERING_WORLD" then
+    --end
 
     if event == "ADDON_LOADED" then
         local addonName = select(2, ...)
@@ -390,7 +390,7 @@ function Clockwork:updateNumberOfTargets()
         self.numberOfTargets.texture:SetColorTexture(0, 0, 0, 1)
     end
 
-    multiTarget = self.targets.count >= self.targets.multiTargetModTrigger
+    local multiTarget = self.targets.count >= self.targets.multiTargetModTrigger
 
     if (self.targets.multiTargetMod ~= multiTarget) then
         Clockwork.log.debug(Clockwork.ternary(multiTarget, "Multi targets mod", "Single target mod"))

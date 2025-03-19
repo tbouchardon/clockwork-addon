@@ -9,13 +9,32 @@
 local regen = 53
 
 local function initial() -- no Sp
+
+    Clockwork:castSpellIfPossible({
+        spell = Clockwork.Enum.Spell.Warrior.CRI_DE_GUERRE_6673,
+        condition = not Clockwork.playerHasBuff(Clockwork.Enum.Spell.Warrior.CRI_DE_GUERRE_6673.name),
+        priority = 200
+    })
+
     if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
         Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warrior.HEURTOIR_1464,
         })
 
         Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.LANCER_HEROIQUE_57755,
+            condition = not Clockwork.targetInMeeleRange(),
+            priority = 150
+        })
+
+        Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.SANGUINAIRE_23881,
+            priority = 120
+        })
+
+        Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warrior.CHARGE_100,
+            priority = 10
         })
 
         Clockwork:castSpellIfPossible({
@@ -33,6 +52,11 @@ local function initial() -- no Sp
         })
 
         Clockwork:castSpellIfPossible({
+            spell = Clockwork.Enum.Spell.Warrior.EXECUTION_5308,
+            priority = 150
+        })
+
+        Clockwork:castSpellIfPossible({
             spell = Clockwork.Enum.Spell.Warrior.LANCER_HEROIQUE_57755,
         })
     end
@@ -40,14 +64,17 @@ end
 
 ---------------------------------------------------------------------------------------------------
 local function arms()
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------
 local function fury()
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------
 local function protection()
+    initial()
 end
 
 Clockwork.rotations[Clockwork.Enum.Specialization.Warrior.Arms] = arms

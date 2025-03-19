@@ -10,50 +10,63 @@ local function initial() -- no Sp
     if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
         local hasDebuff, hasAnyDebuff, remainingTime
 
-        Clockwork:castSpellIfPossible({
-            spell = Clockwork.Enum.Spell.Druid.MORSURE_FEROCE_22568,
-            condition = UnitPower("player", Enum.PowerType.ComboPoints) > 2,
-            priority = 100
-        })
+        local stance = GetShapeshiftForm()
 
-        Clockwork:castSpellIfPossible({
-            spell = Clockwork.Enum.Spell.Druid.LAMBEAU_5221,
-            priority = 80
-        })
+        if stance == Clockwork.Enum.Stance.NONE or stance == Clockwork.Enum.Stance.MOONKIN then
+            hasDebuff, remainingTime = Clockwork.targetHasDebuff(Clockwork.Enum.Spell.Druid.ECLAT_LUNAIRE_8921.name)
+            Clockwork:castSpellIfPossible({
+                spell = Clockwork.Enum.Spell.Druid.ECLAT_LUNAIRE_8921,
+                condition = not hasDebuff or remainingTime < 2,
+                priority = 100
+            })
 
-        Clockwork:castSpellIfPossible({
-            spell = Clockwork.Enum.Spell.Druid.MUTILATION_33917,
-            priority = 80
-        })
+            Clockwork:castSpellIfPossible({
+                spell = Clockwork.Enum.Spell.Druid.COLERE_190984,
+                priority = 80
+            })
+        end
 
-        hasDebuff, remainingTime = Clockwork.targetHasDebuff(Clockwork.Enum.Spell.Druid.ECLAT_LUNAIRE_8921.name)
-        Clockwork:castSpellIfPossible({
-            spell = Clockwork.Enum.Spell.Druid.ECLAT_LUNAIRE_8921,
-            condition = not hasDebuff or remainingTime < 2,
-            priority = 100
-        })
+        if stance == Clockwork.Enum.Stance.BEAR then
+            Clockwork:castSpellIfPossible({
+                spell = Clockwork.Enum.Spell.Druid.MUTILATION_33917,
+                priority = 80
+            })
+        end
 
-        Clockwork:castSpellIfPossible({
-            spell = Clockwork.Enum.Spell.Druid.COLERE_5176,
-            priority = 80
-        })
+        if stance == Clockwork.Enum.Stance.CAT then
+            Clockwork:castSpellIfPossible({
+                spell = Clockwork.Enum.Spell.Druid.LAMBEAU_5221,
+                priority = 80
+            })
+
+            Clockwork:castSpellIfPossible({
+                spell = Clockwork.Enum.Spell.Druid.MORSURE_FEROCE_22568,
+                condition = UnitPower("player", Enum.PowerType.ComboPoints) > 2,
+                priority = 100
+            })
+        end
+        if stance == Clockwork.Enum.Stance.MOONKIN then end
     end
 end
 
 ---------------------------------------------------------------------------------------------------
-local function balance()        -- Sp Feu
+local function balance() -- Sp Feu
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function feral()        -- Sp Givre
+local function feral() -- Sp Givre
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function restoration()        -- Sp Givre
+local function restoration() -- Sp Givre
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
 local function guardian()
+    initial()
 end
 
 Clockwork.rotations[Clockwork.Enum.Specialization.Druid.Balance] = balance
