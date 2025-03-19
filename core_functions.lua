@@ -86,5 +86,10 @@ function Clockwork.modulo(number)
     local modulo = number % 12  -- Get the modulo 12
     local quotient = math.floor(number / 12) -- Get the integer quotient (Lua 5.1 compatible)
   
+    if modulo == 0 then
+      modulo = 12
+      quotient = quotient - 1
+    end
+
     return modulo, quotient
   end
