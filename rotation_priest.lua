@@ -11,14 +11,17 @@ end
 
 ---------------------------------------------------------------------------------------------------
 local function discipline()
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------
 local function holy()
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------
 local function shadow()
+    initial()
 end
 
 Clockwork.rotations[Clockwork.Enum.Specialization.Priest.Discipline] = discipline

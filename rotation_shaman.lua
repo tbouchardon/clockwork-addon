@@ -11,14 +11,17 @@ end
 
 ---------------------------------------------------------------------------------------------------
 local function elemental()
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------
 local function enhancement()
+    initial()
 end
 
 ---------------------------------------------------------------------------------------------------
 local function restoration()
+    initial()
 end
 
 Clockwork.rotations[Clockwork.Enum.Specialization.Shaman.Elemental] = elemental
