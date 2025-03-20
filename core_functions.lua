@@ -29,9 +29,13 @@ Clockwork.targets.count = 0
 Clockwork.targets.multiTargetMod = false
 Clockwork.targets.multiTargetModTrigger = 3
 
+---@class Dot: Frame , {}
+---comment
+---@param name any
+---@param xPos any
+---@param yPos any
+---@return Dot
 function Clockwork:createDot(name, xPos, yPos)
-    -- Clockwork.log.debug("function self:createDot(" .. tostring(name) .. ", " .. tostring(xPos) .. ", " .. tostring(yPos) .. ", " .. tostring(slot) .. ", " .. tostring(shiftslot))
-
     local dotFrame = CreateFrame("FRAME", "clockWork_" .. name, Clockwork.frame)
     dotFrame:SetPoint("TOPLEFT", xPos, yPos)
     dotFrame:SetWidth(1)
@@ -41,15 +45,13 @@ function Clockwork:createDot(name, xPos, yPos)
     dotFrame.texture = dotFrame:CreateTexture(nil, "OVERLAY")
     dotFrame.texture:SetAllPoints()
     dotFrame.texture:SetColorTexture(0, 0, 0, 1)
-    dotFrame.slot = self:findActionSlotByKeyAndModifiers(name, false, false, false);
-    dotFrame.shiftslot = self:findActionSlotByKeyAndModifiers(name, true, false, false);
-    dotFrame.altslot = self:findActionSlotByKeyAndModifiers(name, false, true, false);
-
-    dotFrame.priority = -1
 
     return dotFrame
 end
 
+---comment
+---@param T table
+---@return integer
 function Clockwork.tableLength(T)
     if T == nil then
         return 0
@@ -61,6 +63,9 @@ function Clockwork.tableLength(T)
     return count
 end
 
+---comment
+---@param s any
+---@return boolean
 function Clockwork.emptyOrNil(s)
     if s == nil then
         return true
@@ -74,6 +79,11 @@ function Clockwork.emptyOrNil(s)
     return false
 end
 
+---comment
+---@param condition boolean
+---@param if_true any
+---@param if_false any
+---@return any
 function Clockwork.ternary(condition, if_true, if_false)
     if condition then
         return if_true
@@ -82,14 +92,18 @@ function Clockwork.ternary(condition, if_true, if_false)
     end
 end
 
+---comment
+---@param number number
+---@return integer
+---@return integer
 function Clockwork.modulo(number)
-    local modulo = number % 12  -- Get the modulo 12
+    local modulo = number % 12               -- Get the modulo 12
     local quotient = math.floor(number / 12) -- Get the integer quotient (Lua 5.1 compatible)
-  
+
     if modulo == 0 then
-      modulo = 12
-      quotient = quotient - 1
+        modulo = 12
+        quotient = quotient - 1
     end
 
     return modulo, quotient
-  end
+end

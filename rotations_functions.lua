@@ -5,6 +5,8 @@ Clockwork.FOLLOW = 4  --28 yards
 
 Clockwork.rotations = {}
 
+--- Updates the player's status and executes rotations.
+--- @return nil
 function Clockwork:rotation()
     -- Clockwork.log.debug("function Clockwork.rotation()")
 
@@ -75,14 +77,22 @@ function Clockwork:rotation()
     end
 end
 
+--- Checks if both player and target are in combat.
+--- @return boolean
 function Clockwork.bothPlayerAndTargetInCombat()
     return UnitAffectingCombat("player") and UnitAffectingCombat("target")
 end
 
+--- Checks if the player is not in combat.
+--- @return boolean
 function Clockwork.playerNotInCombat()
     return not UnitAffectingCombat("player")
 end
 
+--- Checks if a debuff can be cast on the target.
+--- @param spell string
+--- @param slot number?
+--- @return boolean
 function Clockwork.debuffCanBeCast(spell, slot)
     -- Clockwork.log.debug("function Clockwork.debuffCanBeCast(" .. tostring(spell) .. ", " .. tostring(slot))
 
@@ -104,10 +114,15 @@ function Clockwork.debuffCanBeCast(spell, slot)
     end
 end
 
+--- Checks if the target is in melee range.
+--- @return boolean
 function Clockwork.targetInMeeleRange()
     return Clockwork.targetInRange(2)
 end
 
+--- Checks if the target is in the specified range.
+--- @param distance number
+--- @return boolean
 function Clockwork.targetInRange(distance)
     -- Clockwork.log.debug("function Clockwork.targetInRange(" .. tostring(distance))
 
@@ -125,9 +140,9 @@ function Clockwork.targetInRange(distance)
     end
 end
 
----comment
----@param actionSlot number
----@return boolean
+--- Checks if an action can be cast.
+--- @param actionSlot number
+--- @return boolean
 function Clockwork.actionCanBeCast(actionSlot)
     Clockwork.log.debug("function Clockwork.actionCanBeCast(" .. tostring(actionSlot))
 
@@ -187,6 +202,8 @@ function Clockwork.actionCanBeCast(actionSlot)
     return canBeCast
 end
 
+--- Checks if the target is an enemy player.
+--- @return boolean
 function Clockwork.enemyPlayer()
     -- Clockwork.log.debug("function Clockwork.enemyPlayer(")
 
@@ -197,6 +214,9 @@ function Clockwork.enemyPlayer()
     end
 end
 
+--- Calculates the health percentage of a unit.
+--- @param unit string
+--- @return number
 function Clockwork.healthPercentage(unit)
     -- Clockwork.log.debug("function Clockwork.healthPercentage(" .. tostring(unit))
 
@@ -211,10 +231,15 @@ function Clockwork.healthPercentage(unit)
     return percentage
 end
 
+--- Gets the player's health percentage.
+--- @return number
 function Clockwork.playerHealthPct()
     return Clockwork.healthPercentage("player")
 end
 
+--- Calculates the mana percentage of a unit.
+--- @param unit string
+--- @return number
 function Clockwork.manaPercentage(unit)
     -- Clockwork.log.debug("function Clockwork.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
 
@@ -233,10 +258,14 @@ function Clockwork.manaPercentage(unit)
     return percentage
 end
 
+--- Gets the player's mana percentage.
+--- @return number
 function Clockwork.playerManaPct()
     return Clockwork.manaPercentage("player")
 end
 
+--- Checks if the target exists, can be attacked, and the player is alive.
+--- @return boolean
 function Clockwork.unitExistCanAndShouldDie()
     return UnitExists("target") and
         not UnitIsDeadOrGhost("target") and
@@ -245,6 +274,8 @@ function Clockwork.unitExistCanAndShouldDie()
         (Clockwork.targetIsNeutral() or Clockwork.targetIsUnfriendly()) -- > La cible est un enemi (rouge uniquement)
 end
 
+--- Checks if the target is unfriendly.
+--- @return boolean
 function Clockwork.targetIsUnfriendly()
     if not UnitExists("target") then
         return false
@@ -253,6 +284,8 @@ function Clockwork.targetIsUnfriendly()
     return UnitReaction("player", "target") < 4
 end
 
+--- Checks if the target is neutral.
+--- @return boolean
 function Clockwork.targetIsNeutral()
     if not UnitExists("target") then
         return false
@@ -261,6 +294,8 @@ function Clockwork.targetIsNeutral()
     return UnitReaction("player", "target") == 4
 end
 
+--- Checks if the target is friendly.
+--- @return boolean
 function Clockwork.targetIsFriendly()
     if not UnitExists("target") then
         return false
@@ -269,6 +304,8 @@ function Clockwork.targetIsFriendly()
     return UnitReaction("player", "target") > 4
 end
 
+--- Resets combat-related variables.
+--- @return nil
 function Clockwork:resetCombat()
     self.inCombat.texture:SetColorTexture(0, 0, 0, 1)
     self.wasInCombat = false
@@ -280,6 +317,8 @@ end
 Clockwork.lowestMemberHealth = 100
 Clockwork.lowestMemberHealthIndex = nil
 
+--- Updates party health information.
+--- @return nil
 function Clockwork:updatePartyHealth()
     self.lowestMemberHealth = 100
     self.lowestMemberHealthIndex = nil
@@ -293,6 +332,8 @@ function Clockwork:updatePartyHealth()
     end
 end
 
+--- Updates raid health information.
+--- @return nil
 function Clockwork:updateRaidHealth()
     self.lowestMemberHealth = 100
     self.lowestMemberHealthIndex = nil
@@ -306,6 +347,10 @@ function Clockwork:updateRaidHealth()
     end
 end
 
+--- Checks the health of a specific unit.
+--- @param unit string
+--- @param index number
+--- @return nil
 function Clockwork:checkUnitHealth(unit, index)
     if UnitExists(unit) then
         if Clockwork.healthPercentage(unit) < Clockwork.lowestMemberHealth then
@@ -315,7 +360,9 @@ function Clockwork:checkUnitHealth(unit, index)
     end
 end
 
----@return boolean
+--- Targets a raid or party member.
+--- @param index number
+--- @return boolean
 function Clockwork:targetMember(index)
     local root = ""
     if UnitExists("raid1") then
@@ -334,7 +381,8 @@ function Clockwork:targetMember(index)
     return inRange
 end
 
----@return boolean
+--- Checks if the player has a main-hand enchant.
+--- @return boolean
 function Clockwork.hasMainHandEnchant()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
         GetWeaponEnchantInfo()
@@ -352,7 +400,8 @@ function Clockwork.hasMainHandEnchant()
     return hasMainHandEnchant
 end
 
----@return boolean
+--- Checks if the player has an off-hand enchant.
+--- @return boolean
 function Clockwork.hasOffHandEnchant()
     local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
         GetWeaponEnchantInfo()
@@ -360,8 +409,9 @@ function Clockwork.hasOffHandEnchant()
     return hasOffHandEnchant
 end
 
----@param health number
----@return boolean
+--- Targets a raid or party member if their health is below a threshold.
+--- @param health number
+--- @return boolean
 function Clockwork:targetMemberIfHealthLessThan(health)
     if self.lowestMemberHealthIndex and
         not self.lowestMemberHealthIndex == -1
@@ -372,13 +422,15 @@ function Clockwork:targetMemberIfHealthLessThan(health)
     return false
 end
 
----@return boolean
+--- Checks if the player is out of combat.
+--- @return boolean
 function Clockwork.outOfCombat()
     return (not UnitIsDeadOrGhost("player")) and (not UnitAffectingCombat("player"))
 end
 
----@param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
----@return nil
+--- Casts a spell if possible based on conditions.
+--- @param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
+--- @return nil
 function Clockwork:castSpellIfPossible(params)
     local action, error = self:getActionSlotAndBindingForSpell(params.spell.id)
 

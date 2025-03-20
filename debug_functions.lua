@@ -1,3 +1,5 @@
+--- Reports all spells in the player's spellbook.
+--- @return nil
 function Clockwork.reportAllSpells()
     -- Clockwork.log.debug("function Clockwork.listAllSpells(")
 
@@ -27,6 +29,8 @@ function Clockwork.reportAllSpells()
     end
 end
 
+--- Reports information about all action buttons.
+--- @return nil
 function Clockwork.reportActionButtons()
     Clockwork.log.info("function Clockwork.reportActionButtons()")
 
@@ -46,6 +50,8 @@ function Clockwork.reportActionButtons()
     end
 end
 
+--- Reports all key bindings.
+--- @return nil
 function Clockwork.reportBindings()
     Clockwork.log.info("function Clockwork.reportBindings()")
 
@@ -54,6 +60,8 @@ function Clockwork.reportBindings()
     end
 end
 
+--- Reports the current binding configuration.
+--- @return nil
 function Clockwork.reportCurrentBindingConfig()
 
     local sortedSpellIdactionSlotMap = {}
@@ -80,6 +88,8 @@ function Clockwork.reportCurrentBindingConfig()
     end
 end
 
+--- Reports bindings associated with specific keys.
+--- @return nil
 function Clockwork.reportBindingsByKeys()
     Clockwork.log.info("Q")
     Clockwork.log.dump(GetBindingByKey("Q"))
@@ -99,6 +109,8 @@ function Clockwork.reportBindingsByKeys()
     Clockwork.log.dump(GetBindingByKey("Y"))
 end
 
+--- Reports the player's current coordinates.
+--- @return nil
 function Clockwork.getCoord()
     -- Clockwork.log.debug("function getCoord(")
 

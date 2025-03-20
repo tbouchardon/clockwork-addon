@@ -8,6 +8,8 @@ Clockwork.CTRL = 519254
 ---@type ALT
 Clockwork.ALT = 919836
 
+--- Initializes key bindings.
+--- @return nil
 function Clockwork:initKeys()
     self.keys = {}
     -- Clockwork.log.debug("function Clockwork.initKeys(")
@@ -36,6 +38,8 @@ function Clockwork:initKeys()
     self.keys["="] = self:createDot("=", 13, -5)
 end
 
+--- Resets key textures.
+--- @return nil
 function Clockwork:resetKeys()
     -- Clockwork.log.debug("function Clockwork.resetKeys(")
 
@@ -59,9 +63,10 @@ function Clockwork:resetKeys()
     self.keys["1"].texture:SetColorTexture(0, 0, 0, 1)
 end
 
----@param params {key:string,priority:number, duration:number|nil}
----@param keyModificator SHIFT|ALT|CTRL|nil
----@return nil
+--- Simulates a key press with modifiers.
+--- @param params {key:string, priority:number, duration:number|nil}
+--- @param keyModificator SHIFT|ALT|CTRL|nil
+--- @return nil
 function Clockwork:hitKeyWithModifier(params, keyModificator)
     --Clockwork.log.debug("function Clockwork.shouldHitKey(" .. tostring(key) .. ", " .. tostring(should) .. ", " .. tostring(slot) .. ", " .. tostring(modificator))
 
@@ -205,6 +210,8 @@ function Clockwork:getActionSlotAndBindingForSpell(spellID)
     return { slot = spell.slot, key = binding.key, shift = binding.shift, alt = binding.alt, ctrl = binding.ctrl }
 end
 
+---@param actionSlot number
+---@return string|nil, string|nil
 function Clockwork.getActionSlotCommand(actionSlot)
     local button, bar = Clockwork.modulo(actionSlot)
     local keyString = ""

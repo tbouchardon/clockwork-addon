@@ -1,3 +1,5 @@
+--- Gets the current log level as a numerical value.
+--- @return number
 function Clockwork.getLogLevel()
     if (Clockwork.LOG_LEVEL == 'EMERGENCY') then return 1 end -- Emergency is unusable (Unfixable)
     if (Clockwork.LOG_LEVEL == 'ALERT') then return 2 end     -- Alert is unsecure
@@ -12,10 +14,16 @@ end
 
 Clockwork.log = {}
 
+--- Logs a plain text message.
+--- @param text string
+--- @return nil
 function Clockwork.log.text(text)
     DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: " .. tostring(text))
 end
 
+--- Logs an emergency level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.emergency(text)
     if Clockwork.getLogLevel() >= 1 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFFff0000EMERGENCY:\124r " ..
@@ -23,6 +31,9 @@ function Clockwork.log.emergency(text)
     end
 end
 
+--- Logs an alert level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.alert(text)
     if Clockwork.getLogLevel() >= 2 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFFff0000ALERT:\124r     " ..
@@ -30,6 +41,9 @@ function Clockwork.log.alert(text)
     end
 end
 
+--- Logs a critical level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.critical(text)
     if Clockwork.getLogLevel() >= 3 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFFff0000CRITICAL:\124r  " ..
@@ -37,6 +51,9 @@ function Clockwork.log.critical(text)
     end
 end
 
+--- Logs an error level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.error(text)
     if Clockwork.getLogLevel() >= 4 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFFff0000ERROR:\124r     " ..
@@ -44,6 +61,9 @@ function Clockwork.log.error(text)
     end
 end
 
+--- Logs a warning level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.warning(text)
     if Clockwork.getLogLevel() >= 5 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFFff9933WARNING:\124r   " ..
@@ -51,6 +71,9 @@ function Clockwork.log.warning(text)
     end
 end
 
+--- Logs a notice level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.notice(text)
     if Clockwork.getLogLevel() >= 6 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFF000000NOTICE:\124r    " ..
@@ -58,6 +81,9 @@ function Clockwork.log.notice(text)
     end
 end
 
+--- Logs an info level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.info(text)
     if Clockwork.getLogLevel() >= 7 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFF696969INFO:\124r      " ..
@@ -65,6 +91,9 @@ function Clockwork.log.info(text)
     end
 end
 
+--- Logs a debug level message.
+--- @param text string
+--- @return nil
 function Clockwork.log.debug(text)
     if Clockwork.getLogLevel() >= 8 then
         DEFAULT_CHAT_FRAME:AddMessage("\124cFF607d8bClockwork\124r: \124cFF696969DEBUG:\124r     " ..
@@ -72,6 +101,11 @@ function Clockwork.log.debug(text)
     end
 end
 
+--- Dumps the value to the log, with indentation for tables.
+--- @param value any
+--- @param indent string?
+--- @param depth number?
+--- @return nil
 function Clockwork.log.dump(value, indent, depth)
     indent = indent or ""
     depth = depth or 0
