@@ -1,6 +1,6 @@
 --- Gets the name of a buff by its ID.
 --- @param id number
---- @return string
+--- @return string|number
 function Clockwork.getBuffName(id)
     ClockworkTooltip:ClearLines()
     ClockworkTooltip:SetUnitBuff(id)
@@ -165,10 +165,6 @@ function Clockwork.unitHasAnyDebuff(unit)
     return anybuff
 end
 
---- Checks if a unit has a specific buff.
---- @param unit string
---- @param effect string
---- @return boolean, boolean, number
 function Clockwork.unitHasBuff(unit, effect)
     -- Clockwork.log.debug("function Clockwork.unitHasBuff(" .. tostring(unit) .. ", " .. tostring(effect))
     local index = 1
@@ -191,17 +187,11 @@ function Clockwork.unitHasBuff(unit, effect)
     return false, index > 1, 0
 end
 
---- Checks if the player has a specific buff.
---- @param effect string
---- @return boolean, boolean, number
 function Clockwork.playerHasBuff(effect)
     return Clockwork.unitHasBuff("player", effect)
 end
 
---- Finds the spell book slot index of a spell.
---- @param spellEnum {id: number}
---- @param bookType Enum.SpellBookSpellBank
---- @return number?
+---@return number|nil
 function Clockwork.findSpellBookSlotIndex(spellEnum, bookType)
     -- Clockwork.log.debug("function Clockwork.findSpell(" .. tostring(spellName) .. ", " .. tostring(bookType))
     --local i, s
