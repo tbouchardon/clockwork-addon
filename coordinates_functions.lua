@@ -57,291 +57,39 @@ function Clockwork:initCoords()
     self:initLongitude()
 end
 
+---comment
+---@param coordinates number
 function Clockwork:updateLatitude(coordinates)
-    -- Clockwork.log.debug("function Clockwork.updateLatitude(" .. tostring(coordinates))
+    local numBits = 18        -- Number of bits to represent
 
-    if coordinates - 524288 >= 0 then
-        coordinates = coordinates - 524288;
-        self.coord_lati_524288.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_524288.texture:SetColorTexture(0, 0, 0, 1)
-    end
+    for i = numBits, 0, -1 do -- Loop from numBits down to 1
+        local power = 2 ^ (i)
+        local texture = self["coord_lati_" .. power .. ".texture"]
 
-    if coordinates - 262144 >= 0 then
-        coordinates = coordinates - 262144;
-        self.coord_lati_262144.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_262144.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 131072 >= 0 then
-        coordinates = coordinates - 131072;
-        self.coord_lati_131072.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_131072.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 65536 >= 0 then
-        coordinates = coordinates - 65536;
-        self.coord_lati_65536.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_65536.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 32768 >= 0 then
-        coordinates = coordinates - 32768;
-        self.coord_lati_32768.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_32768.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 16384 >= 0 then
-        coordinates = coordinates - 16384;
-        self.coord_lati_16384.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_16384.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 8192 >= 0 then
-        coordinates = coordinates - 8192;
-        self.coord_lati_8192.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_8192.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 4096 >= 0 then
-        coordinates = coordinates - 4096;
-        self.coord_lati_4096.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_4096.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 2048 >= 0 then
-        coordinates = coordinates - 2048;
-        self.coord_lati_2048.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_2048.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 1024 >= 0 then
-        coordinates = coordinates - 1024;
-        self.coord_lati_1024.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_1024.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 512 >= 0 then
-        coordinates = coordinates - 512;
-        self.coord_lati_512.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_512.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 256 >= 0 then
-        coordinates = coordinates - 256;
-        self.coord_lati_256.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_256.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 128 >= 0 then
-        coordinates = coordinates - 128;
-        self.coord_lati_128.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_128.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 64 >= 0 then
-        coordinates = coordinates - 64;
-        self.coord_lati_64.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_64.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 32 >= 0 then
-        coordinates = coordinates - 32;
-        self.coord_lati_32.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_32.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 16 >= 0 then
-        coordinates = coordinates - 16;
-        self.coord_lati_16.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_16.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 8 >= 0 then
-        coordinates = coordinates - 8;
-        self.coord_lati_8.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_8.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 4 >= 0 then
-        coordinates = coordinates - 4;
-        self.coord_lati_4.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_4.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 2 >= 0 then
-        coordinates = coordinates - 2;
-        self.coord_lati_2.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_2.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 1 >= 0 then
-        coordinates = coordinates - 1;
-        self.coord_lati_1.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_lati_1.texture:SetColorTexture(0, 0, 0, 1)
+        if coordinates >= power then
+            coordinates = coordinates - power
+            texture:SetColorTexture(1, 1, 1, 1)
+        else
+            texture:SetColorTexture(0, 0, 0, 1)
+        end
     end
 end
 
+---comment
+---@param coordinates number
 function Clockwork:updateLongitude(coordinates)
-    -- Clockwork.log.debug("function Clockwork.updateLongitude(" .. tostring(coordinates))
+    local numBits = 18 -- Number of bits to represent
 
-    if coordinates - 524288 >= 0 then
-        coordinates = coordinates - 524288;
-        self.coord_long_524288.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_524288.texture:SetColorTexture(0, 0, 0, 1)
-    end
+    for i = numBits, 0, -1 do
+        local power = 2 ^ (i)
+        local texture = self["coord_long_" .. power .. ".texture"]
 
-    if coordinates - 262144 >= 0 then
-        coordinates = coordinates - 262144;
-        self.coord_long_262144.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_262144.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 131072 >= 0 then
-        coordinates = coordinates - 131072;
-        self.coord_long_131072.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_131072.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 65536 >= 0 then
-        coordinates = coordinates - 65536;
-        self.coord_long_65536.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_65536.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 32768 >= 0 then
-        coordinates = coordinates - 32768;
-        self.coord_long_32768.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_32768.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 16384 >= 0 then
-        coordinates = coordinates - 16384;
-        self.coord_long_16384.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_16384.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 8192 >= 0 then
-        coordinates = coordinates - 8192;
-        self.coord_long_8192.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_8192.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 4096 >= 0 then
-        coordinates = coordinates - 4096;
-        self.coord_long_4096.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_4096.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 2048 >= 0 then
-        coordinates = coordinates - 2048;
-        self.coord_long_2048.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_2048.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 1024 >= 0 then
-        coordinates = coordinates - 1024;
-        self.coord_long_1024.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_1024.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 512 >= 0 then
-        coordinates = coordinates - 512;
-        self.coord_long_512.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_512.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 256 >= 0 then
-        coordinates = coordinates - 256;
-        self.coord_long_256.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_256.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 128 >= 0 then
-        coordinates = coordinates - 128;
-        self.coord_long_128.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_128.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 64 >= 0 then
-        coordinates = coordinates - 64;
-        self.coord_long_64.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_64.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 32 >= 0 then
-        coordinates = coordinates - 32;
-        self.coord_long_32.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_32.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 16 >= 0 then
-        coordinates = coordinates - 16;
-        self.coord_long_16.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_16.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 8 >= 0 then
-        coordinates = coordinates - 8;
-        self.coord_long_8.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_8.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 4 >= 0 then
-        coordinates = coordinates - 4;
-        self.coord_long_4.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_4.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 2 >= 0 then
-        coordinates = coordinates - 2;
-        self.coord_long_2.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_2.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    if coordinates - 1 >= 0 then
-        coordinates = coordinates - 1;
-        self.coord_long_1.texture:SetColorTexture(1, 1, 1, 1)
-    else
-        self.coord_long_1.texture:SetColorTexture(0, 0, 0, 1)
+        if coordinates >= power then
+            coordinates = coordinates - power
+            texture:SetColorTexture(1, 1, 1, 1)
+        else
+            texture:SetColorTexture(0, 0, 0, 1)
+        end
     end
 end
 
@@ -387,6 +135,6 @@ function Clockwork:updatePositionFromCoordinates(coordinates)
     local posX = string.sub(coordinates, 1, 2) .. string.sub(coordinates, 4, 5) .. "00"
     local posY = string.sub(coordinates, 7, 8) .. string.sub(coordinates, 10, 11) .. "00"
 
-    self:updateLatitude(tonumber(posX))
-    self:updateLongitude(tonumber(posY))
+    self:updateLatitude(tonumber(posX) or 0)
+    self:updateLongitude(tonumber(posY) or 0)
 end
