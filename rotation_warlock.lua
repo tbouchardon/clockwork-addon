@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function initial()        -- no Sp
+local function initial()
 end
 
 ---------------------------------------------------------------------------------------------------

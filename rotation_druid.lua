@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function initial() -- no Sp
+local function initial()
     if (Clockwork.unitExistCanAndShouldDie() and not Clockwork.isCasting()) then
         local hasDebuff, hasAnyDebuff, remainingTime
 
@@ -50,17 +50,17 @@ local function initial() -- no Sp
 end
 
 ---------------------------------------------------------------------------------------------------
-local function balance() -- Sp Feu
+local function balance()
     initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function feral() -- Sp Givre
+local function feral()
     initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function restoration() -- Sp Givre
+local function restoration()
     initial()
 end
 

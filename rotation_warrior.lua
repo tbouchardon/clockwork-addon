@@ -8,7 +8,7 @@
 
 local regen = 53
 
-local function initial() -- no Sp
+local function initial()
 
     Clockwork:castSpellIfPossible({
         spell = Clockwork.Enum.Spell.Warrior.CRI_DE_GUERRE_6673,

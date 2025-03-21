@@ -6,16 +6,16 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function initial()        -- no Sp
+local function initial()
 end
 
 ---------------------------------------------------------------------------------------------------
-local function brewmaster()        -- Sp Feu
+local function brewmaster()
     initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function mistweaver()        -- Sp Givre
+local function mistweaver()
     initial()
 end
 

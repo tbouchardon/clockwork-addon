@@ -6,16 +6,16 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-local function initial()        -- no Sp
+local function initial()
 end
 
 ---------------------------------------------------------------------------------------------------
-local function blood()        -- Sp Feu
+local function blood()
     initial()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
-local function frost()        -- Sp Givre
+local function frost()
     initial()
 end
 
