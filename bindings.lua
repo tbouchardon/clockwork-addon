@@ -37,46 +37,12 @@ function Clockwork:setAllBindings()
     --    SetBinding("ALT-CTRL-)", "CLOCKWORK_PRIORITY_OOC_CAST_5")
     --    SetBinding("ALT-CTRL-=", "CLOCKWORK_PRIORITY_OOC_CAST_6")
 
-    SetBinding("ALT-SHIFT-A", "CLOCKWORK_TARGET_RAID_1")
-    SetBinding("ALT-SHIFT-B", "CLOCKWORK_TARGET_RAID_2")
-    SetBinding("ALT-SHIFT-C", "CLOCKWORK_TARGET_RAID_3")
-    SetBinding("ALT-SHIFT-D", "CLOCKWORK_TARGET_RAID_4")
-    SetBinding("ALT-SHIFT-E", "CLOCKWORK_TARGET_RAID_5")
-    SetBinding("ALT-SHIFT-F", "CLOCKWORK_TARGET_RAID_6")
-    SetBinding("ALT-SHIFT-G", "CLOCKWORK_TARGET_RAID_7")
-    SetBinding("ALT-SHIFT-H", "CLOCKWORK_TARGET_RAID_8")
-    SetBinding("ALT-SHIFT-I", "CLOCKWORK_TARGET_RAID_9")
-    SetBinding("ALT-SHIFT-J", "CLOCKWORK_TARGET_RAID_10")
-    SetBinding("ALT-SHIFT-K", "CLOCKWORK_TARGET_RAID_11")
-    SetBinding("ALT-SHIFT-L", "CLOCKWORK_TARGET_RAID_12")
-    SetBinding("ALT-SHIFT-M", "CLOCKWORK_TARGET_RAID_13")
-    SetBinding("ALT-SHIFT-N", "CLOCKWORK_TARGET_RAID_14")
-    SetBinding("ALT-SHIFT-O", "CLOCKWORK_TARGET_RAID_15")
-    SetBinding("ALT-SHIFT-P", "CLOCKWORK_TARGET_RAID_16")
-    SetBinding("ALT-SHIFT-Q", "CLOCKWORK_TARGET_RAID_17")
-    SetBinding("ALT-SHIFT-R", "CLOCKWORK_TARGET_RAID_18")
-    SetBinding("ALT-SHIFT-S", "CLOCKWORK_TARGET_RAID_19")
-    SetBinding("ALT-SHIFT-T", "CLOCKWORK_TARGET_RAID_20")
-    SetBinding("ALT-CTRL-A", "CLOCKWORK_TARGET_RAID_21")
-    SetBinding("ALT-CTRL-B", "CLOCKWORK_TARGET_RAID_22")
-    SetBinding("ALT-CTRL-C", "CLOCKWORK_TARGET_RAID_23")
-    SetBinding("ALT-CTRL-D", "CLOCKWORK_TARGET_RAID_24")
-    SetBinding("ALT-CTRL-E", "CLOCKWORK_TARGET_RAID_25")
-    SetBinding("ALT-CTRL-F", "CLOCKWORK_TARGET_RAID_26")
-    SetBinding("ALT-CTRL-G", "CLOCKWORK_TARGET_RAID_27")
-    SetBinding("ALT-CTRL-H", "CLOCKWORK_TARGET_RAID_28")
-    SetBinding("ALT-CTRL-I", "CLOCKWORK_TARGET_RAID_29")
-    SetBinding("ALT-CTRL-J", "CLOCKWORK_TARGET_RAID_30")
-    SetBinding("ALT-CTRL-K", "CLOCKWORK_TARGET_RAID_31")
-    SetBinding("ALT-CTRL-L", "CLOCKWORK_TARGET_RAID_32")
-    SetBinding("ALT-CTRL-M", "CLOCKWORK_TARGET_RAID_33")
-    SetBinding("ALT-CTRL-N", "CLOCKWORK_TARGET_RAID_34")
-    SetBinding("ALT-CTRL-O", "CLOCKWORK_TARGET_RAID_35")
-    SetBinding("ALT-CTRL-P", "CLOCKWORK_TARGET_RAID_36")
-    SetBinding("ALT-CTRL-Q", "CLOCKWORK_TARGET_RAID_37")
-    SetBinding("ALT-CTRL-R", "CLOCKWORK_TARGET_RAID_38")
-    SetBinding("ALT-CTRL-S", "CLOCKWORK_TARGET_RAID_39")
-    SetBinding("ALT-CTRL-T", "CLOCKWORK_TARGET_RAID_40")
+    local keys = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"}
+
+    for i = 1, 20 do
+        SetBinding("ALT-SHIFT-" .. keys[i], "CLOCKWORK_TARGET_RAID_" .. i)
+        SetBinding("ALT-CTRL-" .. keys[i], "CLOCKWORK_TARGET_RAID_" .. (i + 20))
+    end
 end
 
 function Clockwork.printAllBindings()
@@ -89,4 +55,3 @@ end
 
 -- local ok = SetBindingClick("Y", "ButtonTest");
 -- Clockwork.log.debug(tostring(ok))
-
