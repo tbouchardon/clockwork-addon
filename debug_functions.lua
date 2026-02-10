@@ -2,7 +2,6 @@
 --- Generates Lua code for the player's spellbook and displays it.
 --- @return nil
 function Clockwork.reportAllSpells()
-    -- Clockwork.log.debug("function Clockwork.reportAllSpells(")
     -- Helper for Lua generation
     local function removeAccents(str)
         local accents = {
@@ -17,12 +16,10 @@ function Clockwork.reportAllSpells()
         return str
     end
 
-    Clockwork.log.info("Clockwork.reportAllSpells()")
     local output = ""
     local _, classFilename = UnitClass("player")
     output = output .. "    " .. classFilename .. " = {\n"
 
-    local index = 1;
     local index = 1
     local seenIds = {}
 
@@ -30,9 +27,6 @@ function Clockwork.reportAllSpells()
         -- /dump C_SpellBook.GetSpellBookItemInfo(6, Enum.SpellBookSpellBank.Player)
         local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player)
 
-        if not spellBookItemInfo or not spellBookItemInfo.name then
-            do
-                break
         if not spellBookItemInfo then break end
 
         local spellID = spellBookItemInfo.spellID
@@ -59,16 +53,6 @@ function Clockwork.reportAllSpells()
                 end
             end
         end
-        if not Clockwork.emptyOrNil(spellBookItemInfo.skillLineIndex) and spellBookItemInfo.skillLineIndex < 6 then
-            if spellBookItemInfo.itemType == Enum.SpellBookItemType.Spell or spellBookItemInfo.itemType == Enum.SpellBookItemType.FutureSpell then
-                Clockwork.log.info(
-                    spellBookItemInfo.skillLineIndex .. "-" .. index ..
-                    ", Spell ID:" .. tostring(spellBookItemInfo.spellID) ..
-                    ", name:\"" .. spellBookItemInfo.name .. "\""
-                );
-            end
-        end
-        index = index + 1;
         index = index + 1
     end
 

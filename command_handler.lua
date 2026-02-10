@@ -40,8 +40,6 @@ function Clockwork:commandHandler(msg)
         self:clickLoop()
     elseif (msg == 'debug') then
         self:clickDebug()
-    elseif (msg == 'list spells') then
-        self:reportAllSpells()
     elseif (msg == 'list actions') then
         self:reportActionButtons()
     elseif (msg == 'list bindings') then
@@ -60,7 +58,6 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")
         Clockwork.log.notice("Debug : ")
-        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list spells    -- List all spells") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list actions   -- List all actions slots") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list bindings  -- List all bindings") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork gen spells     -- Generate spells.lua content for the current class") end
