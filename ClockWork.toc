@@ -27,6 +27,6 @@ rotation_mage.lua
 rotation_druid.lua
 rotation_priest.lua
 command_handler.lua
-init_addon.lua
 bindings.lua
+init_addon.lua
 tests.lua

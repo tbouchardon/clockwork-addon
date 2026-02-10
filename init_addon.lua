@@ -232,6 +232,7 @@ local function handleAddonLoaded(self, addonName)
 end
 
 local function handlePlayerEnteringWorld(self)
+
     -- Initialize player state
     if (self.player.GUID == nil) then self.player.GUID = UnitGUID("player") end
     if (self.player.class == nil) then
@@ -332,13 +333,7 @@ function Clockwork:onEvent(event, ...)
     end
 end
 
-Clockwork.frame = CreateFrame("FRAME", "clockWork_MainFrame", UIParent)
-Clockwork.frame:SetPoint("TOPLEFT", 0, 0)
-Clockwork.frame:SetFrameStrata("MEDIUM")
-
-Clockwork.frame:SetScript("OnEvent", function (self, event, ...) Clockwork:onEvent(event, ...) end);
-Clockwork.frame:SetScript("OnUpdate", function () Clockwork:onUpdate() end);
-
+Clockwork.frame = CreateFrame("FRAME", "ClockworkFrame", UIParent)
 -- Register Events
 local eventsToRegister = {
     "PLAYER_ENTERING_WORLD",
@@ -359,9 +354,19 @@ local eventsToRegister = {
     "UNIT_PET"
 }
 for _, eventName in ipairs(eventsToRegister) do
-    Clockwork.frame:RegisterEvent(eventName)
+    EventRegistry:RegisterCallback(eventName, function(_, ...) 
+        Clockwork:onEvent(eventName, ...) 
+    end, Clockwork) -- On passe 'Clockwork' comme identifiant unique
 end
+
+Clockwork.frame:SetPoint("TOPLEFT", 0, 0)
+Clockwork.frame:SetFrameStrata("MEDIUM")
+
+Clockwork.frame:SetScript("OnEvent", function (self, event, ...) Clockwork:onEvent(event, ...) end);
+Clockwork.frame:SetScript("OnUpdate", function (self, elapsed) Clockwork:onUpdate() end);
 
 Clockwork.frame.texture = Clockwork.frame:CreateTexture("MEDIUM")
 Clockwork.frame.texture:SetAllPoints()
 Clockwork.frame.texture:SetColorTexture(0, 1, 0, 1)
+
+Clockwork.log.debug("Clockwork addon initialized")
