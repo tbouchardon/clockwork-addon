@@ -46,6 +46,8 @@ function Clockwork:commandHandler(msg)
         self:reportActionButtons()
     elseif (msg == 'list bindings') then
         self:reportBindings()
+    elseif (msg == 'gen spells') then
+        self:reportAllSpells()
     else
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
@@ -61,6 +63,7 @@ function Clockwork:commandHandler(msg)
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list spells    -- List all spells") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list actions   -- List all actions slots") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list bindings  -- List all bindings") end
+        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork gen spells     -- Generate spells.lua content for the current class") end
     end
 end
 

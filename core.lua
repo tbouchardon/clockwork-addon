@@ -17,7 +17,7 @@ Clockwork.LOG_LEVEL = 'INFO'
 --Clockwork.LOG_LEVEL = 'DEBUG'
 
 ---@alias StanceEnum {NONE:0, BEAR:1, CAT:2, TRAVEL:3, MOONKIN:4}
-Clockwork.Enum.Stance = {
+Clockwork.Enum.ShapeshiftForm = {
     NONE = 0,
     BEAR = 1,
     CAT = 2,

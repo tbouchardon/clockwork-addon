@@ -1,11 +1,30 @@
 --- Reports all spells in the player's spellbook.
+--- Generates Lua code for the player's spellbook and displays it.
 --- @return nil
 function Clockwork.reportAllSpells()
-    -- Clockwork.log.debug("function Clockwork.listAllSpells(")
+    -- Clockwork.log.debug("function Clockwork.reportAllSpells(")
+    -- Helper for Lua generation
+    local function removeAccents(str)
+        local accents = {
+            ["à"] = "a", ["â"] = "a", ["ä"] = "a", ["é"] = "e", ["è"] = "e", ["ê"] = "e", ["ë"] = "e",
+            ["î"] = "i", ["ï"] = "i", ["ô"] = "o", ["ö"] = "o", ["ù"] = "u", ["û"] = "u", ["ü"] = "u",
+            ["ç"] = "c", ["À"] = "A", ["Â"] = "A", ["Ä"] = "A", ["É"] = "E", ["È"] = "E", ["Ê"] = "E",
+            ["Ë"] = "E", ["Î"] = "I", ["Ï"] = "I", ["Ô"] = "O", ["Ö"] = "O", ["Ù"] = "U", ["Û"] = "U", ["Ü"] = "U", ["Ç"] = "C"
+        }
+        for k, v in pairs(accents) do
+            str = string.gsub(str, k, v)
+        end
+        return str
+    end
 
-    Clockwork.log.info("Clockwork.listAllSpells()")
+    Clockwork.log.info("Clockwork.reportAllSpells()")
+    local output = ""
+    local _, classFilename = UnitClass("player")
+    output = output .. "    " .. classFilename .. " = {\n"
 
     local index = 1;
+    local index = 1
+    local seenIds = {}
 
     while true do
         -- /dump C_SpellBook.GetSpellBookItemInfo(6, Enum.SpellBookSpellBank.Player)
@@ -14,6 +33,30 @@ function Clockwork.reportAllSpells()
         if not spellBookItemInfo or not spellBookItemInfo.name then
             do
                 break
+        if not spellBookItemInfo then break end
+
+        local spellID = spellBookItemInfo.spellID
+        local spellName = spellBookItemInfo.name
+
+        if spellName and spellID and not seenIds[spellID] then
+            if not Clockwork.emptyOrNil(spellBookItemInfo.skillLineIndex) and spellBookItemInfo.skillLineIndex < 6 then
+                if spellBookItemInfo.itemType == Enum.SpellBookItemType.Spell or spellBookItemInfo.itemType == Enum.SpellBookItemType.FutureSpell then
+                    local keyName = removeAccents(spellName)
+                    keyName = string.upper(keyName)
+                    keyName = string.gsub(keyName, "[^A-Z0-9]", "_")
+                    keyName = string.gsub(keyName, "_+", "_")
+                    keyName = string.gsub(keyName, "^_", "")
+                    keyName = string.gsub(keyName, "_$", "")
+
+                    local key = keyName .. "_" .. spellID
+
+                    output = output .. "        " .. key .. " = {\n"
+                    output = output .. "            name = \"" .. spellName .. "\",\n"
+                    output = output .. "            id = " .. spellID .. ",\n"
+                    output = output .. "        },\n"
+
+                    seenIds[spellID] = true
+                end
             end
         end
         if not Clockwork.emptyOrNil(spellBookItemInfo.skillLineIndex) and spellBookItemInfo.skillLineIndex < 6 then
@@ -26,7 +69,11 @@ function Clockwork.reportAllSpells()
             end
         end
         index = index + 1;
+        index = index + 1
     end
+
+    output = output .. "    },"
+    Clockwork.showTextWindow(output)
 end
 
 --- Reports information about all action buttons.
@@ -135,4 +182,33 @@ function Clockwork.getCoord()
 
     Clockwork.log.info("x = " .. posXString)
     Clockwork.log.info("y = " .. posYString)
+end
+
+function Clockwork.showTextWindow(text)
+    local f = Clockwork_ExportFrame or CreateFrame("Frame", "Clockwork_ExportFrame", UIParent, "DialogBoxFrame")
+    f:SetSize(700, 500)
+    f:SetPoint("CENTER")
+    f:SetFrameStrata("DIALOG")
+
+    if not f.scrollArea then
+        f.scrollArea = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
+        f.scrollArea:SetPoint("TOPLEFT", 20, -30)
+        f.scrollArea:SetPoint("BOTTOMRIGHT", -30, 40)
+
+        f.editBox = CreateFrame("EditBox", nil, f.scrollArea)
+        f.editBox:SetMultiLine(true)
+        f.editBox:SetFontObject(ChatFontNormal)
+        f.editBox:SetWidth(650)
+        f.scrollArea:SetScrollChild(f.editBox)
+
+        f.close = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+        f.close:SetPoint("BOTTOM", 0, 10)
+        f.close:SetSize(100, 25)
+        f.close:SetText("Close")
+        f.close:SetScript("OnClick", function() f:Hide() end)
+    end
+
+    f.editBox:SetText(text)
+    f.editBox:HighlightText()
+    f:Show()
 end

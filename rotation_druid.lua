@@ -12,7 +12,7 @@ local function initial()
 
         local stance = GetShapeshiftForm()
 
-        if stance == Clockwork.Enum.Stance.NONE or stance == Clockwork.Enum.Stance.MOONKIN then
+        if stance == Clockwork.Enum.ShapeshiftForm.NONE or stance == Clockwork.Enum.ShapeshiftForm.MOONKIN then
             hasDebuff, remainingTime = Clockwork.targetHasDebuff(Clockwork.Enum.Spell.Druid.ECLAT_LUNAIRE_8921.name)
             Clockwork:castSpellIfPossible({
                 spell = Clockwork.Enum.Spell.Druid.ECLAT_LUNAIRE_8921,
@@ -26,14 +26,14 @@ local function initial()
             })
         end
 
-        if stance == Clockwork.Enum.Stance.BEAR then
+        if stance == Clockwork.Enum.ShapeshiftForm.BEAR then
             Clockwork:castSpellIfPossible({
                 spell = Clockwork.Enum.Spell.Druid.MUTILATION_33917,
                 priority = 80
             })
         end
 
-        if stance == Clockwork.Enum.Stance.CAT then
+        if stance == Clockwork.Enum.ShapeshiftForm.CAT then
             Clockwork:castSpellIfPossible({
                 spell = Clockwork.Enum.Spell.Druid.LAMBEAU_5221,
                 priority = 80
@@ -45,7 +45,7 @@ local function initial()
                 priority = 100
             })
         end
-        if stance == Clockwork.Enum.Stance.MOONKIN then end
+        if stance == Clockwork.Enum.ShapeshiftForm.MOONKIN then end
     end
 end
 
