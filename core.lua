@@ -3,7 +3,9 @@ Clockwork = {}
 ---@alias ClockworkEnum table
 Clockwork.Enum = {}
 ---@type GameTooltip
-ClockworkTooltip
+ClockworkTooltip = CreateFrame("GameTooltip", "ClockworkTooltip", WorldFrame, "GameTooltipTemplate")
+ClockworkTooltip:Hide()
+ClockworkTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
 ---@type {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
 Clockwork.commandsBindings = nil
 ---@alias SpellIdToSlot table<number, {name:string, slot:number}>

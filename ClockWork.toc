@@ -12,7 +12,6 @@ core.lua
 conditions.xml
 menu.xml
 rotation.xml
-tooltips.xml
 logger.lua
 core_functions.lua
 localization.lua
