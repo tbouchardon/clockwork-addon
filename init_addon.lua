@@ -82,49 +82,25 @@ function Clockwork:playerEnteringWorld()
 
     self.raid = {}
 
-    table.insert(self.raid, 1, self:createDot("clockWork_raid1", 3, -1))
-    table.insert(self.raid, 2, self:createDot("clockWork_raid2", 4, -1))
-    table.insert(self.raid, 3, self:createDot("clockWork_raid3", 5, -1))
-    table.insert(self.raid, 4, self:createDot("clockWork_raid4", 6, -1))
-    table.insert(self.raid, 5, self:createDot("clockWork_raid5", 7, -1))
-    table.insert(self.raid, 6, self:createDot("clockWork_raid6", 8, -1))
-    table.insert(self.raid, 7, self:createDot("clockWork_raid7", 9, -1))
-    table.insert(self.raid, 8, self:createDot("clockWork_raid8", 10, -1))
-    table.insert(self.raid, 9, self:createDot("clockWork_raid9", 11, -1))
-    table.insert(self.raid, 10, self:createDot("clockWork_raid10", 12, -1))
+    -- Raid 1-10: x=3 to 12, y=-1
+    for i = 1, 10 do
+        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 2 + i, -1))
+    end
 
-    table.insert(self.raid, 11, self:createDot("clockWork_raid11", 14, -3))
-    table.insert(self.raid, 12, self:createDot("clockWork_raid12", 14, -4))
-    table.insert(self.raid, 13, self:createDot("clockWork_raid13", 14, -5))
-    table.insert(self.raid, 14, self:createDot("clockWork_raid14", 14, -6))
-    table.insert(self.raid, 15, self:createDot("clockWork_raid15", 14, -7))
-    table.insert(self.raid, 16, self:createDot("clockWork_raid16", 14, -8))
-    table.insert(self.raid, 17, self:createDot("clockWork_raid17", 14, -9))
-    table.insert(self.raid, 18, self:createDot("clockWork_raid18", 14, -10))
-    table.insert(self.raid, 19, self:createDot("clockWork_raid19", 14, -11))
-    table.insert(self.raid, 20, self:createDot("clockWork_raid20", 14, -12))
+    -- Raid 11-20: x=14, y=-3 to -12
+    for i = 11, 20 do
+        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 14, -(i - 8)))
+    end
 
-    table.insert(self.raid, 21, self:createDot("clockWork_raid21", 12, -1))
-    table.insert(self.raid, 22, self:createDot("clockWork_raid22", 11, -1))
-    table.insert(self.raid, 23, self:createDot("clockWork_raid23", 10, -1))
-    table.insert(self.raid, 24, self:createDot("clockWork_raid24", 9, -1))
-    table.insert(self.raid, 25, self:createDot("clockWork_raid25", 8, -1))
-    table.insert(self.raid, 26, self:createDot("clockWork_raid26", 7, -1))
-    table.insert(self.raid, 27, self:createDot("clockWork_raid27", 6, -1))
-    table.insert(self.raid, 28, self:createDot("clockWork_raid28", 5, -1))
-    table.insert(self.raid, 29, self:createDot("clockWork_raid29", 4, -1))
-    table.insert(self.raid, 30, self:createDot("clockWork_raid30", 3, -1))
+    -- Raid 21-30: x=12 to 3, y=-1
+    for i = 21, 30 do
+        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 12 - (i - 21), -1))
+    end
 
-    table.insert(self.raid, 31, self:createDot("clockWork_raid31", 1, -12))
-    table.insert(self.raid, 32, self:createDot("clockWork_raid32", 1, -11))
-    table.insert(self.raid, 33, self:createDot("clockWork_raid33", 1, -10))
-    table.insert(self.raid, 34, self:createDot("clockWork_raid34", 1, -9))
-    table.insert(self.raid, 35, self:createDot("clockWork_raid35", 1, -8))
-    table.insert(self.raid, 36, self:createDot("clockWork_raid36", 1, -7))
-    table.insert(self.raid, 37, self:createDot("clockWork_raid37", 1, -6))
-    table.insert(self.raid, 38, self:createDot("clockWork_raid38", 1, -5))
-    table.insert(self.raid, 39, self:createDot("clockWork_raid39", 1, -4))
-    table.insert(self.raid, 40, self:createDot("clockWork_raid40", 1, -3))
+    -- Raid 31-40: x=1, y=-12 to -3
+    for i = 31, 40 do
+        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 1, -(12 - (i - 31))))
+    end
 
     self:initKeys()
     self:initCoords()
@@ -156,7 +132,8 @@ function Clockwork:onUpdate()
     local now = GetTime()
 
     if self.nextUpdate and (self.nextUpdate < now) then
-        if (C_Map.GetBestMapForUnit("player") == nil) then
+        local bestMap = C_Map.GetBestMapForUnit("player")
+        if (bestMap == nil) then
             Clockwork.log.debug("Player is nowhere to be found.")
             --return
         end
@@ -164,7 +141,7 @@ function Clockwork:onUpdate()
         -- Clockwork.log.debug(Clockwork.nextUpdate)
 
         if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
-            if (C_Map.GetBestMapForUnit("player") ~= nil) then
+            if (bestMap ~= nil) then
                 self:updatePositionCoordinates()
             end
             self:rotation()
