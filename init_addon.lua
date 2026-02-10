@@ -128,7 +128,6 @@ function Clockwork:damageReceived(arg1)
 end
 
 function Clockwork:onUpdate()
-    -- Clockwork.log.debug("local function onUpdate(")
     local now = GetTime()
 
     if self.nextUpdate and (self.nextUpdate < now) then
@@ -138,8 +137,6 @@ function Clockwork:onUpdate()
             --return
         end
 
-        -- Clockwork.log.debug(Clockwork.nextUpdate)
-
         if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
             if (bestMap ~= nil) then
                 self:updatePositionCoordinates()
@@ -147,13 +144,8 @@ function Clockwork:onUpdate()
             self:rotation()
         end
 
-        if self.addWaypointList ~= nil and
-            Clockwork.ADDING_WP == false then
-            --            Clockwork.log.debug(tostring(Clockwork.addWaypointList))
-            --            Clockwork.log.debug(tostring(Clockwork.ADDING_WP))
-            --            Clockwork.log.debug(tostring(Clockwork.waypointListIndex))
-
-            local index = 0;
+        if self.addWaypointList ~= nil and Clockwork.ADDING_WP == false then
+            local index = 0
             local finished = true
 
             for coords in string.gmatch(self.addWaypointList, ".-;") do
@@ -164,8 +156,7 @@ function Clockwork:onUpdate()
                     self.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
                     Clockwork.ADDING_WP = true;
                 end
-
-                index = index + 1;
+                index = index + 1
             end
 
             self.waypointListIndex = self.waypointListIndex + 1
@@ -176,185 +167,23 @@ function Clockwork:onUpdate()
             end
         end
 
-        self.nextUpdate = now + Clockwork.UPDATE_INTERVAL;
-    end
-end
-
-function Clockwork:onEvent(...)
-    -- Clockwork.log.debug("local function onEvent(")
-
-    --local numberOfArguments = select('#', ...)
-    --Clockwork.log.debug(numberOfArguments)
-
-    --for index = 1, numberOfArguments do
-    --    Clockwork.log.debug(select(index, ...))
-    --end
-
-    --local frame = select(1, ...)
-    local event = select(1, ...)
-
-    --Clockwork.log.debug(event)
-
-    if event == nil then
-        return
-    else
-        Clockwork.log.debug(event)
-    end
-
-    if (self.player.GUID == nil) then
-        self.player.GUID = UnitGUID("player")
-    end
-
-    if (self.player.class == nil) then
-        local className, classFilename, classID = UnitClass("player")
-        self.player.class = { className = className, classFilename = classFilename, classId = classID }
-    end
-
-    if (self.player.specialization == nil and self.player.class.classId ~= nil) then
-        local currentSpec = GetSpecialization()
-        if currentSpec ~= nil then
-            local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId,
-                currentSpec)
-            self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
-        end
-    end
-
-    if (self.pet.GUID == nil) then
-        if (UnitExists("pet")) then
-            self.pet.GUID = UnitGUID("pet")
-        end
-    else
-        if (not UnitExists("pet")) then
-            self.pet.GUID = nil
-        end
-    end
-
-    if event == "SPELLCAST_START" or event == "SPELLCAST_CHANNEL_START" then
-        Clockwork.CASTING = true
-        self.casting.texture:SetColorTexture(1, 1, 1, 1)
-    elseif event == "SPELLCAST_STOP" or event == "SPELLCAST_CHANNEL_STOP" or event == "SPELLCAST_FAILED" or event == "SPELLCAST_INTERRUPTED" then
-        Clockwork.CASTING = false
-        self.casting.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    --if event == "PLAYER_ENTERING_WORLD" then
-    --end
-
-    if event == "ADDON_LOADED" then
-        local addonName = select(2, ...)
-
-        if addonName == "Clockwork" then
-            Clockwork.log.debug(select(2, ...) .. " Loaded")
-            Clockwork:playerEnteringWorld()
-            Clockwork:addonLoaded()
-            Clockwork:resetCombat()
-            return
-        end
-    end
-
-    if event == "ACTIONBAR_SLOT_CHANGED" then
-    end
-
-    if event == "UPDATE_SHAPESHIFT_FORM" then
-        local index = GetShapeshiftForm()
-        Clockwork.log.debug("Shapeshift form changed to " .. tostring(index))
-    end
-
-    if event == "PLAYER_ENTERING_WORLD" or
-        event == "ACTIONBAR_SLOT_CHANGED" or
-        event == "UPDATE_SHAPESHIFT_FORM" then
-        Clockwork:updateBindings()
-    end
-
-    if event == "PLAYER_SPECIALIZATION_CHANGED" and self.player.class.classId ~= nil then
-        Clockwork.log.debug("Specialization changed")
-        local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId,
-            GetSpecialization())
-        self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
-        Clockwork:updateCommandBindingMap()
-    end
-
-    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        --Clockwork.log.debug("COMBAT_LOG_EVENT Values : ")
-
-        local args = { CombatLogGetCurrentEventInfo() }
-        --local numberOfArguments = select('#', args)
-
-        --for i, value in pairs(args) do
-        --    Clockwork.log.debug(tostring (i) .. " = "  ..tostring(value))
-        --end
-        local subevent = args[2]
-        --Clockwork.log.debug("subevent = " .. tostring(subevent))
-        local sourceGUID = args[4]
-        local sourceName = args[5]
-        --Clockwork.log.debug("sourceGUID = " .. tostring(sourceGUID))
-        local destGUID = args[8]
-        local destName = args[9]
-
-        --string.find(sourceGUID, "Pet") == true or
-        if (sourceGUID == self.player.GUID or sourceGUID == self.pet.GUID)
-            and destGUID ~= self.pet.GUID
-            and destGUID ~= self.player.GUID
-            and not Clockwork.emptyOrNil(destGUID)
-        then
-            if self.targets.list[tostring(destGUID)] == nil then
-                --Clockwork.log.debug("Unit added")
-                --Clockwork.log.debug(tostring(subevent) .. "," .. tostring(sourceGUID) .. ", " .. tostring(sourceName) .. ", " .. tostring(destGUID) .. ", " .. tostring(destName))
+        -- Update notRetaliating status
+        if (self.notRetaliating) then
+            if (self.durationBeingHitWithoutRetaliating > 6) and not UnitIsDeadOrGhost("player") then
+                self.notRetaliating.texture:SetColorTexture(1, 1, 1, 1)
             else
-                --Clockwork.log.debug("Unit updated")
-            end
-
-            self.targets.list[tostring(destGUID)] = GetTime()
-            self:updateNumberOfTargets()
-        end
-
-        local amount
-        if subevent == "SWING_DAMAGE" then
-            amount = args[12]
-        elseif subevent == "SPELL_DAMAGE" then
-            amount = args[15]
-        end
-
-        --if (sourceGUID ~= Clockwork.player.GUID and string.find(sourceGUID, "Pet") == false) then
-
-        if subevent == "UNIT_DIED" or
-            subevent == "UNIT_DESTROYED" or
-            subevent == "SPELL_INSTAKILL" or
-            --subevent == "PARTY_KILL" or
-            subevent == "UNIT_DISSIPATES" then
-            --Clockwork.log.debug(tostring(subevent) .. "," .. tostring(destGUID) .. " = " .. tostring(destName))
-
-            if self.targets.list[tostring(destGUID)] ~= nil then
-                self.targets.list[tostring(destGUID)] = nil
-                --Clockwork.log.debug("Unit removed")
-                self:updateNumberOfTargets()
+                self.notRetaliating.texture:SetColorTexture(0, 0, 0, 1)
             end
         end
-        --end
 
-        if (self.player.GUID == sourceGUID) then
-            Clockwork:damageDone()
-        end
-
-        if (self.player.GUID == destGUID) then
-            Clockwork:damageReceived()
-        end
-    end
-
-    if (self.notRetaliating) then
-        if (self.durationBeingHitWithoutRetaliating > 6) and not (event == "PLAYER_DEAD") then
-            -- Si vivant && pas tapé depuis 6 secondes
-            self.notRetaliating.texture:SetColorTexture(1, 1, 1, 1)
-        else
-            self.notRetaliating.texture:SetColorTexture(0, 0, 0, 1)
-        end
+        self.nextUpdate = now + Clockwork.UPDATE_INTERVAL;
     end
 end
 
 function Clockwork:updateNumberOfTargets()
     if self.targets.list ~= nil then
-        for i, time in pairs(self.targets.list) do
-            if (GetTime() - time > 5) then
+        for i, t in pairs(self.targets.list) do
+            if (GetTime() - t > 5) then
                 self.targets.list[i] = nil
             end
         end
@@ -376,6 +205,133 @@ function Clockwork:updateNumberOfTargets()
     self.targets.multiTargetMod = multiTarget
 end
 
+--[[---------------------------------------------------------------------------
+Event Handling
+---------------------------------------------------------------------------]]--
+
+local eventHandlers
+
+local function handleSpellcastStart(self)
+    self.CASTING = true
+    self.casting.texture:SetColorTexture(1, 1, 1, 1)
+end
+
+local function handleSpellcastStop(self)
+    self.CASTING = false
+    self.casting.texture:SetColorTexture(0, 0, 0, 1)
+end
+
+local function handleAddonLoaded(self, addonName)
+    if addonName == "Clockwork" then
+        Clockwork.log.debug(addonName .. " Loaded")
+        self:playerEnteringWorld()
+        self:addonLoaded()
+        self:resetCombat()
+        return true -- Stop further processing
+    end
+end
+
+local function handlePlayerEnteringWorld(self)
+    -- Initialize player state
+    if (self.player.GUID == nil) then self.player.GUID = UnitGUID("player") end
+    if (self.player.class == nil) then
+        local className, classFilename, classID = UnitClass("player")
+        self.player.class = { className = className, classFilename = classFilename, classId = classID }
+    end
+    if (self.player.specialization == nil and self.player.class.classId ~= nil) then
+        local currentSpec = GetSpecialization()
+        if currentSpec ~= nil then
+            local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId, currentSpec)
+            self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
+        end
+    end
+
+    self:updateBindings()
+end
+
+local function handlePetChanged(self, unit)
+    if unit == "player" then
+        if (UnitExists("pet")) then
+            self.pet.GUID = UnitGUID("pet")
+        else
+            self.pet.GUID = nil
+        end
+        Clockwork.log.debug("Pet GUID updated: " .. tostring(self.pet.GUID))
+    end
+end
+
+local function handleUpdateShapeshiftForm(self)
+    local index = GetShapeshiftForm()
+    Clockwork.log.debug("Shapeshift form changed to " .. tostring(index))
+    self:updateBindings()
+end
+
+local function handleSpecializationChanged(self)
+    if self.player.class.classId ~= nil then
+        Clockwork.log.debug("Specialization changed")
+        local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId, GetSpecialization())
+        self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
+        self:updateCommandBindingMap()
+    end
+end
+
+local function handleCombatLog(self)
+    local args = { CombatLogGetCurrentEventInfo() }
+    local subevent = args[2]
+    local sourceGUID = args[4]
+    local destGUID = args[8]
+
+    if (sourceGUID == self.player.GUID or sourceGUID == self.pet.GUID)
+        and destGUID ~= self.pet.GUID
+        and destGUID ~= self.player.GUID
+        and not Clockwork.emptyOrNil(destGUID)
+    then
+        self.targets.list[tostring(destGUID)] = GetTime()
+        self:updateNumberOfTargets()
+    end
+
+    if subevent == "UNIT_DIED" or subevent == "UNIT_DESTROYED" or subevent == "SPELL_INSTAKILL" or subevent == "UNIT_DISSIPATES" then
+        if self.targets.list[tostring(destGUID)] ~= nil then
+            self.targets.list[tostring(destGUID)] = nil
+            self:updateNumberOfTargets()
+        end
+    end
+
+    if (self.player.GUID == sourceGUID) then
+        self:damageDone()
+    end
+
+    if (self.player.GUID == destGUID) then
+        self:damageReceived()
+    end
+end
+
+eventHandlers = {
+    ["SPELLCAST_START"] = handleSpellcastStart,
+    ["SPELLCAST_CHANNEL_START"] = handleSpellcastStart,
+    ["SPELLCAST_STOP"] = handleSpellcastStop,
+    ["SPELLCAST_CHANNEL_STOP"] = handleSpellcastStop,
+    ["SPELLCAST_FAILED"] = handleSpellcastStop,
+    ["SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
+    ["ADDON_LOADED"] = handleAddonLoaded,
+    ["PLAYER_ENTERING_WORLD"] = handlePlayerEnteringWorld,
+    ["UNIT_PET"] = handlePetChanged,
+    ["UPDATE_SHAPESHIFT_FORM"] = handleUpdateShapeshiftForm,
+    ["ACTIONBAR_SLOT_CHANGED"] = function(self) self:updateBindings() end,
+    ["PLAYER_SPECIALIZATION_CHANGED"] = handleSpecializationChanged,
+    ["COMBAT_LOG_EVENT_UNFILTERED"] = handleCombatLog,
+}
+
+function Clockwork:onEvent(event, ...)
+    if event == nil then return end
+    Clockwork.log.debug(event)
+
+    local handler = eventHandlers[event]
+    if handler then
+        handler(self, ...)
+    end
+end
+
 Clockwork.frame = CreateFrame("FRAME", "clockWork_MainFrame", UIParent)
 Clockwork.frame:SetPoint("TOPLEFT", 0, 0)
 Clockwork.frame:SetFrameStrata("MEDIUM")
@@ -383,39 +339,28 @@ Clockwork.frame:SetFrameStrata("MEDIUM")
 Clockwork.frame:SetScript("OnEvent", function (self, event, ...) Clockwork:onEvent(event, ...) end);
 Clockwork.frame:SetScript("OnUpdate", function () Clockwork:onUpdate() end);
 
-Clockwork.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
-Clockwork.frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
-Clockwork.frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED");
-
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_START")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_STOP")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_FAILED")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-Clockwork.frame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-
-Clockwork.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
---Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS")
---Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS")
---Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
---Clockwork.frame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES")
---Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
---Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
---Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
---Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
---Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
---Clockwork.frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
-
-Clockwork.frame:RegisterEvent("ADDON_LOADED")
-
-Clockwork.frame:RegisterEvent("PLAYER_DEAD")
-
-Clockwork.frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-
--- For debug purpose :
--- Clockwork.frame:RegisterAllEvents()
+-- Register Events
+local eventsToRegister = {
+    "PLAYER_ENTERING_WORLD",
+    "UPDATE_SHAPESHIFT_FORM",
+    "ACTIONBAR_SLOT_CHANGED",
+    "UNIT_SPELLCAST_START",
+    "UNIT_SPELLCAST_STOP",
+    "UNIT_SPELLCAST_FAILED",
+    "UNIT_SPELLCAST_INTERRUPTED",
+    "UNIT_SPELLCAST_DELAYED",
+    "UNIT_SPELLCAST_CHANNEL_START",
+    "UNIT_SPELLCAST_CHANNEL_UPDATE",
+    "UNIT_SPELLCAST_CHANNEL_STOP",
+    "COMBAT_LOG_EVENT_UNFILTERED",
+    "ADDON_LOADED",
+    "PLAYER_DEAD",
+    "PLAYER_SPECIALIZATION_CHANGED",
+    "UNIT_PET"
+}
+for _, eventName in ipairs(eventsToRegister) do
+    Clockwork.frame:RegisterEvent(eventName)
+end
 
 Clockwork.frame.texture = Clockwork.frame:CreateTexture("MEDIUM")
 Clockwork.frame.texture:SetAllPoints()
