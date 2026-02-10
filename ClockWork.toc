@@ -9,9 +9,7 @@
 ## Dependencies: 
 
 core.lua
-conditions.xml
-menu.xml
-rotation.xml
+menu.lua
 logger.lua
 core_functions.lua
 localization.lua

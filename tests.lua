@@ -6,6 +6,15 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+-- Create the main frame for rotation tests, replacing rotation.xml
+ClockworkRotationFrame = CreateFrame("Frame", "ClockworkRotationFrame", UIParent, "BasicFrameTemplate")
+ClockworkRotationFrame:SetSize(300, 400)
+ClockworkRotationFrame:SetPoint("CENTER")
+ClockworkRotationFrame:SetMovable(true)
+ClockworkRotationFrame:Hide()
+ClockworkRotationFrame.TitleText:SetText("Clockwork Rotations Test")
+
+
 function initRotationsFrame()
 
     for action in Clockwork_ROTATIONS.actions do
