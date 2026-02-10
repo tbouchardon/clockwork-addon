@@ -3,7 +3,7 @@ Clockwork = {}
 ---@alias ClockworkEnum table
 Clockwork.Enum = {}
 ---@type GameTooltip
-ClockworkTooltip = ClockworkTooltip
+ClockworkTooltip
 ---@type {key:string, spellId:number, slot:number, shift:boolean, alt:boolean, ctrl:boolean}[]
 Clockwork.commandsBindings = nil
 ---@alias SpellIdToSlot table<number, {name:string, slot:number}>
