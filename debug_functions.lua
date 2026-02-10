@@ -63,7 +63,7 @@ end
 --- Reports information about all action buttons.
 --- @return nil
 function Clockwork.reportActionButtons()
-    Clockwork.log.info("function Clockwork.reportActionButtons()")
+    local output = ""
 
     for actionSlot = 1, 180 do
         local actionType, id, subType = GetActionInfo(actionSlot);
@@ -76,9 +76,10 @@ function Clockwork.reportActionButtons()
                 message = message .. ", Spell ID:" .. spellInfo.spellID .. ", name:\"" .. spellInfo.name .. "\"";
             end
 
-            Clockwork.log.info(message);
+            output = output .. message .. "\n"
         end
     end
+    Clockwork.showTextWindow(output)
 end
 
 --- Reports all key bindings.
