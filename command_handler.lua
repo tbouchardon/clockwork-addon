@@ -44,7 +44,7 @@ function Clockwork:commandHandler(msg)
         self:reportActionButtons()
     elseif (msg == 'list bindings') then
         self:reportBindings()
-    elseif (msg == 'gen spells') then
+    elseif (msg == 'gen spells' or msg == 'list spells') then
         self:reportAllSpells()
     else
         Clockwork.log.notice("------------ Clockwork ------------")
