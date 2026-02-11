@@ -120,9 +120,9 @@ function Clockwork.getActionSlotBinding(command)
         return nil, "No shortcut assigned to this command."
     end
 
-    local shift = binding:match("^SHIFT%-")
-    if shift then
-        binding = binding:sub(7) -- Remove "SHIFT-" from the binding
+    local ctrl = binding:match("^CTRL%-")
+    if ctrl then
+        binding = binding:sub(6) -- Remove "CTRL-" from the binding
     end
 
     local alt = binding:match("^ALT%-")
@@ -130,9 +130,9 @@ function Clockwork.getActionSlotBinding(command)
         binding = binding:sub(5) -- Remove "ALT-" from the binding
     end
 
-    local ctrl = binding:match("^CTRL%-")
-    if ctrl then
-        binding = binding:sub(6) -- Remove "CTRL-" from the binding
+    local shift = binding:match("^SHIFT%-")
+    if shift then
+        binding = binding:sub(7) -- Remove "SHIFT-" from the binding
     end
 
     local key = binding -- The remaining part is the key

@@ -10,6 +10,32 @@ Clockwork.rotations = {}
 function Clockwork:rotation()
     -- Clockwork.log.debug("function Clockwork.rotation()")
 
+    self:updateUIStatus()
+    Clockwork:resetKeys()
+
+    -- Ne rien faire si un cast est déjà en cours
+    if (self.CASTING == true) then
+        return;
+    end
+
+    --Clockwork.log.debug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
+    --Clockwork.log.debug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
+    --Clockwork.log.debug("UnitClass(\"player\")" .. tostring(UnitClass("player")))
+
+    if (IsMounted()) then
+        return
+    end
+
+    -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
+    if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
+        local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
+        if rotation then rotation() end
+    end
+end
+
+--- Updates the UI elements based on player and target status.
+--- @return nil
+function Clockwork:updateUIStatus()
     if UnitAffectingCombat("player") then
         self.inCombat.texture:SetColorTexture(1, 1, 1, 1)
         self.wasInCombat = true
@@ -54,27 +80,6 @@ function Clockwork:rotation()
     elseif Clockwork.DRIVE_MOD == true then
         self.drive.texture:SetColorTexture(1, 1, 1, 1)
     end
-
-    Clockwork:resetKeys()
-
-    -- Ne rien faire si un cast est déjà en cours
-    if (self.CASTING == true) then
-        return;
-    end
-
-    --Clockwork.log.debug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
-    --Clockwork.log.debug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
-    --Clockwork.log.debug("UnitClass(\"player\")" .. tostring(UnitClass("player")))
-
-    if (IsMounted()) then
-        return
-    end
-
-    -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
-    if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
-        local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
-        if rotation then rotation() end
-    end
 end
 
 --- Checks if both player and target are in combat.
@@ -117,7 +122,7 @@ end
 --- Checks if the target is in melee range.
 --- @return boolean
 function Clockwork.targetInMeeleRange()
-    return Clockwork.targetInRange(2)
+    return Clockwork.targetInRange(Clockwork.TRADE)
 end
 
 --- Checks if the target is in the specified range.
@@ -432,17 +437,19 @@ end
 --- @param params {spell:{name:string, id:integer}, condition:boolean|nil, priority:number|nil, duration:number|nil}
 --- @return nil
 function Clockwork:castSpellIfPossible(params)
-    local action, error = self:getActionSlotAndBindingForSpell(params.spell.id)
 
-    -- Clockwork.log.error(error)
-
-    if not action then
+    -- A condition of 'false' explicitly prevents casting. nil or true allows it.
+    if params.condition == false then
         return
     end
 
-    Clockwork.log.debug(action.key .. " => " .. tostring(params.spell.id) .. " => " .. tostring(params.condition))
+    local action, error = self:getActionSlotAndBindingForSpell(params.spell.id)
+    if not action then
+        -- Clockwork.log.error(error) -- Optionally log why it failed
+        return
+    end
 
-    if (params.condition == false or not Clockwork.actionCanBeCast(action.slot)) then return end
+    if not Clockwork.actionCanBeCast(action.slot) then return end
 
     local modifier = nil
     if action.alt then
