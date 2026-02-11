@@ -4,17 +4,21 @@ frame:SetMovable(true)
 frame:SetPoint("CENTER")
 frame:SetClampedToScreen(true)
 
--- Set backdrop
-frame:SetBackdrop({
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
-    edgeFile = "Interface/Buttons/UI-Panel-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 16,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-frame:SetBackdropColor(0, 0, 0, 0.9)
-frame:SetBackdropBorderColor(0.8, 0.8, 0.8, 1)
+-- "Dialog"	            Épais, biseauté, gris classique.	    Grandes fenêtres de configuration.
+-- "Tooltip"	        Fin (1px), noir translucide, moderne.	Menu discret de combat (Recommandé).
+-- "GenericGoldBorder"	Bordure dorée fine, angles droits.	    Menus de prestige ou de loot.
+-- "IdentifiedItem"	    Très sombre, presque plat, futuriste.   Addons techniques ou "dark mode".
+NineSliceUtil.ApplyLayout(frame, "Tooltip")
+
+-- L'atlas de Blizzard est parfois un peu clair, on peut ajouter une texture de fond
+--local bg = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
+--bg:SetAllPoints(frame)
+--bg:SetColorTexture(0, 0, 0, 0.8) -- Noir pur à 80%
+--frame.CustomBG = bg
+
+local titleText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+titleText:SetPoint("TOP", frame, "TOP", 0, -5)
+titleText:SetText("Clockwork")
 
 local buttons = {}
 
@@ -41,7 +45,7 @@ function frame.Expand()
 end
 
 function frame.Collapse()
-    frame:SetSize(137, 20)
+    frame:SetSize(137, 25)
     for _, button in ipairs(buttons) do
         button:Hide()
     end
@@ -67,9 +71,10 @@ end
 
 -- Main frame scripts
 frame:SetScript("OnLoad", function(self)
-    self:RegisterForDrag("LeftButton")
-    self:Collapse()
 end)
+
+frame:RegisterForDrag("LeftButton")
+frame:Collapse()
 
 frame:SetScript("OnEnter", function(self)
     Clockwork.log.debug("ClockworkMenuFrame : Enter")
@@ -89,11 +94,6 @@ end)
 frame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
 end)
-
--- Title Bar
-local titleText = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-titleText:SetPoint("TOP", frame, "TOP", 0, -8)
-titleText:SetText("Clockwork")
 
 -- Buttons
 local btnToggle = createMenuButton("ClockworkMenuButtonToggle", frame, nil, "Off - Toggle", "Toggle Clockwork On/Off")
