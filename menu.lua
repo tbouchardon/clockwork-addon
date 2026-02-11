@@ -23,6 +23,10 @@ titleText:SetText("Clockwork")
 local buttons = {}
 
 local function createMenuButton(name, parent, relativeTo, text, tooltip)
+
+    -- "UIPanelButtonTemplate"	        Rouge/Brun	        Boutons principaux (Toggle, Drive)
+    -- "SquareIconButtonTemplate"	    Carré avec icône	Boutons "Add Waypoint" (avec une icône +)
+    -- "UIMenuButtonStretchTemplate"	Gris, s'étire	    Boutons secondaires (Debug, Clear)
     local button = CreateFrame("Button", name, parent, "UIPanelButtonTemplate")
     button:SetSize(120, 25)
     if relativeTo then
@@ -32,6 +36,24 @@ local function createMenuButton(name, parent, relativeTo, text, tooltip)
     end
     button:SetText(text)
     button.tooltip = tooltip
+    table.insert(buttons, button)
+    return button
+end
+
+local function createIconButton(name, parent, relativeTo, iconPath, tooltip)
+    local button = CreateFrame("Button", name, parent, "SquareIconButtonTemplate")
+    button:SetSize(32, 32)
+    
+    button.Icon:SetTexture(iconPath)
+    button.tooltip = tooltip
+    
+    if relativeTo then
+        button:SetPoint("LEFT", relativeTo, "RIGHT", 5, 0)
+    else
+        -- Placement par défaut si premier de sa ligne
+        button:SetPoint("TOPLEFT", 8, -180) 
+    end
+    
     table.insert(buttons, button)
     return button
 end
@@ -133,10 +155,19 @@ btnDebug:SetScript("OnClick", function()
     btnDebug:SetText(Clockwork.DEBUG_MOD and "On - Debug" or "Off - Debug")
 end)
 
-local btnAddWP = createMenuButton("ClockworkMenuButtonAddWP", frame, btnDebug, "Add Waypoint", "Add a waypoint at current position")
+-- local btnAddWP = createMenuButton("ClockworkMenuButtonAddWP", frame, btnDebug, "Add Waypoint", "Add a waypoint at current position")
+-- btnAddWP:SetScript("OnClick", function() Clockwork:clickAddWp() end)
+
+-- local btnClearWP = createMenuButton("ClockworkMenuButtonClearWP", frame, btnAddWP, "Clear Waypoints", "Clear every waypoints")
+-- btnClearWP:SetScript("OnClick", function() Clockwork:clickClearWp() end)
+
+-- Bouton Ajouter un Waypoint (Icône de plus/carte)
+local btnAddWP = createIconButton("ClockworkBtnAddWP", frame, nil, "Interface\\PaperDollInfoFrame\\Character-Plus", "Add a waypoint at current position")
 btnAddWP:SetScript("OnClick", function() Clockwork:clickAddWp() end)
 
-local btnClearWP = createMenuButton("ClockworkMenuButtonClearWP", frame, btnAddWP, "Clear Waypoints", "Clear every waypoints")
+-- Bouton Clear (Icône de poubelle ou de croix rouge)
+local btnClearWP = createIconButton("ClockworkBtnClearWP", frame, btnAddWP, "Interface\\Buttons\\UI-GroupLoot-Pass-Up", "Clear every waypoints")
+btnClearWP:SetPoint("LEFT", btnAddWP, "RIGHT", 10, 0)
 btnClearWP:SetScript("OnClick", function() Clockwork:clickClearWp() end)
 
 -- Add common scripts to all buttons
