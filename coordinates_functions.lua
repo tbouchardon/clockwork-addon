@@ -60,11 +60,11 @@ end
 ---comment
 ---@param coordinates number
 function Clockwork:updateLatitude(coordinates)
-    local numBits = 18        -- Number of bits to represent
+    local numBits = 19        -- Number of bits to represent
 
     for i = numBits, 0, -1 do -- Loop from numBits down to 1
         local power = 2 ^ (i)
-        local texture = self["coord_lati_" .. power .. ".texture"]
+        local texture = self["coord_lati_" .. power].texture
 
         if coordinates >= power then
             coordinates = coordinates - power
@@ -78,11 +78,11 @@ end
 ---comment
 ---@param coordinates number
 function Clockwork:updateLongitude(coordinates)
-    local numBits = 18 -- Number of bits to represent
+    local numBits = 19 -- Number of bits to represent
 
     for i = numBits, 0, -1 do
         local power = 2 ^ (i)
-        local texture = self["coord_long_" .. power .. ".texture"]
+        local texture = self["coord_long_" .. power].texture
 
         if coordinates >= power then
             coordinates = coordinates - power

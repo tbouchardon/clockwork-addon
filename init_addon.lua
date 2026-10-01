@@ -333,7 +333,7 @@ function Clockwork:onEvent(event, ...)
     end
 end
 
-Clockwork.frame = CreateFrame("FRAME", "ClockworkFrame", UIParent)
+Clockwork.frame = CreateFrame("FRAME") --, "ClockworkFrame", UIParent)
 -- Register Events
 local eventsToRegister = {
     "PLAYER_ENTERING_WORLD",

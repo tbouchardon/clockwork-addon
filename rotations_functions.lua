@@ -225,15 +225,15 @@ end
 function Clockwork.healthPercentage(unit)
     -- Clockwork.log.debug("function Clockwork.healthPercentage(" .. tostring(unit))
 
-    if (UnitHealth(unit) == 0) then
-        return 0
-    end
+    --if (UnitHealth(unit) == 0) then
+    --    return 0
+    --end
 
-    local percentage
+    --local percentage
 
-    percentage = UnitHealth(unit) / UnitHealthMax(unit) * 100
+    --percentage = UnitHealth(unit) / UnitHealthMax(unit) * 100
 
-    return percentage
+    return UnitHealthPercent(unit, true, CurveConstants.ScaleTo100)
 end
 
 --- Gets the player's health percentage.
