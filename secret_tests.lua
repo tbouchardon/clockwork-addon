@@ -313,6 +313,7 @@ function Clockwork.testSecrets()
     table.insert(lines, Clockwork.guardReport())
 
     Clockwork.combatLogReport(lines)
+    Clockwork.sectionWorkarounds(lines)
 
     table.insert(lines, "")
     table.insert(lines, "--- D. Événements refusés par le client ---")
@@ -351,6 +352,7 @@ function Clockwork.recordCastSucceeded(unit, castGUID, spellId)
     if isSecret(spellId) == "oui" then probe.secretSpellId = probe.secretSpellId + 1 end
     if isSecret(castGUID) == "oui" then probe.secretGUID = probe.secretGUID + 1 end
     remember(probe.examples, string.format("t=%.1f spellId=%s %s", GetTime(), safeText(spellId), spellName(spellId)), 10)
+    if isSecret(spellId) ~= "oui" and probe.spellIds then probe.spellIds[spellId] = true end
 end
 
 function Clockwork.recordOverlayGlow(state, spellId)
@@ -408,3 +410,151 @@ function Clockwork.combatLogReport(lines)
     table.insert(lines, "Dernières auras ajoutées :")
     for _, line in ipairs(aura.examples) do table.insert(lines, "  " .. line) end
 end
+
+-- Section F : contournements trouvés dans la documentation de l'API 12.1 (Blizzard_APIDocumentationGenerated).
+
+-- Sorts lancés par le joueur, pour tester leur niveau de secret (rempli par recordCastSucceeded)
+Clockwork.castProbe.spellIds = Clockwork.castProbe.spellIds or {}
+
+-- Surbrillances de procs relevées en continu (l'événement peut ne pas arriver : on interroge aussi l'API)
+Clockwork.overlayProbe = { scans = 0, seen = {} }
+
+local function barSpells()
+    local spells = {}
+    for slot = 1, 180 do
+        local ok, actionType, id = pcall(function()
+            local actionType, id = GetActionInfo(slot)
+            if actionType == "spell" then return actionType, id end
+        end)
+        if ok and actionType then table.insert(spells, { slot = slot, id = id }) end
+    end
+    return spells
+end
+
+C_Timer.NewTicker(0.25, function()
+    local probe = Clockwork.overlayProbe
+    probe.scans = probe.scans + 1
+    pcall(function()
+        for _, entry in ipairs(barSpells()) do
+            local ok, glowing = pcall(call, "C_SpellActivationOverlay.IsSpellOverlayed", entry.id)
+            if ok and glowing == true then probe.seen[entry.id] = GetTime() end
+        end
+    end)
+end)
+
+local SECRECY = { [0] = "jamais", [1] = "toujours", [2] = "selon contexte" }
+
+local function secrecy(path, id)
+    local ok, level = pcall(call, path, id)
+    if not ok then return "KO" end
+    return SECRECY[level] or safeText(level)
+end
+
+local function sectionWorkarounds(lines)
+    table.insert(lines, "")
+    table.insert(lines, "--- F. Restrictions actives (C_RestrictedActions) ---")
+    local states = { [0] = "inactive", [1] = "en cours d'activation", [2] = "active" }
+    for name, value in pairs(Enum.AddOnRestrictionType or {}) do
+        local ok, state = pcall(call, "C_RestrictedActions.GetAddOnRestrictionState", value)
+        table.insert(lines, string.format("  %-14s %s", name, ok and (states[state] or safeText(state)) or ("KO : " .. short(state))))
+    end
+    for _, name in ipairs({ "HasSecretRestrictions", "ShouldAurasBeSecret", "ShouldCooldownsBeSecret", "ShouldUnitStatsBeSecret" }) do
+        probe(lines, "C_Secrets." .. name, function() return call("C_Secrets." .. name) end)
+    end
+    probe(lines, "C_Secrets.ShouldUnitIdentityBeSecret(target)", function() return call("C_Secrets.ShouldUnitIdentityBeSecret", "target") end)
+    probe(lines, "UnitGUID(target)", function() return UnitGUID("target") end)
+
+    table.insert(lines, "")
+    table.insert(lines, "--- F. Secret par sort : aura / incantation / recharge, et lecture de l'aura en combat ---")
+    local ids, seen = {}, {}
+    for _, entry in ipairs(barSpells()) do
+        if not seen[entry.id] then table.insert(ids, entry.id); seen[entry.id] = true end
+    end
+    for id in pairs(Clockwork.castProbe.spellIds) do
+        if not seen[id] then table.insert(ids, id); seen[id] = true end
+    end
+    for _, id in ipairs(ids) do
+        local okAura, aura = pcall(call, "C_UnitAuras.GetPlayerAuraBySpellID", id)
+        local auraText = okAura and (aura and ("aura lue, fin=" .. safeText(aura.expirationTime)) or "pas d'aura") or ("KO : " .. short(aura))
+        table.insert(lines, string.format("  %-8s %-24s aura=%-15s cast=%-15s recharge=%-15s %s", safeText(id), spellName(id),
+            secrecy("C_Secrets.GetSpellAuraSecrecy", id), secrecy("C_Secrets.GetSpellCastSecrecy", id),
+            secrecy("C_Secrets.GetSpellCooldownSecrecy", id), auraText))
+    end
+
+    table.insert(lines, "")
+    table.insert(lines, "--- F. Variantes de sorts (recommandation de Blizzard -> bouton) ---")
+    local okNext, nextSpell = pcall(call, "C_AssistedCombat.GetNextCastSpell")
+    if okNext and nextSpell then
+        probe(lines, "GetNextCastSpell", function() return nextSpell end)
+        probe(lines, "GetBaseSpell(recommandé)", function() return call("C_Spell.GetBaseSpell", nextSpell) end)
+        probe(lines, "Bouton du sort de base", function()
+            local slots = call("C_ActionBar.FindSpellActionButtons", call("C_Spell.GetBaseSpell", nextSpell))
+            return slots and slots[1]
+        end)
+    end
+    for _, entry in ipairs(barSpells()) do
+        local ok, override = pcall(call, "C_Spell.GetOverrideSpell", entry.id)
+        if ok and override and isSecret(override) ~= "oui" and override ~= entry.id then
+            table.insert(lines, string.format("  bouton %d : %s %s -> variante %s %s", entry.slot, safeText(entry.id), spellName(entry.id), safeText(override), spellName(override)))
+        end
+    end
+
+    table.insert(lines, "")
+    table.insert(lines, "--- F. Temps de recharge via objet durée (C_Spell.GetSpellCooldownDuration) ---")
+    local frame = testFrame()
+    for _, entry in ipairs(barSpells()) do
+        local okDuration, duration = pcall(call, "C_Spell.GetSpellCooldownDuration", entry.id)
+        if okDuration and duration then
+            local label = string.format("bouton %d %s", entry.slot, spellName(entry.id))
+            probe(lines, label .. " : HasSecretValues", function() return duration:HasSecretValues() end)
+            probe(lines, label .. " : IsActive", function() return duration:IsActive() end)
+            probe(lines, label .. " : GetRemainingPercent", function() return duration:GetRemainingPercent() end)
+            display(lines, label .. " : SetColorTexture(RemainingPercent)", function()
+                frame.texture:SetColorTexture(duration:GetRemainingPercent(), 0, 0, 1)
+            end)
+            display(lines, label .. " : courbe 0..60 s -> SetColorTexture", function()
+                local curve = call("C_CurveUtil.CreateCurve")
+                curve:AddPoint(0, 0)
+                curve:AddPoint(60, 1)
+                frame.texture:SetColorTexture(duration:EvaluateRemainingDuration(curve), 0, 0, 1)
+            end)
+            display(lines, label .. " : IsActive -> EvaluateColorFromBoolean", function()
+                local color = call("C_CurveUtil.EvaluateColorFromBoolean", duration:IsActive(), CreateColor(1, 1, 1, 1), CreateColor(0, 0, 0, 1))
+                frame.texture:SetColorTexture(color:GetRGBA())
+            end)
+            break -- un seul bouton suffit pour valider la méthode
+        elseif not okDuration then
+            table.insert(lines, "  GetSpellCooldownDuration KO : " .. short(duration))
+            break
+        end
+    end
+
+    table.insert(lines, "")
+    table.insert(lines, "--- F. Ennemis proches (barres de vie, jetons nameplateN) ---")
+    local plates, hostile, hostileInCombat, errors, firstError = 0, 0, 0, 0, nil
+    for index = 1, 40 do
+        local unit = "nameplate" .. index
+        local ok, err = pcall(function()
+            if not UnitExists(unit) then return end
+            plates = plates + 1
+            if UnitCanAttack("player", unit) then
+                hostile = hostile + 1
+                if UnitAffectingCombat(unit) then hostileInCombat = hostileInCombat + 1 end
+            end
+        end)
+        if not ok then errors = errors + 1; firstError = firstError or short(err) end
+    end
+    table.insert(lines, string.format("  %d barre(s), %d attaquable(s), %d attaquable(s) en combat, %d erreur(s)%s",
+        plates, hostile, hostileInCombat, errors, firstError and (" (" .. firstError .. ")") or ""))
+
+    table.insert(lines, "")
+    table.insert(lines, string.format("--- F. Procs relevés par IsSpellOverlayed (%d relevés depuis le chargement) ---", Clockwork.overlayProbe.scans))
+    local any = false
+    for id, time in pairs(Clockwork.overlayProbe.seen) do
+        table.insert(lines, string.format("  %s %s, dernier vu à t=%.1f", safeText(id), spellName(id), time))
+        any = true
+    end
+    if not any then table.insert(lines, "  aucun") end
+end
+
+Clockwork.sectionWorkarounds = sectionWorkarounds
