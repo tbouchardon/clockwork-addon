@@ -297,6 +297,8 @@ function Clockwork.testSecrets()
     table.insert(lines, "--- C. Blocs du QR code en erreur (Clockwork.guard) ---")
     table.insert(lines, Clockwork.guardReport())
 
+    Clockwork.combatLogReport(lines)
+
     table.insert(lines, "")
     table.insert(lines, "--- D. Événements refusés par le client ---")
     local refused = false
@@ -307,4 +309,104 @@ function Clockwork.testSecrets()
     if not refused then table.insert(lines, "Aucun.") end
 
     Clockwork.showTextWindow(table.concat(lines, "\n"))
+end
+
+-- Enregistreurs pour la section E : ce que le client transmet encore via le journal de combat et UNIT_AURA.
+-- Champs du journal : 1 horodatage, 2 sous-événement, 4 source, 8 cible, 12 identifiant du sort, 13 nom, 15 type d'aura.
+local CLEU_FIELDS = { [1] = "horodatage", [2] = "sous-événement", [4] = "source", [8] = "cible", [12] = "spellId", [13] = "nom du sort", [15] = "type d'aura" }
+
+Clockwork.logProbe = { events = 0, errors = 0, secretFields = {}, maxFields = 0, subevents = {}, auraEvents = {} }
+Clockwork.auraProbe = { events = 0, errors = 0, added = 0, secretFields = {}, examples = {} }
+
+local function remember(list, line, size)
+    if #list >= size then table.remove(list, 1) end
+    table.insert(list, line)
+end
+
+function Clockwork.recordCombatLog()
+    local probe = Clockwork.logProbe
+    probe.events = probe.events + 1
+
+    local ok, err = pcall(function()
+        local count = select("#", CombatLogGetCurrentEventInfo())
+        local args = { CombatLogGetCurrentEventInfo() }
+        if count > probe.maxFields then probe.maxFields = count end
+
+        for index = 1, count do
+            if isSecret(args[index]) == "oui" then probe.secretFields[index] = (probe.secretFields[index] or 0) + 1 end
+        end
+
+        local subevent = args[2]
+        if isSecret(subevent) == "oui" or type(subevent) ~= "string" then return end
+        probe.subevents[subevent] = (probe.subevents[subevent] or 0) + 1
+
+        if string.find(subevent, "^SPELL_AURA") then
+            local okMine, mine = pcall(function() return args[4] == UnitGUID("player") end)
+            remember(probe.auraEvents, string.format("%-26s t=%s spellId=%s %s source=%s",
+                subevent, safeText(args[1]), safeText(args[12]), safeText(args[13]),
+                okMine and (mine and "moi" or "autre") or "<secret>"), 15)
+        end
+    end)
+
+    if not ok then
+        probe.errors = probe.errors + 1
+        probe.lastError = short(err)
+    end
+end
+
+function Clockwork.recordUnitAura(unit, updateInfo)
+    if unit ~= "player" and unit ~= "target" then return end
+    local probe = Clockwork.auraProbe
+    probe.events = probe.events + 1
+
+    local ok, err = pcall(function()
+        if not updateInfo or not updateInfo.addedAuras then return end
+        for _, aura in ipairs(updateInfo.addedAuras) do
+            probe.added = probe.added + 1
+            for _, field in ipairs({ "spellId", "name", "duration", "expirationTime", "sourceUnit", "isFromPlayerOrPlayerPet", "auraInstanceID" }) do
+                if isSecret(aura[field]) == "oui" then probe.secretFields[field] = (probe.secretFields[field] or 0) + 1 end
+            end
+            remember(probe.examples, string.format("%-6s spellId=%s %s durée=%s fin=%s source=%s", unit,
+                safeText(aura.spellId), safeText(aura.name), safeText(aura.duration), safeText(aura.expirationTime),
+                safeText(aura.sourceUnit)), 10)
+        end
+    end)
+
+    if not ok then
+        probe.errors = probe.errors + 1
+        probe.lastError = short(err)
+    end
+end
+
+function Clockwork.combatLogReport(lines)
+    local log = Clockwork.logProbe
+    table.insert(lines, "")
+    table.insert(lines, "--- E. Journal de combat (depuis le chargement) ---")
+    table.insert(lines, string.format("%d événement(s) reçu(s), %d erreur(s)%s, jusqu'à %d champs", log.events, log.errors,
+        log.lastError and (" (" .. log.lastError .. ")") or "", log.maxFields))
+    for index = 1, log.maxFields do
+        local secrets = log.secretFields[index] or 0
+        if secrets > 0 or CLEU_FIELDS[index] then
+            table.insert(lines, string.format("  champ %2d %-16s secret %d / %d", index, CLEU_FIELDS[index] or "", secrets, log.events))
+        end
+    end
+    local names = {}
+    for name in pairs(log.subevents) do table.insert(names, name) end
+    table.sort(names)
+    local counts = {}
+    for _, name in ipairs(names) do table.insert(counts, name .. "=" .. log.subevents[name]) end
+    if #counts > 0 then table.insert(lines, "Sous-événements : " .. table.concat(counts, ", ")) end
+    table.insert(lines, "Derniers événements d'auras :")
+    for _, line in ipairs(log.auraEvents) do table.insert(lines, "  " .. line) end
+
+    local aura = Clockwork.auraProbe
+    table.insert(lines, "")
+    table.insert(lines, "--- E. UNIT_AURA (joueur et cible, depuis le chargement) ---")
+    table.insert(lines, string.format("%d événement(s), %d aura(s) ajoutée(s), %d erreur(s)%s", aura.events, aura.added, aura.errors,
+        aura.lastError and (" (" .. aura.lastError .. ")") or ""))
+    for field, secrets in pairs(aura.secretFields) do
+        table.insert(lines, string.format("  %-24s secret %d / %d", field, secrets, aura.added))
+    end
+    table.insert(lines, "Dernières auras ajoutées :")
+    for _, line in ipairs(aura.examples) do table.insert(lines, "  " .. line) end
 end

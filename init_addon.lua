@@ -214,12 +214,14 @@ Event Handling
 
 local eventHandlers
 
-local function handleSpellcastStart(self)
+local function handleSpellcastStart(self, unit)
+    if unit ~= "player" then return end
     self.CASTING = true
     self.casting.texture:SetColorTexture(1, 1, 1, 1)
 end
 
-local function handleSpellcastStop(self)
+local function handleSpellcastStop(self, unit)
+    if unit ~= "player" then return end
     self.CASTING = false
     self.casting.texture:SetColorTexture(0, 0, 0, 1)
 end
@@ -280,6 +282,11 @@ local function handleSpecializationChanged(self)
 end
 
 local function handleCombatLog(self)
+    Clockwork.recordCombatLog()
+    Clockwork.guard("combatLog", function() self:trackCombatLog() end)
+end
+
+function Clockwork:trackCombatLog()
     local args = { CombatLogGetCurrentEventInfo() }
     local subevent = args[2]
     local sourceGUID = args[4]
@@ -311,12 +318,13 @@ local function handleCombatLog(self)
 end
 
 eventHandlers = {
-    ["SPELLCAST_START"] = handleSpellcastStart,
-    ["SPELLCAST_CHANNEL_START"] = handleSpellcastStart,
-    ["SPELLCAST_STOP"] = handleSpellcastStop,
-    ["SPELLCAST_CHANNEL_STOP"] = handleSpellcastStop,
-    ["SPELLCAST_FAILED"] = handleSpellcastStop,
-    ["SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
+    ["UNIT_SPELLCAST_START"] = handleSpellcastStart,
+    ["UNIT_SPELLCAST_CHANNEL_START"] = handleSpellcastStart,
+    ["UNIT_SPELLCAST_STOP"] = handleSpellcastStop,
+    ["UNIT_SPELLCAST_CHANNEL_STOP"] = handleSpellcastStop,
+    ["UNIT_SPELLCAST_FAILED"] = handleSpellcastStop,
+    ["UNIT_SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
+    ["UNIT_AURA"] = function(_, unit, updateInfo) Clockwork.recordUnitAura(unit, updateInfo) end,
     ["ADDON_LOADED"] = handleAddonLoaded,
     ["PLAYER_ENTERING_WORLD"] = handlePlayerEnteringWorld,
     ["UNIT_PET"] = handlePetChanged,
@@ -351,6 +359,7 @@ local eventsToRegister = {
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
     "COMBAT_LOG_EVENT_UNFILTERED",
+    "UNIT_AURA",
     "ADDON_LOADED",
     "PLAYER_DEAD",
     "PLAYER_SPECIALIZATION_CHANGED",
