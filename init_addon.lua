@@ -305,6 +305,7 @@ eventHandlers = {
     ["UNIT_SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
     ["UNIT_AURA"] = function(_, unit, updateInfo) Clockwork.recordUnitAura(unit, updateInfo) end,
     ["DISPLAY_SIZE_CHANGED"] = function(self) self:updatePixelScale() end,
+    ["PLAYER_LOGOUT"] = function() Clockwork.guard("exportSpellbook", Clockwork.exportSpellbook) end,
     ["UI_SCALE_CHANGED"] = function(self) self:updatePixelScale() end,
     ["UNIT_SPELLCAST_SUCCEEDED"] = function(_, unit, castGUID, spellId)
         Clockwork.recordCastSucceeded(unit, castGUID, spellId)
@@ -348,6 +349,7 @@ local eventsToRegister = {
     "UNIT_SPELLCAST_CHANNEL_STOP",
     "UNIT_AURA",
     "DISPLAY_SIZE_CHANGED",
+    "PLAYER_LOGOUT",
     "UI_SCALE_CHANGED",
     "UNIT_SPELLCAST_SUCCEEDED",
     "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW",

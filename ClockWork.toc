@@ -4,7 +4,7 @@
 ## Notes: My Smart Addon
 ## Category: Combat
 ## DefaultState: Enabled
-## SavedVariables: CLOCKWORK_ROTATIONS
+## SavedVariables: CLOCKWORK_ROTATIONS, CLOCKWORK_SPELLBOOK
 
 ## Dependencies: 
 

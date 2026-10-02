@@ -8,10 +8,15 @@
 --   ligne 9, sous chaque touche 1..= (x 2..13) et ligne 12 x 8..13 (Q D R T F G) : historique du sort de la touche
 --       R = temps depuis le dernier lancement sur la cible actuelle / 60 s (1 = jamais ou plus de 60 s)
 --       G = proc (bouton en surbrillance), B = temps depuis le dernier lancement, toutes cibles / 60 s
---   (6, 2) : touche recommandée par Blizzard, R = indice dans KEY_ORDER / 255 (0 = aucune)
+--   identifiant du sort de chaque touche sur 24 bits (R octet fort, G, B octet faible), dans l'ordre de KEY_ORDER :
+--       touches 1..8 en (3..10, 3), 9..12 en (2..5, 7), 13..16 en (2..5, 10), 17..18 en (8..9, 2) ; 0 = pas de sort
+--   (6, 2) : identifiant du sort recommandé par Blizzard sur 24 bits (0 = aucun)
 --   (7, 2) : direction du personnage sur 16 bits, R = octet fort, G = octet faible (0..65535 pour 0..2π)
 --   (2, 3) : nombre d'ennemis en combat (barres de vie), R = nombre / 255
 --   (8, 13) : version de la grille, R = 2 / 255
+--
+-- Le dictionnaire des sorts (identifiant -> nom, sort de base) est exporté dans la SavedVariable CLOCKWORK_SPELLBOOK,
+-- écrite sur le disque par WoW à chaque /reload ou déconnexion : le Java y traduit les noms des règles en identifiants.
 
 Clockwork.QR_VERSION = 2
 
@@ -36,9 +41,26 @@ local function curve()
     return cooldownCurve
 end
 
+local function spellIdCell(position)
+    if position <= 8 then return position + 2, -3 end
+    if position <= 12 then return position - 7, -7 end
+    if position <= 16 then return position - 11, -10 end
+    return position - 9, -2
+end
+
+--- Encode un entier sur 24 bits dans une texture (R octet fort, G, B octet faible).
+local function setColor24(texture, value)
+    value = math.max(0, math.min(math.floor(value or 0), 16777215))
+    texture:SetColorTexture(math.floor(value / 65536) / 255, math.floor(value / 256) % 256 / 255, value % 256 / 255, 1)
+end
+
 function Clockwork:initQrCodeV2()
     self.keyState = {}
     self.keyHistory = {}
+    self.keySpell = {}
+    for position, key in ipairs(Clockwork.KEY_ORDER) do
+        self.keySpell[key] = self:createDot("keySpell_" .. key, spellIdCell(position))
+    end
     for index, key in ipairs(NUMBER_KEYS) do
         self.keyState[key] = self:createDot("keyState_" .. key, index + 1, -6)
         self.keyHistory[key] = self:createDot("keyHistory_" .. key, index + 1, -9)
@@ -47,7 +69,7 @@ function Clockwork:initQrCodeV2()
         self.keyState[key] = self:createDot("keyState_" .. key, index + 1, -12)
         self.keyHistory[key] = self:createDot("keyHistory_" .. key, index + 7, -12)
     end
-    self.recommendedKey = self:createDot("recommendedKey", 6, -2)
+    self.recommendedSpell = self:createDot("recommendedSpell", 6, -2)
     self.facing = self:createDot("facing", 7, -2)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
@@ -95,6 +117,7 @@ end
 
 function Clockwork:updateKeyState(key)
     local spellID, slot = self:spellForKey(key)
+    setColor24(self.keySpell[key].texture, spellID or 0)
     if not slot then
         self.keyState[key].texture:SetColorTexture(0, 0, 0, 1)
         self.keyHistory[key].texture:SetColorTexture(1, 0, 1, 1)
@@ -125,18 +148,11 @@ function Clockwork:updateQrCodeV2()
         Clockwork.guard("key " .. key, function() self:updateKeyState(key) end)
     end
 
-    Clockwork.guard("recommendedKey", function()
-        local index = 0
+    Clockwork.guard("recommendedSpell", function()
         local spellID = C_AssistedCombat and C_AssistedCombat.GetNextCastSpell and C_AssistedCombat.GetNextCastSpell()
-        if spellID then
-            local action = self:getActionSlotAndBindingForSpell(spellID)
-            if action and not action.shift and not action.alt and not action.ctrl then
-                for position, key in ipairs(Clockwork.KEY_ORDER) do
-                    if key == action.key then index = position end
-                end
-            end
-        end
-        self.recommendedKey.texture:SetColorTexture(index / 255, 0, 0, 1)
+        -- Forme de base : c'est elle que contient le bouton, donc celle que le Java retrouve dans les cases des touches
+        local base = spellID and C_Spell.GetBaseSpell and C_Spell.GetBaseSpell(spellID)
+        setColor24(self.recommendedSpell.texture, base or spellID or 0)
     end)
 
     Clockwork.guard("facing", function()
@@ -155,4 +171,29 @@ function Clockwork:updateQrCodeV2()
         end
         self.numberOfTargets.texture:SetColorTexture(math.min(count, 255) / 255, 0, 0, 1)
     end)
+end
+
+--- Exporte le dictionnaire des sorts des barres d'action (identifiant -> nom, sort de base, variante active) dans
+--- CLOCKWORK_SPELLBOOK, que WoW écrit sur le disque au prochain /reload ou à la déconnexion.
+function Clockwork.exportSpellbook()
+    CLOCKWORK_SPELLBOOK = CLOCKWORK_SPELLBOOK or {}
+    local book = {}
+    local function add(spellID)
+        if not spellID or book[spellID] then return end
+        local name = C_Spell.GetSpellName(spellID)
+        if not name then return end
+        book[spellID] = { name = name, base = C_Spell.GetBaseSpell(spellID), override = C_Spell.GetOverrideSpell(spellID) }
+    end
+    for slot = 1, 180 do
+        local actionType, id = GetActionInfo(slot)
+        if actionType == "spell" then
+            add(id)
+            add(C_Spell.GetOverrideSpell(id))
+        end
+    end
+    for spellID in pairs(Clockwork.lastCasts) do add(spellID) end
+
+    local class = Clockwork.player.class and Clockwork.player.class.classFilename or "?"
+    local spec = Clockwork.player.specialization and Clockwork.player.specialization.id or 0
+    CLOCKWORK_SPELLBOOK[class .. "-" .. spec] = { updated = date("%Y-%m-%d %H:%M:%S"), spells = book }
 end
