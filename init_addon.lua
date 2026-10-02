@@ -15,11 +15,25 @@ function Clockwork.addonLoaded()
     end
 end
 
+--- Règle l'échelle de la grille pour qu'un point de l'addon fasse exactement un pixel à l'écran.
+--- WoW dessine l'interface dans un espace de 768 unités de haut, étiré à la hauteur réelle de la zone de jeu
+--- (ex. 1009 px en fenêtré agrandi : x1,31, le QR code ferait 21x21 px) ; le Java lit le QR code pixel par pixel.
+--- @return nil
+function Clockwork:updatePixelScale()
+    local _, height = GetPhysicalScreenSize()
+    if not height or height <= 0 then return end
+
+    local parent = self.frame:GetParent()
+    local parentScale = parent and parent:GetEffectiveScale() or 1
+    self.frame:SetScale(768 / height / parentScale)
+end
+
 function Clockwork:playerEnteringWorld()
     -- init Frames
 
     self.frame:SetWidth(16)
     self.frame:SetHeight(16)
+    self:updatePixelScale()
 
     self.nextUpdate = 0
     self.addWaypointList = nil
@@ -289,6 +303,8 @@ eventHandlers = {
     ["UNIT_SPELLCAST_FAILED"] = handleSpellcastStop,
     ["UNIT_SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
     ["UNIT_AURA"] = function(_, unit, updateInfo) Clockwork.recordUnitAura(unit, updateInfo) end,
+    ["DISPLAY_SIZE_CHANGED"] = function(self) self:updatePixelScale() end,
+    ["UI_SCALE_CHANGED"] = function(self) self:updatePixelScale() end,
     ["UNIT_SPELLCAST_SUCCEEDED"] = function(_, unit, castGUID, spellId) Clockwork.recordCastSucceeded(unit, castGUID, spellId) end,
     ["SPELL_ACTIVATION_OVERLAY_GLOW_SHOW"] = function(_, spellId) Clockwork.recordOverlayGlow("allumé", spellId) end,
     ["SPELL_ACTIVATION_OVERLAY_GLOW_HIDE"] = function(_, spellId) Clockwork.recordOverlayGlow("éteint", spellId) end,
@@ -327,6 +343,8 @@ local eventsToRegister = {
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
     "UNIT_AURA",
+    "DISPLAY_SIZE_CHANGED",
+    "UI_SCALE_CHANGED",
     "UNIT_SPELLCAST_SUCCEEDED",
     "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW",
     "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE",
