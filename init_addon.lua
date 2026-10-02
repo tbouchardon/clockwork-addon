@@ -109,9 +109,9 @@ function Clockwork:playerEnteringWorld()
         table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 14, -(i - 8)))
     end
 
-    -- Raid 21-30: x=12 to 3, y=-1
+    -- Raid 21-30: x=12 to 3, y=-14
     for i = 21, 30 do
-        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 12 - (i - 21), -1))
+        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 12 - (i - 21), -14))
     end
 
     -- Raid 31-40: x=1, y=-12 to -3
@@ -120,6 +120,7 @@ function Clockwork:playerEnteringWorld()
     end
 
     self:initKeys()
+    self:initQrCodeV2()
     self:initCoords()
     self:initLocalization()
 
@@ -305,7 +306,10 @@ eventHandlers = {
     ["UNIT_AURA"] = function(_, unit, updateInfo) Clockwork.recordUnitAura(unit, updateInfo) end,
     ["DISPLAY_SIZE_CHANGED"] = function(self) self:updatePixelScale() end,
     ["UI_SCALE_CHANGED"] = function(self) self:updatePixelScale() end,
-    ["UNIT_SPELLCAST_SUCCEEDED"] = function(_, unit, castGUID, spellId) Clockwork.recordCastSucceeded(unit, castGUID, spellId) end,
+    ["UNIT_SPELLCAST_SUCCEEDED"] = function(_, unit, castGUID, spellId)
+        Clockwork.recordCastSucceeded(unit, castGUID, spellId)
+        if unit == "player" then Clockwork.recordOwnCast(spellId) end
+    end,
     ["SPELL_ACTIVATION_OVERLAY_GLOW_SHOW"] = function(_, spellId) Clockwork.recordOverlayGlow("allumé", spellId) end,
     ["SPELL_ACTIVATION_OVERLAY_GLOW_HIDE"] = function(_, spellId) Clockwork.recordOverlayGlow("éteint", spellId) end,
     ["ADDON_LOADED"] = handleAddonLoaded,

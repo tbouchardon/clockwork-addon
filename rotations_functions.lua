@@ -91,6 +91,8 @@ function Clockwork:updateUIStatus()
         end
     end)
 
+    self:updateQrCodeV2()
+
     Clockwork.guard("drive", function()
         -- PV et mana étant secrets, on attend la fin du buff de nourriture ou de boisson au lieu de comparer à 100 %
         if Clockwork.DRIVE_MOD == true
