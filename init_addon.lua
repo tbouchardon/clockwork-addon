@@ -6,6 +6,9 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+-- Nom réel de l'addon (celui du dossier et du .toc, ex. "ClockWork"), transmis par WoW à chaque fichier chargé
+local ADDON_NAME = ...
+
 function Clockwork.addonLoaded()
     if Clockwork_ROTATIONS == nil then
         Clockwork_ROTATIONS = {};
@@ -222,7 +225,7 @@ local function handleSpellcastStop(self)
 end
 
 local function handleAddonLoaded(self, addonName)
-    if addonName == "Clockwork" then
+    if addonName == ADDON_NAME then
         Clockwork.log.debug(addonName .. " Loaded")
         self:playerEnteringWorld()
         self:addonLoaded()
@@ -353,10 +356,16 @@ local eventsToRegister = {
     "PLAYER_SPECIALIZATION_CHANGED",
     "UNIT_PET"
 }
+-- EventRegistry:RegisterCallback n'écoute que les événements déclenchés par EventRegistry:TriggerEvent, pas ceux du jeu :
+-- l'abonnement se fait sur la frame. Un événement refusé par le client (ex. journal de combat en 12.0) est ignoré
+-- et noté dans Clockwork.refusedEvents, sans empêcher l'abonnement aux autres.
+Clockwork.refusedEvents = {}
 for _, eventName in ipairs(eventsToRegister) do
-    EventRegistry:RegisterCallback(eventName, function(_, ...) 
-        Clockwork:onEvent(eventName, ...) 
-    end, Clockwork) -- On passe 'Clockwork' comme identifiant unique
+    local ok, err = pcall(Clockwork.frame.RegisterEvent, Clockwork.frame, eventName)
+    if not ok then
+        Clockwork.refusedEvents[eventName] = tostring(err)
+        Clockwork.log.warning("Événement " .. eventName .. " refusé : " .. tostring(err))
+    end
 end
 
 Clockwork.frame:SetPoint("TOPLEFT", 0, 0)

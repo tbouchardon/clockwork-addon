@@ -243,5 +243,14 @@ function Clockwork.testSecrets()
     table.insert(lines, "--- C. Blocs du QR code en erreur (Clockwork.guard) ---")
     table.insert(lines, Clockwork.guardReport())
 
+    table.insert(lines, "")
+    table.insert(lines, "--- D. Événements refusés par le client ---")
+    local refused = false
+    for eventName, err in pairs(Clockwork.refusedEvents or {}) do
+        table.insert(lines, eventName .. " : " .. short(err))
+        refused = true
+    end
+    if not refused then table.insert(lines, "Aucun.") end
+
     Clockwork.showTextWindow(table.concat(lines, "\n"))
 end
