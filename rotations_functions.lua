@@ -49,17 +49,15 @@ function Clockwork:updateUIStatus()
             self:updateRaidHealth()
         elseif UnitExists("party1") then
             self:updatePartyHealth()
-        else
-            self:checkUnitHealth("player", -1)
         end
     end)
 
     Clockwork.guard("playerHealth", function()
-        self.playerHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("player"), 0, 0, 1)
+        self.playerHealth.texture:SetColorTexture(Clockwork.healthRatio("player"), 0, 0, 1)
     end)
 
     Clockwork.guard("playerMana", function()
-        self.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("player"), 1)
+        self.playerMana.texture:SetColorTexture(0, 0, Clockwork.powerRatio("player"), 1)
     end)
 
     Clockwork.guard("target", function()
@@ -82,15 +80,15 @@ function Clockwork:updateUIStatus()
 
     Clockwork.guard("targetHealth", function()
         if (UnitExists("target") and not UnitIsUnit("player", "target")) then
-            self.targetHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("target"), 0, 0, 1)
-            self.targetMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("target"), 1)
+            self.targetHealth.texture:SetColorTexture(Clockwork.healthRatio("target"), 0, 0, 1)
+            self.targetMana.texture:SetColorTexture(0, 0, Clockwork.powerRatio("target"), 1)
         end
     end)
 
     Clockwork.guard("drive", function()
+        -- PV et mana étant secrets, on attend la fin du buff de nourriture ou de boisson au lieu de comparer à 100 %
         if Clockwork.DRIVE_MOD == true
-            and ((Clockwork.unitHasBuff("player", "Food") and (Clockwork.playerHealthPct() < 100))
-                or (Clockwork.unitHasBuff("player", "Drink") and (Clockwork.playerManaPct() < 100))) then
+            and (Clockwork.unitHasBuff("player", "Food") or Clockwork.unitHasBuff("player", "Drink")) then
             self.drive.texture:SetColorTexture(0, 0, 0, 1)
         elseif Clockwork.DRIVE_MOD == true then
             self.drive.texture:SetColorTexture(1, 1, 1, 1)
@@ -236,53 +234,20 @@ function Clockwork.enemyPlayer()
 end
 
 --- Calculates the health percentage of a unit.
+--- Ratio de vie de l'unité, de 0 à 1.
+--- En 12.x c'est une valeur SECRÈTE : la transmettre telle quelle à un widget (SetColorTexture, StatusBar...),
+--- ne jamais la comparer ni faire de calcul avec (erreur Lua).
 --- @param unit string
 --- @return number
-function Clockwork.healthPercentage(unit)
-    -- Clockwork.log.debug("function Clockwork.healthPercentage(" .. tostring(unit))
-
-    --if (UnitHealth(unit) == 0) then
-    --    return 0
-    --end
-
-    --local percentage
-
-    --percentage = UnitHealth(unit) / UnitHealthMax(unit) * 100
-
-    return UnitHealthPercent(unit, true, CurveConstants.ScaleTo100)
+function Clockwork.healthRatio(unit)
+    return UnitHealthPercent(unit, true)
 end
 
---- Gets the player's health percentage.
---- @return number
-function Clockwork.playerHealthPct()
-    return Clockwork.healthPercentage("player")
-end
-
---- Calculates the mana percentage of a unit.
+--- Ratio de la ressource principale de l'unité (mana, énergie, rage...), de 0 à 1. Valeur SECRÈTE, comme healthRatio.
 --- @param unit string
 --- @return number
-function Clockwork.manaPercentage(unit)
-    -- Clockwork.log.debug("function Clockwork.manaPercentage(" .. tostring(unit)) -- or energy, rage, etc
-
-    local powerType, powerToken, altR, altG, altB = UnitPowerType(unit)
-    local power = UnitPower(unit, powerType)
-    local powerMax = UnitPowerMax(unit, powerType)
-
-    if (powerType == -1) then
-        return 0
-    end
-
-    local percentage
-
-    percentage = power / powerMax * 100
-
-    return percentage
-end
-
---- Gets the player's mana percentage.
---- @return number
-function Clockwork.playerManaPct()
-    return Clockwork.manaPercentage("player")
+function Clockwork.powerRatio(unit)
+    return UnitPowerPercent(unit, UnitPowerType(unit), true)
 end
 
 --- Checks if the target exists, can be attacked, and the player is alive.
@@ -335,112 +300,33 @@ function Clockwork:resetCombat()
     self.durationBeingHitWithoutRetaliating = 0
 end
 
-Clockwork.lowestMemberHealth = 100
-Clockwork.lowestMemberHealthIndex = nil
+--- Affiche les PV d'un membre du groupe : rouge = ratio de vie, noir si absent.
+--- Le bleu est réservé au signal « cibler ce membre » lu par le Java (ComplexKey).
+--- @param index number
+--- @param unit string
+--- @return nil
+function Clockwork:showMemberHealth(index, unit)
+    if UnitExists(unit) then
+        self.raid[index].texture:SetColorTexture(Clockwork.healthRatio(unit), 0, 0, 1)
+    else
+        self.raid[index].texture:SetColorTexture(0, 0, 0, 1)
+    end
+end
 
 --- Updates party health information.
 --- @return nil
 function Clockwork:updatePartyHealth()
-    self.lowestMemberHealth = 100
-    self.lowestMemberHealthIndex = nil
-
-    self:checkUnitHealth("player", -1)
-
     for index = 1, 4 do
-        self:checkUnitHealth("party" .. tostring(index), index)
-        self.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("party" .. tostring(index)), 0,
-            0, 1)
+        self:showMemberHealth(index, "party" .. tostring(index))
     end
 end
 
 --- Updates raid health information.
 --- @return nil
 function Clockwork:updateRaidHealth()
-    self.lowestMemberHealth = 100
-    self.lowestMemberHealthIndex = nil
-
-    Clockwork:checkUnitHealth("player", -1)
-
     for index = 1, 40 do
-        Clockwork:checkUnitHealth("raid" .. tostring(index), index)
-        self.raid[index].texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("raid" .. tostring(index)), 0,
-            0, 1)
+        self:showMemberHealth(index, "raid" .. tostring(index))
     end
-end
-
---- Checks the health of a specific unit.
---- @param unit string
---- @param index number
---- @return nil
-function Clockwork:checkUnitHealth(unit, index)
-    if UnitExists(unit) then
-        if Clockwork.healthPercentage(unit) < Clockwork.lowestMemberHealth then
-            self.lowestMemberHealth = Clockwork.healthPercentage(unit)
-            self.lowestMemberHealthIndex = index
-        end
-    end
-end
-
---- Targets a raid or party member.
---- @param index number
---- @return boolean
-function Clockwork:targetMember(index)
-    local root = ""
-    if UnitExists("raid1") then
-        root = "raid"
-    elseif UnitExists("party1") then
-        root = "party"
-    end
-
-    local inRange = CheckInteractDistance(root + index, Clockwork.FOLLOW)
-
-    if not index == -1 and inRange then
-        local percent = Clockwork.healthPercentage(root .. tostring(index))
-        self.raid[index].texture:SetColorTexture(1 / 100 * percent, 1 / 100 * percent, 1 / 100 * percent, 1)
-    end
-
-    return inRange
-end
-
---- Checks if the player has a main-hand enchant.
---- @return boolean
-function Clockwork.hasMainHandEnchant()
-    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
-        GetWeaponEnchantInfo()
-
-    -- if hasMainHandEnchant then Clockwork.log.debug("hasMainHandEnchant = "..tostring(hasMainHandEnchant)) end
-    -- if mainHandExpiration then Clockwork.log.debug("mainHandExpiration = "..tostring(mainHandExpiration)) end
-    -- if mainHandCharges then Clockwork.log.debug("mainHandCharges = "..tostring(mainHandCharges)) end
-    -- if hasOffHandEnchant then Clockwork.log.debug("hasOffHandEnchant = "..tostring(hasOffHandEnchant)) end
-    -- if offHandExpiration then Clockwork.log.debug("offHandExpiration = "..tostring(offHandExpiration)) end
-    -- if offHandCharges then Clockwork.log.debug("offHandCharges = "..tostring(offHandCharges)) end
-    -- if hasThrownEnchant then Clockwork.log.debug("hasThrownEnchant = "..tostring(hasThrownEnchant)) end
-    -- if thrownExpiration then Clockwork.log.debug("thrownExpiration = "..tostring(thrownExpiration)) end
-    -- if thrownCharges then Clockwork.log.debug("thrownCharges = "..tostring(thrownCharges)) end
-
-    return hasMainHandEnchant
-end
-
---- Checks if the player has an off-hand enchant.
---- @return boolean
-function Clockwork.hasOffHandEnchant()
-    local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID, hasRangedEnchant, rangedExpiration, rangedCharges, rangedEnchantID =
-        GetWeaponEnchantInfo()
-
-    return hasOffHandEnchant
-end
-
---- Targets a raid or party member if their health is below a threshold.
---- @param health number
---- @return boolean
-function Clockwork:targetMemberIfHealthLessThan(health)
-    if self.lowestMemberHealthIndex and
-        not self.lowestMemberHealthIndex == -1
-        and self.lowestMemberHealth < health then
-        return self:targetMember(Clockwork.lowestMemberHealthIndex)
-    end
-
-    return false
 end
 
 --- Checks if the player is out of combat.

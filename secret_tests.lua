@@ -117,6 +117,9 @@ local function sectionValues(lines, unit)
     probe(lines, "UnitPower", function() return UnitPower(unit) end)
     probe(lines, "UnitPowerMax", function() return UnitPowerMax(unit) end)
     probe(lines, "UnitPower(ComboPoints)", function() return UnitPower(unit, Enum.PowerType.ComboPoints) end)
+    probe(lines, "UnitPowerPercent(unit)", function() return call("UnitPowerPercent", unit) end)
+    probe(lines, "UnitPowerPercent(unit, type)", function() return call("UnitPowerPercent", unit, UnitPowerType(unit)) end)
+    probe(lines, "UnitPowerPercent(unit, type, true)", function() return call("UnitPowerPercent", unit, UnitPowerType(unit), true) end)
     probe(lines, "UnitAffectingCombat", function() return UnitAffectingCombat(unit) end)
     probe(lines, "UnitIsDeadOrGhost", function() return UnitIsDeadOrGhost(unit) end)
     probe(lines, "UnitCastingInfo (nom)", function() return (UnitCastingInfo(unit)) end)
@@ -150,8 +153,55 @@ local function sectionPlayerOnly(lines)
     end
 
     probe(lines, "C_AssistedCombat.IsAvailable", function() return (call("C_AssistedCombat.IsAvailable")) end)
-    probe(lines, "C_AssistedCombat.GetNextCastSpell", function() return call("C_AssistedCombat.GetNextCastSpell") end)
+    local nextSpell = probe(lines, "C_AssistedCombat.GetNextCastSpell", function() return call("C_AssistedCombat.GetNextCastSpell") end)
+    probe(lines, "FindSpellActionButtons(sort recommandé)", function()
+        local slots = call("C_ActionBar.FindSpellActionButtons", nextSpell)
+        return slots and slots[1]
+    end)
     probe(lines, "GetTime (témoin, jamais secret)", function() return GetTime() end)
+end
+
+--- Bilan sur tous les emplacements de barre : pour chaque API, nombre d'emplacements testés, secrets et en erreur.
+local function sectionAllSlots(lines)
+    table.insert(lines, "")
+    table.insert(lines, "--- A. Bilan sur tous les emplacements de barre (testés / secrets / erreurs) ---")
+
+    local checks = {
+        { "GetActionCooldown start", function(slot) return (GetActionCooldown(slot)) end },
+        { "IsUsableAction",          function(slot) return (IsUsableAction(slot)) end },
+        { "IsActionInRange",         function(slot) return IsActionInRange(slot) end },
+        { "ActionHasRange",          function(slot) return ActionHasRange(slot) end },
+        { "GetSpellInfo castTime",   function(_, id) return call("C_Spell.GetSpellInfo", id).castTime end },
+        { "GetSpellCharges current", function(_, id)
+            local charges = call("C_Spell.GetSpellCharges", id)
+            return charges and charges.currentCharges
+        end },
+    }
+
+    local slots = {}
+    for slot = 1, 180 do
+        local ok, actionType, id = pcall(function()
+            local actionType, id = GetActionInfo(slot)
+            if actionType == "spell" then return actionType, id end
+        end)
+        if ok and actionType then table.insert(slots, { slot = slot, id = id }) end
+    end
+    table.insert(lines, #slots .. " emplacement(s) contenant un sort")
+
+    for _, check in ipairs(checks) do
+        local secrets, errors, firstError = 0, 0, nil
+        for _, entry in ipairs(slots) do
+            local ok, value = pcall(check[2], entry.slot, entry.id)
+            if not ok then
+                errors = errors + 1
+                firstError = firstError or short(value)
+            elseif isSecret(value) == "oui" then
+                secrets = secrets + 1
+            end
+        end
+        table.insert(lines, string.format("%-28s %3d / %3d / %3d%s", check[1], #slots, secrets, errors,
+            firstError and ("  (" .. firstError .. ")") or ""))
+    end
 end
 
 local function sectionDisplay(lines, unit)
@@ -188,6 +238,9 @@ local function sectionDisplay(lines, unit)
     end)
     display(lines, "Texture:SetWidth(UnitHealthPercent ScaleTo100)", function()
         frame.texture:SetWidth(percent100)
+    end)
+    display(lines, "Texture:SetColorTexture(0, 0, UnitPowerPercent(unit, type, true), 1)", function()
+        frame.texture:SetColorTexture(0, 0, call("UnitPowerPercent", unit, UnitPowerType(unit), true), 1)
     end)
     display(lines, "FontString:SetText(UnitHealth)", function()
         frame.text:SetText(UnitHealth(unit))
@@ -236,6 +289,7 @@ function Clockwork.testSecrets()
     sectionValues(lines, "player")
     if UnitExists("target") then sectionValues(lines, "target") end
     sectionPlayerOnly(lines)
+    sectionAllSlots(lines)
     sectionDisplay(lines, "player")
     if UnitExists("target") then sectionDisplay(lines, "target") end
 
