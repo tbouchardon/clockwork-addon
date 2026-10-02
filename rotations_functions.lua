@@ -68,7 +68,10 @@ function Clockwork:updateUIStatus()
 
     Clockwork.guard("target", function()
         if (UnitExists("target") and not UnitIsUnit("player", "target")) then
-            if (Clockwork.targetIsUnfriendly()) then
+            if (UnitIsDeadOrGhost("target")) then
+                -- Cible morte : gris, ni hostile ni amicale pour le cerveau Java (UnitIsDeadOrGhost n'est pas secret)
+                self.targetReaction.texture:SetColorTexture(0.5, 0.5, 0.5, 1)
+            elseif (Clockwork.targetIsUnfriendly()) then
                 self.targetReaction.texture:SetColorTexture(1, 0, 0, 1)
             elseif (Clockwork.targetIsNeutral()) then
                 self.targetReaction.texture:SetColorTexture(1, 1, 0, 1)
