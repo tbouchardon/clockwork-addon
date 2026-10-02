@@ -201,13 +201,32 @@ end
 
 ---@return {slot:number, key:string, shift:string, alt:string, ctrl:string}|nil, nil|string
 function Clockwork:getActionSlotAndBindingForSpell(spellID)
-    local spell = self.spellIdactionSlotMap[spellID]
-    if spell == nil or spell.slot == nil then return nil, "Spell " .. spellID .. " not found" end
-    local command = Clockwork.getActionSlotCommand(spell.slot)
+    local slot = self:findActionSlotForSpell(spellID)
+    if slot == nil then return nil, "Spell " .. spellID .. " not found" end
+    local command = Clockwork.getActionSlotCommand(slot)
     if command == nil then return nil, "No command found." end
     local binding = self.commandBindingMap[command]
     if binding == nil then return nil, "No Binding found." end
-    return { slot = spell.slot, key = binding.key, shift = binding.shift, alt = binding.alt, ctrl = binding.ctrl }
+    return { slot = slot, key = binding.key, shift = binding.shift, alt = binding.alt, ctrl = binding.ctrl }
+end
+
+--- Emplacement de barre d'action contenant le sort, ou sa forme de base : un talent peut remplacer un sort par une
+--- variante (ex. Horion de flamme 470411 pour Horion de flammes 188389), que la recommandation de Blizzard désigne
+--- alors que le bouton contient le sort de base.
+---@param spellID number
+---@return number|nil
+function Clockwork:findActionSlotForSpell(spellID)
+    local spell = self.spellIdactionSlotMap and self.spellIdactionSlotMap[spellID]
+    if spell and spell.slot then return spell.slot end
+
+    local baseSpellID = C_Spell.GetBaseSpell and C_Spell.GetBaseSpell(spellID)
+    if baseSpellID and baseSpellID ~= spellID then
+        local base = self.spellIdactionSlotMap and self.spellIdactionSlotMap[baseSpellID]
+        if base and base.slot then return base.slot end
+    end
+
+    local slots = C_ActionBar.FindSpellActionButtons and C_ActionBar.FindSpellActionButtons(baseSpellID or spellID)
+    return slots and slots[1]
 end
 
 ---@param actionSlot number

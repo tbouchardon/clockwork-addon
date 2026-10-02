@@ -23,13 +23,19 @@ function Clockwork:rotation()
         return
     end
 
+    -- Ne lancer les rotations que si le joueur est hors combat, ou la cible ET le joueur en combat
+    if not (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
+        return
+    end
+
+    -- Rotation écrite à la main et rotation assistée, isolées l'une de l'autre : si la première échoue sur une
+    -- valeur secrète, la seconde continue d'allumer sa touche
     Clockwork.guard("rotation", function()
-        -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
-        if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
-            local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
-            if rotation then rotation() end
-        end
+        local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
+        if rotation then rotation() end
     end)
+
+    Clockwork.guard("assisted", function() self:assistedRotation() end)
 end
 
 --- Updates the UI elements based on player and target status.
@@ -188,16 +194,8 @@ function Clockwork.actionCanBeCast(actionSlot)
 
     --Clockwork.log.debug("canBeCast1 : " .. tostring(canBeCast))
 
-    if canBeCast == true then
-        local start, duration, enable = GetActionCooldown(actionSlot)
-
-        Clockwork.log.debug("GetActionCooldown(" .. actionSlot .. ")" ..
-            " start = " .. tostring(start) ..
-            " duration = " .. tostring(duration) ..
-            " enable = " .. tostring(enable))
-
-        canBeCast = (start == 0)
-    end
+    -- Le temps de recharge (GetActionCooldown) est secret en combat en 12.x : il ne peut plus être comparé ici.
+    -- La recommandation de Blizzard en tient compte ; le Java pourra le lire en pixel via C_Spell.GetSpellCooldownDuration.
 
     --Clockwork.log.debug("canBeCast2 : " .. tostring(canBeCast))
 

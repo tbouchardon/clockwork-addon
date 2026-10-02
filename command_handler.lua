@@ -46,6 +46,8 @@ function Clockwork:commandHandler(msg)
         self:reportBindings()
     elseif (msg == 'gen spells' or msg == 'list spells') then
         self:reportAllSpells()
+    elseif (msg == 'assisted') then
+        self:clickAssisted()
     elseif (msg == 'testsecret') then
         Clockwork.testSecrets()
     elseif (msg == 'errors') then
@@ -64,6 +66,7 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")
+        Clockwork.log.notice("/clockWork assisted       -- Rotation assistée (recommandation de Blizzard) : On/Off")
         Clockwork.log.notice("/clockWork testsecret     -- Tester les valeurs secrètes (à lancer en combat)")
         Clockwork.log.notice("/clockWork errors [reset] -- Blocs du QR code en erreur")
         Clockwork.log.notice("Debug : ")
