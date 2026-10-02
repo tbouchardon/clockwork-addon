@@ -318,6 +318,7 @@ eventHandlers = {
     ["UNIT_PET"] = handlePetChanged,
     ["UPDATE_SHAPESHIFT_FORM"] = handleUpdateShapeshiftForm,
     ["ACTIONBAR_SLOT_CHANGED"] = function(self) self:updateBindings() end,
+    ["UPDATE_BINDINGS"] = function(self) self:updateBindings() end,
     ["PLAYER_SPECIALIZATION_CHANGED"] = handleSpecializationChanged,
 }
 
@@ -339,6 +340,7 @@ local eventsToRegister = {
     "PLAYER_ENTERING_WORLD",
     "UPDATE_SHAPESHIFT_FORM",
     "ACTIONBAR_SLOT_CHANGED",
+    "UPDATE_BINDINGS",
     "UNIT_SPELLCAST_START",
     "UNIT_SPELLCAST_STOP",
     "UNIT_SPELLCAST_FAILED",

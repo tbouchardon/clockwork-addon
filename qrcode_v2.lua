@@ -1,8 +1,11 @@
--- QR code v2 : état des touches et du combat pour que le Java décide lui-même (règles YAML).
+-- QR code v3 : carré de 32x32 en quatre blocs de 16x16, pour que le Java décide lui-même (règles YAML).
+--   bloc 1 (0, 0) : touches sans modificateur et état du combat (disposition de la v2, inchangée)
+--   bloc 2 (16, 0) : Maj + touche, bloc 3 (0, 16) : Ctrl + touche, bloc 4 (16, 16) : Alt + touche
+--   Les blocs 2 à 4 reprennent exactement les cases de touches du bloc 1 (état, historique, sort), décalées.
 -- Tout est lisible en 12.x : les valeurs secrètes (temps de recharge) passent directement à SetColorTexture,
 -- les autres sont calculées ici (temps depuis le dernier lancement, à partir de UNIT_SPELLCAST_SUCCEEDED).
 --
--- Cases (x, y), couleurs de 0 à 1 :
+-- Cases (x, y) relatives à un bloc, couleurs de 0 à 1 :
 --   ligne 6, sous chaque touche 1..= (x 2..13) et ligne 12 x 2..7 (Q D R T F G) : état de la touche
 --       R = temps de recharge restant / 60 s, G = utilisable (1/0), B = à portée (1), hors de portée (0), sans portée (0,5)
 --   ligne 9, sous chaque touche 1..= (x 2..13) et ligne 12 x 8..13 (Q D R T F G) : historique du sort de la touche
@@ -13,13 +16,22 @@
 --   (6, 2) : identifiant du sort recommandé par Blizzard sur 24 bits (0 = aucun)
 --   (7, 2) : direction du personnage sur 16 bits, R = octet fort, G = octet faible (0..65535 pour 0..2π)
 --   (2, 3) : nombre d'ennemis en combat (barres de vie), R = nombre / 255
---   (8, 13) : version de la grille, R = 2 / 255
+--   (8, 13) : version de la grille, R = 3 / 255
+--   (11, 2) : compteur de mises à jour sur 24 bits (le Java détecte une grille figée)
 --   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0)
 --
 -- Le dictionnaire des sorts (identifiant -> nom, sort de base) est exporté dans la SavedVariable CLOCKWORK_SPELLBOOK,
 -- écrite sur le disque par WoW à chaque /reload ou déconnexion : le Java y traduit les noms des règles en identifiants.
 
-Clockwork.QR_VERSION = 2
+Clockwork.QR_VERSION = 3
+
+-- Blocs de la grille : préfixe de touche (modificateur) et décalage du bloc
+Clockwork.QR_BLOCKS = {
+    { prefix = "", x = 0, y = 0 },
+    { prefix = "SHIFT-", x = 16, y = 0 },
+    { prefix = "CTRL-", x = 0, y = 16 },
+    { prefix = "ALT-", x = 16, y = 16 },
+}
 
 -- Ordre des touches pour l'indice de la touche recommandée (partagé avec le Java)
 Clockwork.KEY_ORDER = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ")", "=", "Q", "D", "R", "T", "F", "G" }
@@ -55,21 +67,51 @@ local function setColor24(texture, value)
     texture:SetColorTexture(math.floor(value / 65536) / 255, math.floor(value / 256) % 256 / 255, value % 256 / 255, 1)
 end
 
+--- Fond d'un bloc de modificateur, identique au bloc 1 : coins verts (repérage) et intérieur noir.
+function Clockwork:createQrBlock(offsetX, offsetY)
+    local block = CreateFrame("FRAME", nil, self.frame)
+    block:SetPoint("TOPLEFT", offsetX, -offsetY)
+    block:SetSize(16, 16)
+    block:SetFrameStrata("MEDIUM")
+    block.texture = block:CreateTexture(nil, "BACKGROUND")
+    block.texture:SetAllPoints()
+    block.texture:SetColorTexture(0, 1, 0, 1)
+    for _, size in ipairs({ { 14, 14 }, { 16, 8 }, { 8, 16 } }) do
+        local black = CreateFrame("FRAME", nil, block)
+        black:SetPoint("CENTER", 0, 0)
+        black:SetSize(size[1], size[2])
+        black:SetFrameStrata("MEDIUM")
+        black.texture = black:CreateTexture(nil, "ARTWORK")
+        black.texture:SetAllPoints()
+        black.texture:SetColorTexture(0, 0, 0, 1)
+    end
+    return block
+end
+
 function Clockwork:initQrCodeV2()
     self.keyState = {}
     self.keyHistory = {}
     self.keySpell = {}
-    for position, key in ipairs(Clockwork.KEY_ORDER) do
-        self.keySpell[key] = self:createDot("keySpell_" .. key, spellIdCell(position))
+    self.qrBlocks = {}
+    for blockIndex, block in ipairs(Clockwork.QR_BLOCKS) do
+        if blockIndex > 1 then self.qrBlocks[blockIndex] = self:createQrBlock(block.x, block.y) end
+        local function dot(name, x, y) return self:createDot(name, x + block.x, y - block.y) end
+        for position, key in ipairs(Clockwork.KEY_ORDER) do
+            local combo = block.prefix .. key
+            self.keySpell[combo] = dot("keySpell_" .. combo, spellIdCell(position))
+        end
+        for index, key in ipairs(NUMBER_KEYS) do
+            local combo = block.prefix .. key
+            self.keyState[combo] = dot("keyState_" .. combo, index + 1, -6)
+            self.keyHistory[combo] = dot("keyHistory_" .. combo, index + 1, -9)
+        end
+        for index, key in ipairs(LETTER_KEYS) do
+            local combo = block.prefix .. key
+            self.keyState[combo] = dot("keyState_" .. combo, index + 1, -12)
+            self.keyHistory[combo] = dot("keyHistory_" .. combo, index + 7, -12)
+        end
     end
-    for index, key in ipairs(NUMBER_KEYS) do
-        self.keyState[key] = self:createDot("keyState_" .. key, index + 1, -6)
-        self.keyHistory[key] = self:createDot("keyHistory_" .. key, index + 1, -9)
-    end
-    for index, key in ipairs(LETTER_KEYS) do
-        self.keyState[key] = self:createDot("keyState_" .. key, index + 1, -12)
-        self.keyHistory[key] = self:createDot("keyHistory_" .. key, index + 7, -12)
-    end
+    self.frameCounter = self:createDot("frameCounter", 11, -2)
     self.recommendedSpell = self:createDot("recommendedSpell", 6, -2)
     self.facing = self:createDot("facing", 7, -2)
     self.flags = self:createDot("flags", 10, -2)
@@ -87,7 +129,14 @@ function Clockwork.recordOwnCast(spellID)
     if base and base ~= spellID then Clockwork.lastCasts[base] = entry end
 end
 
---- Table touche (sans modificateur) -> emplacement de barre, reconstruite à chaque mise à jour
+--- Nom de combinaison d'un raccourci : "3", "SHIFT-3", "CTRL-Q", "ALT-="... ; nil pour plusieurs modificateurs.
+local function comboName(binding)
+    local modifiers = (binding.shift and 1 or 0) + (binding.ctrl and 1 or 0) + (binding.alt and 1 or 0)
+    if modifiers > 1 then return nil end
+    return (binding.shift and "SHIFT-" or binding.ctrl and "CTRL-" or binding.alt and "ALT-" or "") .. binding.key
+end
+
+--- Table combinaison -> emplacement de barre, reconstruite à chaque mise à jour
 --- (les barres changent avec les formes, les pages, les talents).
 function Clockwork:buildKeySlotMap()
     local map = {}
@@ -95,9 +144,9 @@ function Clockwork:buildKeySlotMap()
     for slot = 1, 180 do
         local command = Clockwork.getActionSlotCommand(slot)
         local binding = command and self.commandBindingMap[command]
-        if binding and not binding.shift and not binding.alt and not binding.ctrl and HasAction(slot)
-            and map[binding.key] == nil then
-            map[binding.key] = slot
+        local combo = binding and comboName(binding)
+        if combo and self.keyState[combo] and HasAction(slot) and map[combo] == nil then
+            map[combo] = slot
         end
     end
     return map
@@ -146,8 +195,14 @@ end
 function Clockwork:updateQrCodeV2()
     Clockwork.guard("keySlotMap", function() self.keySlotMap = self:buildKeySlotMap() end)
 
-    for _, key in ipairs(Clockwork.KEY_ORDER) do
-        Clockwork.guard("key " .. key, function() self:updateKeyState(key) end)
+    Clockwork.qrFrame = ((Clockwork.qrFrame or 0) + 1) % 16777216
+    setColor24(self.frameCounter.texture, Clockwork.qrFrame)
+
+    for _, block in ipairs(Clockwork.QR_BLOCKS) do
+        for _, key in ipairs(Clockwork.KEY_ORDER) do
+            local combo = block.prefix .. key
+            Clockwork.guard("key " .. combo, function() self:updateKeyState(combo) end)
+        end
     end
 
     Clockwork.guard("recommendedSpell", function()
