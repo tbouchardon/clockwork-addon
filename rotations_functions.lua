@@ -6,6 +6,7 @@ Clockwork.FOLLOW = 4  --28 yards
 Clockwork.rotations = {}
 
 --- Updates the player's status and executes rotations.
+--- Chaque bloc est isolé (Clockwork.guard) : une erreur sur une valeur secrète ne fige plus le reste du QR code.
 --- @return nil
 function Clockwork:rotation()
     -- Clockwork.log.debug("function Clockwork.rotation()")
@@ -18,68 +19,83 @@ function Clockwork:rotation()
         return;
     end
 
-    --Clockwork.log.debug("UnitAffectingCombat(\"player\")" .. tostring(UnitAffectingCombat("player")))
-    --Clockwork.log.debug("UnitAffectingCombat(\"target\")" .. tostring(UnitAffectingCombat("target")))
-    --Clockwork.log.debug("UnitClass(\"player\")" .. tostring(UnitClass("player")))
-
     if (IsMounted()) then
         return
     end
 
-    -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
-    if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
-        local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
-        if rotation then rotation() end
-    end
+    Clockwork.guard("rotation", function()
+        -- Ne lancer la rotation que si le joueur est hors combat, ou la cible ET le joueur en combat
+        if (Clockwork.AGGRO_MOD or Clockwork.bothPlayerAndTargetInCombat() or Clockwork.playerNotInCombat()) then
+            local rotation = Clockwork.rotations[Clockwork.player.specialization.id]
+            if rotation then rotation() end
+        end
+    end)
 end
 
 --- Updates the UI elements based on player and target status.
 --- @return nil
 function Clockwork:updateUIStatus()
-    if UnitAffectingCombat("player") then
-        self.inCombat.texture:SetColorTexture(1, 1, 1, 1)
-        self.wasInCombat = true
-    else
-        self:resetCombat()
-    end
+    Clockwork.guard("combat", function()
+        if UnitAffectingCombat("player") then
+            self.inCombat.texture:SetColorTexture(1, 1, 1, 1)
+            self.wasInCombat = true
+        else
+            self:resetCombat()
+        end
+    end)
 
-    if UnitExists("raid1") then
-        self:updateRaidHealth()
-    elseif UnitExists("party1") then
-        self:updatePartyHealth()
-    else
-        self:checkUnitHealth("player", -1)
-    end
+    Clockwork.guard("groupHealth", function()
+        if UnitExists("raid1") then
+            self:updateRaidHealth()
+        elseif UnitExists("party1") then
+            self:updatePartyHealth()
+        else
+            self:checkUnitHealth("player", -1)
+        end
+    end)
 
-    self.playerHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("player"), 0, 0, 1)
-    self.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("player"), 1)
+    Clockwork.guard("playerHealth", function()
+        self.playerHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("player"), 0, 0, 1)
+    end)
 
-    if (UnitExists("target") and not UnitIsUnit("player", "target")) then
-        if (Clockwork.targetIsUnfriendly()) then
-            self.targetReaction.texture:SetColorTexture(1, 0, 0, 1)
-        elseif (Clockwork.targetIsNeutral()) then
-            self.targetReaction.texture:SetColorTexture(1, 1, 0, 1)
-        elseif (Clockwork.targetIsFriendly()) then
-            self.targetReaction.texture:SetColorTexture(0, 1, 0, 1)
+    Clockwork.guard("playerMana", function()
+        self.playerMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("player"), 1)
+    end)
+
+    Clockwork.guard("target", function()
+        if (UnitExists("target") and not UnitIsUnit("player", "target")) then
+            if (Clockwork.targetIsUnfriendly()) then
+                self.targetReaction.texture:SetColorTexture(1, 0, 0, 1)
+            elseif (Clockwork.targetIsNeutral()) then
+                self.targetReaction.texture:SetColorTexture(1, 1, 0, 1)
+            elseif (Clockwork.targetIsFriendly()) then
+                self.targetReaction.texture:SetColorTexture(0, 1, 0, 1)
+            else
+                self.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
+            end
         else
             self.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
+            self.targetHealth.texture:SetColorTexture(0, 0, 0, 1)
+            self.targetMana.texture:SetColorTexture(0, 0, 0, 1)
         end
+    end)
 
-        self.targetHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("target"), 0, 0, 1)
-        self.targetMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("target"), 1)
-    else
-        self.targetReaction.texture:SetColorTexture(0, 0, 0, 1)
-        self.targetHealth.texture:SetColorTexture(0, 0, 0, 1)
-        self.targetMana.texture:SetColorTexture(0, 0, 0, 1)
-    end
+    Clockwork.guard("targetHealth", function()
+        if (UnitExists("target") and not UnitIsUnit("player", "target")) then
+            self.targetHealth.texture:SetColorTexture(1 / 100 * Clockwork.healthPercentage("target"), 0, 0, 1)
+            self.targetMana.texture:SetColorTexture(0, 0, 1 / 100 * Clockwork.manaPercentage("target"), 1)
+        end
+    end)
 
-    if Clockwork.DRIVE_MOD == true
-        and ((Clockwork.unitHasBuff("player", "Food") and (Clockwork.playerHealthPct() < 100))
-            or (Clockwork.unitHasBuff("player", "Drink") and (Clockwork.playerManaPct() < 100))) then
-        self.drive.texture:SetColorTexture(0, 0, 0, 1)
-    elseif Clockwork.DRIVE_MOD == true then
-        self.drive.texture:SetColorTexture(1, 1, 1, 1)
-    end
+    Clockwork.guard("drive", function()
+        if Clockwork.DRIVE_MOD == true
+            and ((Clockwork.unitHasBuff("player", "Food") and (Clockwork.playerHealthPct() < 100))
+                or (Clockwork.unitHasBuff("player", "Drink") and (Clockwork.playerManaPct() < 100))) then
+            self.drive.texture:SetColorTexture(0, 0, 0, 1)
+        elseif Clockwork.DRIVE_MOD == true then
+            self.drive.texture:SetColorTexture(1, 1, 1, 1)
+        end
+    end)
 end
 
 --- Checks if both player and target are in combat.

@@ -46,6 +46,13 @@ function Clockwork:commandHandler(msg)
         self:reportBindings()
     elseif (msg == 'gen spells' or msg == 'list spells') then
         self:reportAllSpells()
+    elseif (msg == 'testsecret') then
+        Clockwork.testSecrets()
+    elseif (msg == 'errors') then
+        Clockwork.showTextWindow(Clockwork.guardReport())
+    elseif (msg == 'errors reset') then
+        Clockwork.guardReset()
+        Clockwork.log.notice("Compteurs d'erreurs remis à zéro")
     else
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
@@ -57,6 +64,8 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")
+        Clockwork.log.notice("/clockWork testsecret     -- Tester les valeurs secrètes (à lancer en combat)")
+        Clockwork.log.notice("/clockWork errors [reset] -- Blocs du QR code en erreur")
         Clockwork.log.notice("Debug : ")
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list actions   -- List all actions slots") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list bindings  -- List all bindings") end
