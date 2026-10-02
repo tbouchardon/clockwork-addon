@@ -2,6 +2,7 @@
 -- À lancer en combat (mannequin d'entraînement ciblé), puis hors combat pour comparer.
 -- Section A : pour chaque API, l'appel passe-t-il, la valeur est-elle secrète, quelles opérations sont permises.
 -- Section B : quels moyens d'affichage acceptent une valeur secrète (StatusBar, textures, courbes, texte).
+-- Section G : durée restante de vos debuffs sur la cible (objets durée des auras).
 -- Les API incertaines sont résolues dynamiquement : une API inexistante est signalée « absent ».
 
 local function api(path)
@@ -314,6 +315,7 @@ function Clockwork.testSecrets()
 
     Clockwork.combatLogReport(lines)
     Clockwork.sectionWorkarounds(lines)
+    Clockwork.sectionAuras(lines)
 
     table.insert(lines, "")
     table.insert(lines, "--- D. Événements refusés par le client ---")
@@ -558,3 +560,86 @@ local function sectionWorkarounds(lines)
 end
 
 Clockwork.sectionWorkarounds = sectionWorkarounds
+
+-- Section G : durée restante des debuffs du joueur sur la cible, malgré le secret des auras en combat.
+-- Piste : C_UnitAuras.GetAuraDuration rend un objet durée, que l'on peut convertir en couleur comme les temps de recharge.
+-- Reste à savoir si l'on obtient un auraInstanceID utilisable (non secret) et à quel sort il correspond.
+
+local function sectionAuras(lines)
+    table.insert(lines, "")
+    table.insert(lines, "--- G. Debuffs du joueur sur la cible : identifiants d'instance et objets durée ---")
+    if not UnitExists("target") then
+        table.insert(lines, "  pas de cible : cibler un mannequin portant un de vos debuffs")
+        return
+    end
+
+    local frame = testFrame()
+    local curve = select(2, pcall(function()
+        local created = call("C_CurveUtil.CreateCurve")
+        created:AddPoint(0, 0)
+        created:AddPoint(60, 1)
+        return created
+    end))
+
+    local function durationProbes(label, instanceID)
+        probe(lines, label .. " : instance secrète (SecretUtil)", function() return call("C_Secrets.ShouldUnitAuraInstanceBeSecret", "target", instanceID) end)
+        probe(lines, label .. " : spellId", function() return call("C_UnitAuras.GetAuraDataByAuraInstanceID", "target", instanceID).spellId end)
+        local okDuration, duration = pcall(call, "C_UnitAuras.GetAuraDuration", "target", instanceID)
+        if not okDuration then
+            table.insert(lines, string.format("%-56s KO : %s", label .. " : GetAuraDuration", short(duration)))
+            return
+        end
+        probe(lines, label .. " : durée HasSecretValues", function() return duration:HasSecretValues() end)
+        probe(lines, label .. " : durée GetRemainingDuration", function() return duration:GetRemainingDuration() end)
+        display(lines, label .. " : courbe 0..60 s -> SetColorTexture", function()
+            frame.texture:SetColorTexture(duration:EvaluateRemainingDuration(curve), 0, 0, 1)
+        end)
+    end
+
+    -- 1. Liste des instances posées par le joueur
+    local okIds, ids = pcall(call, "C_UnitAuras.GetUnitAuraInstanceIDs", "target", "HARMFUL|PLAYER")
+    if not okIds then
+        table.insert(lines, "  GetUnitAuraInstanceIDs(HARMFUL|PLAYER) KO : " .. short(ids))
+    else
+        local okCount, count = pcall(function() return #ids end)
+        table.insert(lines, string.format("  GetUnitAuraInstanceIDs(HARMFUL|PLAYER) : table secrète=%s, %s instance(s)",
+            isSecret(ids), okCount and safeText(count) or "<illisible>"))
+        for index = 1, 5 do
+            local okId, instanceID = pcall(function() return ids[index] end)
+            if not okId or instanceID == nil then break end
+            probe(lines, "instance " .. index .. " : identifiant", function() return instanceID end)
+            durationProbes("instance " .. index, instanceID)
+        end
+    end
+
+    -- 2. Recherche par sort : sorts des barres et sorts lancés depuis le chargement
+    table.insert(lines, "")
+    table.insert(lines, "  Recherche par sort (GetUnitAuraBySpellID sur la cible) :")
+    local ids2, seen = {}, {}
+    for _, entry in ipairs(barSpells()) do
+        if not seen[entry.id] then table.insert(ids2, entry.id); seen[entry.id] = true end
+    end
+    for id in pairs(Clockwork.castProbe.spellIds) do
+        if not seen[id] then table.insert(ids2, id); seen[id] = true end
+    end
+    local found = 0
+    for _, id in ipairs(ids2) do
+        local okAura, aura = pcall(call, "C_UnitAuras.GetUnitAuraBySpellID", "target", id)
+        local label = safeText(id) .. " " .. spellName(id)
+        if not okAura then
+            table.insert(lines, string.format("%-56s KO : %s", "  " .. label, short(aura)))
+        elseif isSecret(aura) == "oui" then
+            table.insert(lines, string.format("%-56s aura secrète", "  " .. label))
+        elseif aura then
+            found = found + 1
+            probe(lines, "  " .. label .. " : sort secret (SecretUtil)", function() return call("C_Secrets.ShouldSpellAuraBeSecret", id) end)
+            probe(lines, "  " .. label .. " : auraInstanceID", function() return aura.auraInstanceID end)
+            probe(lines, "  " .. label .. " : expirationTime", function() return aura.expirationTime end)
+            durationProbes("  " .. label, aura.auraInstanceID)
+        end
+        if found >= 3 then break end
+    end
+    if found == 0 then table.insert(lines, "  aucune aura trouvée par sort (ou toutes secrètes / KO, voir ci-dessus)") end
+end
+
+Clockwork.sectionAuras = sectionAuras
