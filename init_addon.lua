@@ -281,42 +281,6 @@ local function handleSpecializationChanged(self)
     end
 end
 
-local function handleCombatLog(self)
-    Clockwork.recordCombatLog()
-    Clockwork.guard("combatLog", function() self:trackCombatLog() end)
-end
-
-function Clockwork:trackCombatLog()
-    local args = { CombatLogGetCurrentEventInfo() }
-    local subevent = args[2]
-    local sourceGUID = args[4]
-    local destGUID = args[8]
-
-    if (sourceGUID == self.player.GUID or sourceGUID == self.pet.GUID)
-        and destGUID ~= self.pet.GUID
-        and destGUID ~= self.player.GUID
-        and not Clockwork.emptyOrNil(destGUID)
-    then
-        self.targets.list[tostring(destGUID)] = GetTime()
-        self:updateNumberOfTargets()
-    end
-
-    if subevent == "UNIT_DIED" or subevent == "UNIT_DESTROYED" or subevent == "SPELL_INSTAKILL" or subevent == "UNIT_DISSIPATES" then
-        if self.targets.list[tostring(destGUID)] ~= nil then
-            self.targets.list[tostring(destGUID)] = nil
-            self:updateNumberOfTargets()
-        end
-    end
-
-    if (self.player.GUID == sourceGUID) then
-        self:damageDone()
-    end
-
-    if (self.player.GUID == destGUID) then
-        self:damageReceived()
-    end
-end
-
 eventHandlers = {
     ["UNIT_SPELLCAST_START"] = handleSpellcastStart,
     ["UNIT_SPELLCAST_CHANNEL_START"] = handleSpellcastStart,
@@ -325,13 +289,15 @@ eventHandlers = {
     ["UNIT_SPELLCAST_FAILED"] = handleSpellcastStop,
     ["UNIT_SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
     ["UNIT_AURA"] = function(_, unit, updateInfo) Clockwork.recordUnitAura(unit, updateInfo) end,
+    ["UNIT_SPELLCAST_SUCCEEDED"] = function(_, unit, castGUID, spellId) Clockwork.recordCastSucceeded(unit, castGUID, spellId) end,
+    ["SPELL_ACTIVATION_OVERLAY_GLOW_SHOW"] = function(_, spellId) Clockwork.recordOverlayGlow("allumé", spellId) end,
+    ["SPELL_ACTIVATION_OVERLAY_GLOW_HIDE"] = function(_, spellId) Clockwork.recordOverlayGlow("éteint", spellId) end,
     ["ADDON_LOADED"] = handleAddonLoaded,
     ["PLAYER_ENTERING_WORLD"] = handlePlayerEnteringWorld,
     ["UNIT_PET"] = handlePetChanged,
     ["UPDATE_SHAPESHIFT_FORM"] = handleUpdateShapeshiftForm,
     ["ACTIONBAR_SLOT_CHANGED"] = function(self) self:updateBindings() end,
     ["PLAYER_SPECIALIZATION_CHANGED"] = handleSpecializationChanged,
-    ["COMBAT_LOG_EVENT_UNFILTERED"] = handleCombatLog,
 }
 
 function Clockwork:onEvent(event, ...)
@@ -346,6 +312,8 @@ end
 
 Clockwork.frame = CreateFrame("FRAME") --, "ClockworkFrame", UIParent)
 -- Register Events
+-- COMBAT_LOG_EVENT_UNFILTERED est réservé à l'interface de Blizzard en 12.x (abonnement bloqué, aucun événement reçu) :
+-- le compteur de cibles et la détection « frappé sans riposter » qui s'appuyaient dessus ne sont plus alimentés.
 local eventsToRegister = {
     "PLAYER_ENTERING_WORLD",
     "UPDATE_SHAPESHIFT_FORM",
@@ -358,8 +326,10 @@ local eventsToRegister = {
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
-    "COMBAT_LOG_EVENT_UNFILTERED",
     "UNIT_AURA",
+    "UNIT_SPELLCAST_SUCCEEDED",
+    "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW",
+    "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE",
     "ADDON_LOADED",
     "PLAYER_DEAD",
     "PLAYER_SPECIALIZATION_CHANGED",

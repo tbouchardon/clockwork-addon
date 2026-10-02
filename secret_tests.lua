@@ -158,6 +158,21 @@ local function sectionPlayerOnly(lines)
         local slots = call("C_ActionBar.FindSpellActionButtons", nextSpell)
         return slots and slots[1]
     end)
+    probe(lines, "IsSpellOverlayed (sort testé)", function() return call("C_SpellActivationOverlay.IsSpellOverlayed", spellId) end)
+    probe(lines, "IsSpellOverlayed global (sort testé)", function() return call("IsSpellOverlayed", spellId) end)
+    probe(lines, "Barres de vie visibles", function() return #call("C_NamePlate.GetNamePlates") end)
+    probe(lines, "Barre 1 : UnitCanAttack", function()
+        local plate = call("C_NamePlate.GetNamePlates")[1]
+        return UnitCanAttack("player", plate.namePlateUnitToken)
+    end)
+    probe(lines, "Barre 1 : UnitAffectingCombat", function()
+        local plate = call("C_NamePlate.GetNamePlates")[1]
+        return UnitAffectingCombat(plate.namePlateUnitToken)
+    end)
+    probe(lines, "Barre 1 : UnitThreatSituation", function()
+        local plate = call("C_NamePlate.GetNamePlates")[1]
+        return UnitThreatSituation("player", plate.namePlateUnitToken)
+    end)
     probe(lines, "GetTime (témoin, jamais secret)", function() return GetTime() end)
 end
 
@@ -311,47 +326,38 @@ function Clockwork.testSecrets()
     Clockwork.showTextWindow(table.concat(lines, "\n"))
 end
 
--- Enregistreurs pour la section E : ce que le client transmet encore via le journal de combat et UNIT_AURA.
--- Champs du journal : 1 horodatage, 2 sous-événement, 4 source, 8 cible, 12 identifiant du sort, 13 nom, 15 type d'aura.
-local CLEU_FIELDS = { [1] = "horodatage", [2] = "sous-événement", [4] = "source", [8] = "cible", [12] = "spellId", [13] = "nom du sort", [15] = "type d'aura" }
+-- Enregistreurs pour la section E : ce que le client transmet encore (UNIT_AURA, incantations réussies, surbrillances).
+-- Le journal de combat (COMBAT_LOG_EVENT_UNFILTERED) est réservé à l'interface de Blizzard en 12.x.
 
-Clockwork.logProbe = { events = 0, errors = 0, secretFields = {}, maxFields = 0, subevents = {}, auraEvents = {} }
 Clockwork.auraProbe = { events = 0, errors = 0, added = 0, secretFields = {}, examples = {} }
+Clockwork.castProbe = { events = 0, secretSpellId = 0, secretGUID = 0, examples = {} }
+Clockwork.glowProbe = { events = 0, secretSpellId = 0, examples = {} }
 
 local function remember(list, line, size)
     if #list >= size then table.remove(list, 1) end
     table.insert(list, line)
 end
 
-function Clockwork.recordCombatLog()
-    local probe = Clockwork.logProbe
+local function spellName(spellId)
+    if isSecret(spellId) == "oui" then return "<secret>" end
+    local ok, name = pcall(call, "C_Spell.GetSpellName", spellId)
+    return ok and safeText(name) or "?"
+end
+
+function Clockwork.recordCastSucceeded(unit, castGUID, spellId)
+    if unit ~= "player" then return end
+    local probe = Clockwork.castProbe
     probe.events = probe.events + 1
+    if isSecret(spellId) == "oui" then probe.secretSpellId = probe.secretSpellId + 1 end
+    if isSecret(castGUID) == "oui" then probe.secretGUID = probe.secretGUID + 1 end
+    remember(probe.examples, string.format("t=%.1f spellId=%s %s", GetTime(), safeText(spellId), spellName(spellId)), 10)
+end
 
-    local ok, err = pcall(function()
-        local count = select("#", CombatLogGetCurrentEventInfo())
-        local args = { CombatLogGetCurrentEventInfo() }
-        if count > probe.maxFields then probe.maxFields = count end
-
-        for index = 1, count do
-            if isSecret(args[index]) == "oui" then probe.secretFields[index] = (probe.secretFields[index] or 0) + 1 end
-        end
-
-        local subevent = args[2]
-        if isSecret(subevent) == "oui" or type(subevent) ~= "string" then return end
-        probe.subevents[subevent] = (probe.subevents[subevent] or 0) + 1
-
-        if string.find(subevent, "^SPELL_AURA") then
-            local okMine, mine = pcall(function() return args[4] == UnitGUID("player") end)
-            remember(probe.auraEvents, string.format("%-26s t=%s spellId=%s %s source=%s",
-                subevent, safeText(args[1]), safeText(args[12]), safeText(args[13]),
-                okMine and (mine and "moi" or "autre") or "<secret>"), 15)
-        end
-    end)
-
-    if not ok then
-        probe.errors = probe.errors + 1
-        probe.lastError = short(err)
-    end
+function Clockwork.recordOverlayGlow(state, spellId)
+    local probe = Clockwork.glowProbe
+    probe.events = probe.events + 1
+    if isSecret(spellId) == "oui" then probe.secretSpellId = probe.secretSpellId + 1 end
+    remember(probe.examples, string.format("t=%.1f %-7s spellId=%s %s", GetTime(), state, safeText(spellId), spellName(spellId)), 10)
 end
 
 function Clockwork.recordUnitAura(unit, updateInfo)
@@ -379,25 +385,17 @@ function Clockwork.recordUnitAura(unit, updateInfo)
 end
 
 function Clockwork.combatLogReport(lines)
-    local log = Clockwork.logProbe
+    local cast = Clockwork.castProbe
     table.insert(lines, "")
-    table.insert(lines, "--- E. Journal de combat (depuis le chargement) ---")
-    table.insert(lines, string.format("%d événement(s) reçu(s), %d erreur(s)%s, jusqu'à %d champs", log.events, log.errors,
-        log.lastError and (" (" .. log.lastError .. ")") or "", log.maxFields))
-    for index = 1, log.maxFields do
-        local secrets = log.secretFields[index] or 0
-        if secrets > 0 or CLEU_FIELDS[index] then
-            table.insert(lines, string.format("  champ %2d %-16s secret %d / %d", index, CLEU_FIELDS[index] or "", secrets, log.events))
-        end
-    end
-    local names = {}
-    for name in pairs(log.subevents) do table.insert(names, name) end
-    table.sort(names)
-    local counts = {}
-    for _, name in ipairs(names) do table.insert(counts, name .. "=" .. log.subevents[name]) end
-    if #counts > 0 then table.insert(lines, "Sous-événements : " .. table.concat(counts, ", ")) end
-    table.insert(lines, "Derniers événements d'auras :")
-    for _, line in ipairs(log.auraEvents) do table.insert(lines, "  " .. line) end
+    table.insert(lines, "--- E. Incantations réussies du joueur (UNIT_SPELLCAST_SUCCEEDED, depuis le chargement) ---")
+    table.insert(lines, string.format("%d événement(s), spellId secret %d fois, castGUID secret %d fois", cast.events, cast.secretSpellId, cast.secretGUID))
+    for _, line in ipairs(cast.examples) do table.insert(lines, "  " .. line) end
+
+    local glow = Clockwork.glowProbe
+    table.insert(lines, "")
+    table.insert(lines, "--- E. Surbrillances de procs (SPELL_ACTIVATION_OVERLAY_GLOW_SHOW / HIDE) ---")
+    table.insert(lines, string.format("%d événement(s), spellId secret %d fois", glow.events, glow.secretSpellId))
+    for _, line in ipairs(glow.examples) do table.insert(lines, "  " .. line) end
 
     local aura = Clockwork.auraProbe
     table.insert(lines, "")
