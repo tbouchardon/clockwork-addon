@@ -32,6 +32,16 @@ local function isSecret(value)
     return result and "oui" or "non"
 end
 
+--- Texte affichable d'une valeur, sans jamais manipuler de chaîne secrète (tostring d'un secret renvoie un secret).
+local function safeText(value)
+    if isSecret(value) == "oui" then return "<secret>" end
+    local ok, text = pcall(tostring, value)
+    if not ok then return "<illisible>" end
+    if isSecret(text) == "oui" then return "<secret>" end
+    local okSub, truncated = pcall(string.sub, text, 1, 24)
+    return okSub and truncated or "<illisible>"
+end
+
 -- Opérations testées sur chaque valeur ; KO sur un booléen ou nil est normal, seul KO sur un nombre est significatif
 local OPERATIONS = {
     { "tostring", function(v) return tostring(v) end },
@@ -57,8 +67,7 @@ local function probe(lines, label, getter)
         table.insert(parts, operation[1] .. "=" .. (ok and "OK" or "KO"))
     end
 
-    local okString, text = pcall(tostring, value)
-    if okString then table.insert(parts, "valeur=" .. text:sub(1, 24)) end
+    table.insert(parts, "valeur=" .. safeText(value))
 
     table.insert(lines, table.concat(parts, " "))
     return value
@@ -72,8 +81,11 @@ end
 --- Premier emplacement de barre d'action contenant un sort.
 local function firstSpellSlot()
     for slot = 1, 180 do
-        local ok, actionType, id = pcall(GetActionInfo, slot)
-        if ok and actionType == "spell" and id then return slot, id end
+        local ok, found = pcall(function()
+            local actionType, id = GetActionInfo(slot)
+            return actionType == "spell" and id ~= nil
+        end)
+        if ok and found then return slot, select(2, GetActionInfo(slot)) end
     end
 end
 
@@ -126,7 +138,7 @@ local function sectionPlayerOnly(lines)
 
     local slot, spellId = firstSpellSlot()
     if slot then
-        table.insert(lines, "(emplacement d'action testé : " .. slot .. ", sort " .. tostring(spellId) .. ")")
+        table.insert(lines, "(emplacement d'action testé : " .. slot .. ", sort " .. safeText(spellId) .. ")")
         probe(lines, "GetActionCooldown : start", function() return (GetActionCooldown(slot)) end)
         probe(lines, "GetActionCooldown : duration", function() return select(2, GetActionCooldown(slot)) end)
         probe(lines, "IsUsableAction", function() return (IsUsableAction(slot)) end)
@@ -217,7 +229,7 @@ function Clockwork.testSecrets()
     table.insert(lines, "=== Clockwork /clk testsecret ===")
     table.insert(lines, string.format("Client %s (%s), interface %s, %s", tostring(version), tostring(build), tostring(interface), date("%Y-%m-%d %H:%M:%S")))
     table.insert(lines, string.format("En combat : %s | verrou de combat : %s | cible : %s | issecretvalue : %s",
-        tostring(UnitAffectingCombat("player")), tostring(InCombatLockdown()), tostring(UnitExists("target")),
+        safeText(UnitAffectingCombat("player")), safeText(InCombatLockdown()), safeText(UnitExists("target")),
         type(issecretvalue) == "function" and "présent" or "absent"))
     table.insert(lines, "Lecture : KO sur un nombre = opération interdite par le client ; KO sur nil/booléen = normal.")
 
