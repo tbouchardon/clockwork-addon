@@ -14,6 +14,7 @@
 --   (7, 2) : direction du personnage sur 16 bits, R = octet fort, G = octet faible (0..65535 pour 0..2π)
 --   (2, 3) : nombre d'ennemis en combat (barres de vie), R = nombre / 255
 --   (8, 13) : version de la grille, R = 2 / 255
+--   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0)
 --
 -- Le dictionnaire des sorts (identifiant -> nom, sort de base) est exporté dans la SavedVariable CLOCKWORK_SPELLBOOK,
 -- écrite sur le disque par WoW à chaque /reload ou déconnexion : le Java y traduit les noms des règles en identifiants.
@@ -71,6 +72,7 @@ function Clockwork:initQrCodeV2()
     end
     self.recommendedSpell = self:createDot("recommendedSpell", 6, -2)
     self.facing = self:createDot("facing", 7, -2)
+    self.flags = self:createDot("flags", 10, -2)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -153,6 +155,10 @@ function Clockwork:updateQrCodeV2()
         -- Forme de base : c'est elle que contient le bouton, donc celle que le Java retrouve dans les cases des touches
         local base = spellID and C_Spell.GetBaseSpell and C_Spell.GetBaseSpell(spellID)
         setColor24(self.recommendedSpell.texture, base or spellID or 0)
+    end)
+
+    Clockwork.guard("flags", function()
+        self.flags.texture:SetColorTexture(Clockwork.AGGRO_MOD and 1 or 0, UnitAffectingCombat("target") and 1 or 0, 0, 1)
     end)
 
     Clockwork.guard("facing", function()
