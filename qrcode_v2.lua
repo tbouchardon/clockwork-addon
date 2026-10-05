@@ -11,7 +11,9 @@
 --       pendant un déplacement (0,5 : WoW le refuserait), B = à portée (1), hors de portée (0), sans portée (0,5)
 --   ligne 9, sous chaque touche 1..= (x 2..13) et ligne 12 x 8..13 (Q D R T F G) : historique du sort de la touche
 --       R = temps depuis le dernier lancement sur la cible actuelle / 60 s (1 = jamais ou plus de 60 s)
---       G = proc (bouton en surbrillance), B = temps depuis le dernier lancement, toutes cibles / 60 s
+--       G = proc (bouton en surbrillance) + 2 x buff actif sur le joueur, sur 3 (0, 1/3, 2/3, 1) ;
+--       B = temps depuis le dernier lancement, toutes cibles / 60 s
+--       Le buff n'est lisible que hors combat : en combat, c'est l'état lu juste avant d'y entrer
 --   identifiant du sort de chaque touche sur 24 bits (R octet fort, G, B octet faible), dans l'ordre de KEY_ORDER :
 --       touches 1..8 en (3..10, 3), 9..12 en (2..5, 7), 13..16 en (2..5, 10), 17..18 en (8..9, 2) ; 0 = pas de sort
 --   (6, 2) : identifiant du sort recommandé par Blizzard sur 24 bits (0 = aucun)
@@ -229,6 +231,20 @@ local function blockedByMovement(spellID)
     return ok and castTime == true
 end
 
+-- Buffs du joueur par sort, lus hors combat (les auras sont inaccessibles en combat en 12.x) : en combat, dernier état connu
+Clockwork.playerBuffs = {}
+
+--- L'aura du sort est active sur le joueur (Cri de guerre, Bouclier de foudre...).
+--- @return boolean
+local function buffActive(spellID)
+    if not spellID then return false end
+    if not UnitAffectingCombat("player") then
+        local ok, aura = pcall(C_UnitAuras.GetPlayerAuraBySpellID, spellID)
+        if ok then Clockwork.playerBuffs[spellID] = aura ~= nil end
+    end
+    return Clockwork.playerBuffs[spellID] == true
+end
+
 function Clockwork:updateKeyState(key)
     local spellID, slot = self:spellForKey(key)
     setColor24(self.keySpell[key].texture, spellID or 0)
@@ -253,7 +269,8 @@ function Clockwork:updateKeyState(key)
     local onTarget = entry
     if entry and entry.guid ~= UnitGUID("target") then onTarget = nil end
     local proc = spellID and C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed(spellID) and 1 or 0
-    self.keyHistory[key].texture:SetColorTexture(elapsedRatio(onTarget), proc, elapsedRatio(entry), 1)
+    local buff = buffActive(spellID) and 1 or 0
+    self.keyHistory[key].texture:SetColorTexture(elapsedRatio(onTarget), (proc + 2 * buff) / 3, elapsedRatio(entry), 1)
 end
 
 function Clockwork:updateQrCodeV2()
