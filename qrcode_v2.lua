@@ -254,6 +254,9 @@ function Clockwork.exportSpellbook()
     end
     for spellID in pairs(Clockwork.lastCasts) do add(spellID) end
 
+    -- En quittant le jeu (et non sur /reload), les barres sont déjà déchargées : on garde alors l'export précédent
+    if next(book) == nil then return end
+
     local class = Clockwork.player.class and Clockwork.player.class.classFilename or "?"
     local spec = Clockwork.player.specialization and Clockwork.player.specialization.id or 0
     CLOCKWORK_SPELLBOOK[class .. "-" .. spec] = { updated = date("%Y-%m-%d %H:%M:%S"), spells = book }
