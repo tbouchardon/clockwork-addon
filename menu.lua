@@ -51,7 +51,7 @@ local function createIconButton(name, parent, relativeTo, iconPath, tooltip)
         button:SetPoint("LEFT", relativeTo, "RIGHT", 5, 0)
     else
         -- Placement par défaut si premier de sa ligne
-        button:SetPoint("TOPLEFT", 8, -180) 
+        button:SetPoint("TOPLEFT", 8, -214)
     end
     
     table.insert(buttons, button)
@@ -60,7 +60,7 @@ end
 
 -- Functions to expand/collapse
 function frame.Expand()
-    frame:SetSize(137, 250)
+    frame:SetSize(137, 284)
     for _, button in ipairs(buttons) do
         button:Show()
     end
@@ -149,7 +149,13 @@ btnLoop:SetScript("OnClick", function()
     btnLoop:SetText(Clockwork.DRIVE_LOOP and "On - Loop WP" or "Off - Loop WP")
 end)
 
-local btnDebug = createMenuButton("ClockworkMenuButtonDebug", frame, btnLoop, "Off - Debug", "Toggle debug mod On/Off")
+local btnFish = createMenuButton("ClockworkMenuButtonFish", frame, btnLoop, "Off - Pêche", "Pêche automatique On/Off (bouger la souris l'arrête)")
+btnFish:SetScript("OnClick", function()
+    Clockwork:clickFish()
+    btnFish:SetText(Clockwork.FISH_MOD and "On - Pêche" or "Off - Pêche")
+end)
+
+local btnDebug = createMenuButton("ClockworkMenuButtonDebug", frame, btnFish, "Off - Debug", "Toggle debug mod On/Off")
 btnDebug:SetScript("OnClick", function()
     Clockwork:clickDebug()
     btnDebug:SetText(Clockwork.DEBUG_MOD and "On - Debug" or "Off - Debug")

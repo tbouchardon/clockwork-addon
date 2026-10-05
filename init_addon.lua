@@ -92,6 +92,8 @@ function Clockwork:playerEnteringWorld()
     self.drive = self:createDot("clockWork_drive", 6, -13)
     self.driveLoop = self:createDot("clockWork_driveLoop", 7, -13)
     self.debug = self:createDot("clockWork_debug", 13, -13)
+    -- Pêche demandée au Java (blanc) : il pêche tant que la case est allumée
+    self.fish = self:createDot("clockWork_fish", 12, -4)
     if Clockwork.DEBUG_MOD then
         self.debug.texture:SetColorTexture(1, 0, 0, 1)
     end

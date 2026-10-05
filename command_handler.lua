@@ -34,6 +34,8 @@ function Clockwork:commandHandler(msg)
     elseif (msg == 'wpcleared') then
         self.clearWaypoints.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Waypoint cleared")
+    elseif (msg == 'fish') then
+        self:clickFish()
     elseif (msg == 'drive') then
         self:clickDrive()
     elseif (msg == 'loop') then
@@ -62,6 +64,7 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork 05,21-63,30;   -- Add new waypoint(s)")
         Clockwork.log.notice("/clockWork addwp          -- Add new waypoint")
         Clockwork.log.notice("/clockWork clearwp        -- Clear all waypoints")
+        Clockwork.log.notice("/clockWork fish           -- Pêche automatique : On/Off")
         Clockwork.log.notice("/clockWork drive          -- Start Autopilote")
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
@@ -115,6 +118,13 @@ end
 function Clockwork:clickClearWp()
     Clockwork.log.notice("Clearing Waypoints")
     self.clearWaypoints.texture:SetColorTexture(1, 1, 1, 1)
+end
+
+--- Pêche : le Java lance la ligne et ferre tant que la case (12, 4) est allumée. Bouger la souris l'arrête aussi.
+function Clockwork:clickFish()
+    Clockwork.FISH_MOD = not Clockwork.FISH_MOD
+    self.fish.texture:SetColorTexture(Clockwork.FISH_MOD and 1 or 0, Clockwork.FISH_MOD and 1 or 0, Clockwork.FISH_MOD and 1 or 0, 1)
+    Clockwork.log.notice("Pêche : " .. (Clockwork.FISH_MOD and "On" or "Off"))
 end
 
 function Clockwork:clickDrive()

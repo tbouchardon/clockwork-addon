@@ -9,6 +9,7 @@ Clockwork.TARGET_NEAREST_ENEMY = false
 Clockwork.DRIVE_MOD = false
 Clockwork.AGGRO_MOD = true
 Clockwork.DRIVE_LOOP = false
+Clockwork.FISH_MOD = false
 
 Clockwork.player = {}
 ---@alias PlayerClass { className:string, classFilename:string, classId:number }
