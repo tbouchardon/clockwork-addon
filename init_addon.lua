@@ -204,6 +204,10 @@ Event Handling
 local eventHandlers
 
 local function handleSpellcastStart(self, unit, _, spellID)
+    if unit == "target" then
+        Clockwork.recordTargetCast(spellID)
+        return
+    end
     if unit ~= "player" then return end
     self.CASTING = true
     self.casting.texture:SetColorTexture(1, 1, 1, 1)
@@ -216,6 +220,10 @@ local function handleChannelStart(self, unit, _, spellID)
 end
 
 local function handleSpellcastStop(self, unit)
+    if unit == "target" then
+        Clockwork.targetCast = nil
+        return
+    end
     if unit ~= "player" then return end
     self.CASTING = false
     self.casting.texture:SetColorTexture(0, 0, 0, 1)
@@ -300,6 +308,9 @@ eventHandlers = {
     ["ACTIONBAR_SLOT_CHANGED"] = function(self) self:updateBindings() end,
     ["UPDATE_BINDINGS"] = function(self) self:updateBindings() end,
     ["PLAYER_SPECIALIZATION_CHANGED"] = handleSpecializationChanged,
+    ["PLAYER_TARGET_CHANGED"] = function() Clockwork.recordTargetChanged() end,
+    ["UNIT_SPELLCAST_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, true) end,
+    ["UNIT_SPELLCAST_NOT_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, false) end,
 }
 
 function Clockwork:onEvent(event, ...)
@@ -338,6 +349,9 @@ local eventsToRegister = {
     "ADDON_LOADED",
     "PLAYER_DEAD",
     "PLAYER_SPECIALIZATION_CHANGED",
+    "PLAYER_TARGET_CHANGED",
+    "UNIT_SPELLCAST_INTERRUPTIBLE",
+    "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
     "UNIT_PET"
 }
 -- EventRegistry:RegisterCallback n'écoute que les événements déclenchés par EventRegistry:TriggerEvent, pas ceux du jeu :

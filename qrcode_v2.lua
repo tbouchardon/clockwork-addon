@@ -23,7 +23,8 @@
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
 --   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
---   (11, 13) : R = le joueur se déplace (1/0)
+--   (11, 13) : R = le joueur se déplace (1/0), G = la cible incante (1/0), B = son sort est interruptible (1/0)
+--   (12, 13) : sort incanté par la cible sur 24 bits (0 si aucun, ou si l'identifiant est secret)
 --   (9, 13) : sort en cours d'incantation ou de canalisation sur 24 bits, 0 = aucun
 --   (10, 13) : R = temps restant de l'incantation / 10 s (valeur secrète, passée par une courbe), G = canalisation (1/0)
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
@@ -133,6 +134,7 @@ function Clockwork:initQrCodeV2()
     self.castSpell = self:createDot("castSpell", 9, -13)
     self.castInfo = self:createDot("castInfo", 10, -13)
     self.moving = self:createDot("moving", 11, -13)
+    self.targetCastSpell = self:createDot("targetCastSpell", 12, -13)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -182,6 +184,32 @@ end
 local function elapsedRatio(entry)
     if not entry then return 1 end
     return math.min((GetTime() - entry.time) / HORIZON, 1)
+end
+
+--- Incantation de la cible, pour les interruptions (événements de la cible). Interruptible sauf indication contraire :
+--- l'information peut être secrète, et tenter d'interrompre un sort qui ne l'est pas échoue sans conséquence.
+function Clockwork.recordTargetCast(spellID)
+    local notInterruptible = false
+    pcall(function()
+        local flag = select(8, UnitCastingInfo("target"))
+        if flag == nil then flag = select(7, UnitChannelInfo("target")) end
+        notInterruptible = flag == true
+    end)
+    Clockwork.targetCast = { spellID = spellID, interruptible = not notInterruptible }
+end
+
+--- Nouvelle cible : elle incante peut-être déjà (événement de début manqué).
+function Clockwork.recordTargetChanged()
+    Clockwork.targetCast = nil
+    pcall(function()
+        local name, _, _, _, _, _, _, _, spellID = UnitCastingInfo("target")
+        if name == nil then name, _, _, _, _, _, _, spellID = UnitChannelInfo("target") end
+        if name ~= nil then Clockwork.recordTargetCast(spellID) end
+    end)
+end
+
+function Clockwork.recordTargetInterruptible(unit, interruptible)
+    if unit == "target" and Clockwork.targetCast then Clockwork.targetCast.interruptible = interruptible end
 end
 
 --- Le joueur se déplace : vitesse non nulle, sinon (vitesse illisible) changement de position sur la carte.
@@ -264,7 +292,13 @@ function Clockwork:updateQrCodeV2()
     end)
 
     Clockwork.guard("moving", function()
-        self.moving.texture:SetColorTexture(Clockwork.isMoving() and 1 or 0, 0, 0, 1)
+        local targetCast = Clockwork.targetCast
+        self.moving.texture:SetColorTexture(Clockwork.isMoving() and 1 or 0, targetCast and 1 or 0,
+            (targetCast and targetCast.interruptible) and 1 or 0, 1)
+        -- L'identifiant du sort de la cible peut être secret : le calcul sur 24 bits échoue alors, et vaut 0
+        if not (targetCast and pcall(setColor24, self.targetCastSpell.texture, targetCast.spellID)) then
+            setColor24(self.targetCastSpell.texture, 0)
+        end
     end)
 
     Clockwork.guard("cast", function()
