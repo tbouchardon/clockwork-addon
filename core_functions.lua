@@ -41,7 +41,8 @@ function Clockwork:createDot(name, xPos, yPos)
     dotFrame:SetPoint("TOPLEFT", xPos, yPos)
     dotFrame:SetWidth(1)
     dotFrame:SetHeight(1)
-    dotFrame:SetFrameStrata("HIGH");
+    dotFrame:SetFrameStrata("TOOLTIP")
+    dotFrame:SetFrameLevel(10)
 
     dotFrame.texture = dotFrame:CreateTexture(nil, "OVERLAY")
     dotFrame.texture:SetAllPoints()

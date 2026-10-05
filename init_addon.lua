@@ -43,7 +43,8 @@ function Clockwork:playerEnteringWorld()
     self.blackBackground3:SetPoint("CENTER", 0, 0)
     self.blackBackground3:SetWidth(14)
     self.blackBackground3:SetHeight(14)
-    self.blackBackground3:SetFrameStrata("MEDIUM");
+    self.blackBackground3:SetFrameStrata("TOOLTIP")
+    self.blackBackground3:SetFrameLevel(2)
     self.blackBackground3.texture = self.blackBackground3:CreateTexture(nil, "BACKGROUND")
     self.blackBackground3.texture:SetAllPoints()
     self.blackBackground3.texture:SetColorTexture(0, 0, 0, 1)
@@ -51,7 +52,8 @@ function Clockwork:playerEnteringWorld()
     self.blackBackground1 = CreateFrame("FRAME", "clockWork_Background1", self.frame)
     self.blackBackground1:SetPoint("CENTER", 0, 0)
     self.blackBackground1:SetSize(16, 8)
-    self.blackBackground1:SetFrameStrata("MEDIUM");
+    self.blackBackground1:SetFrameStrata("TOOLTIP")
+    self.blackBackground1:SetFrameLevel(3)
     self.blackBackground1.texture = self.blackBackground1:CreateTexture(nil, "ARTWORK")
     self.blackBackground1.texture:SetAllPoints()
     self.blackBackground1.texture:SetColorTexture(0, 0, 0, 1)
@@ -60,7 +62,8 @@ function Clockwork:playerEnteringWorld()
     self.blackBackground2:SetPoint("CENTER", 0, 0)
     self.blackBackground2:SetWidth(8)
     self.blackBackground2:SetHeight(16)
-    self.blackBackground2:SetFrameStrata("MEDIUM");
+    self.blackBackground2:SetFrameStrata("TOOLTIP")
+    self.blackBackground2:SetFrameLevel(3)
     self.blackBackground2.texture = self.blackBackground2:CreateTexture(nil, "ARTWORK")
     self.blackBackground2.texture:SetAllPoints()
     self.blackBackground2.texture:SetColorTexture(0, 0, 0, 1)
@@ -69,7 +72,8 @@ function Clockwork:playerEnteringWorld()
     self.onOff:SetPoint("CENTER", 0, 0)
     self.onOff:SetWidth(16)
     self.onOff:SetHeight(16)
-    self.onOff:SetFrameStrata("DIALOG")
+    self.onOff:SetFrameStrata("TOOLTIP")
+    self.onOff:SetFrameLevel(20)
     self.onOff.texture = self.onOff:CreateTexture("DIALOG")
     self.onOff.texture:SetAllPoints()
     self.onOff.texture:SetColorTexture(0, 1, 0, 1)
@@ -371,7 +375,9 @@ for _, eventName in ipairs(eventsToRegister) do
 end
 
 Clockwork.frame:SetPoint("TOPLEFT", 0, 0)
-Clockwork.frame:SetFrameStrata("MEDIUM")
+-- Niveau le plus haut : les effets plein écran (halo rouge de vie basse...) teintaient la grille, illisible pour le Java
+Clockwork.frame:SetFrameStrata("TOOLTIP")
+Clockwork.frame:SetFrameLevel(1)
 
 Clockwork.frame:SetScript("OnEvent", function (self, event, ...) Clockwork:onEvent(event, ...) end);
 Clockwork.frame:SetScript("OnUpdate", function (self, elapsed) Clockwork:onUpdate() end);
