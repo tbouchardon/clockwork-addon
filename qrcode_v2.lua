@@ -22,6 +22,7 @@
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
 --   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
+--   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --
 -- Les noms des sorts ne passent pas par l'addon : le Java les lit dans les tables du jeu (wago.tools).
@@ -122,6 +123,7 @@ function Clockwork:initQrCodeV2()
     self.comboPoints = self:createDot("comboPoints", 9, -4)
     self.playerClass = self:createDot("playerClass", 10, -4)
     self.playerSpec = self:createDot("playerSpec", 11, -4)
+    self.safety = self:createDot("safety", 13, -4)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -232,6 +234,14 @@ function Clockwork:updateQrCodeV2()
 
     Clockwork.guard("comboPoints", function()
         self.comboPoints.texture:SetColorTexture(UnitPower("player", Enum.PowerType.ComboPoints) / 255, 0, 0, 1)
+    end)
+
+    Clockwork.guard("safety", function()
+        -- Le Java n'agit pas mort, en monture, ni contre une cible déjà marquée par un autre joueur (comme rotation())
+        local dead = UnitIsDeadOrGhost("player") and 1 or 0
+        local tapDenied = UnitExists("target") and UnitIsTapDenied("target") and 1 or 0
+        local mounted = IsMounted() and 1 or 0
+        self.safety.texture:SetColorTexture(dead, tapDenied, mounted, 1)
     end)
 
     Clockwork.guard("classAndSpec", function()
