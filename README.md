@@ -212,6 +212,8 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (13,3) | Ressource de la cible (`B`, secrète). |
 | (8,13) | **Version de la grille** : `R` = 3 / 255. |
 | (2..7,13) | Modes : `toggle` (2), `tne` (3), ajout de point (4), effacement du parcours (5), `drive` (6), `loop` (7). |
+| (8,4) | **Forme active** : sort de la forme (druide : félin, ours, sélénien…) sur 24 bits, 0 = aucune. Le sort plutôt que l'index de `GetShapeshiftForm`, qui dépend des talents. |
+| (9,4) | **Points de combo** : `R` = nombre / 255. |
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | bords (ligne 1, colonne 14, ligne 14, colonne 1) | Vie des membres du groupe ou du raid (1 à 40). |

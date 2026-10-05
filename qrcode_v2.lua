@@ -19,6 +19,8 @@
 --   (8, 13) : version de la grille, R = 3 / 255
 --   (11, 2) : compteur de mises à jour sur 24 bits (le Java détecte une grille figée)
 --   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0)
+--   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
+--   (9, 4) : R = points de combo / 255
 --
 -- Le dictionnaire des sorts (identifiant -> nom, sort de base) est exporté dans la SavedVariable CLOCKWORK_SPELLBOOK,
 -- écrite sur le disque par WoW à chaque /reload ou déconnexion : le Java y traduit les noms des règles en identifiants.
@@ -115,6 +117,8 @@ function Clockwork:initQrCodeV2()
     self.recommendedSpell = self:createDot("recommendedSpell", 6, -2)
     self.facing = self:createDot("facing", 7, -2)
     self.flags = self:createDot("flags", 10, -2)
+    self.shapeshiftForm = self:createDot("shapeshiftForm", 8, -4)
+    self.comboPoints = self:createDot("comboPoints", 9, -4)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -214,6 +218,17 @@ function Clockwork:updateQrCodeV2()
 
     Clockwork.guard("flags", function()
         self.flags.texture:SetColorTexture(Clockwork.AGGRO_MOD and 1 or 0, UnitAffectingCombat("target") and 1 or 0, 0, 1)
+    end)
+
+    Clockwork.guard("shapeshiftForm", function()
+        -- Le sort de la forme plutôt que son index : l'index dépend des talents, le sort non
+        local index = GetShapeshiftForm() or 0
+        local spellID = index > 0 and select(4, GetShapeshiftFormInfo(index)) or 0
+        setColor24(self.shapeshiftForm.texture, spellID or 0)
+    end)
+
+    Clockwork.guard("comboPoints", function()
+        self.comboPoints.texture:SetColorTexture(UnitPower("player", Enum.PowerType.ComboPoints) / 255, 0, 0, 1)
     end)
 
     Clockwork.guard("facing", function()
