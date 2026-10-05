@@ -20,8 +20,7 @@ Branche `12.0` : WoW Midnight (12.x, testé en 12.1.0 build 69933).
 5. [Cycle de mise à jour](#cycle-de-mise-à-jour)
 6. [La grille](#la-grille)
 7. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
-8. [Le dictionnaire des sorts](#le-dictionnaire-des-sorts)
-9. [Robustesse et diagnostic](#robustesse-et-diagnostic)
+8. [Robustesse et diagnostic](#robustesse-et-diagnostic)
 
 ---
 
@@ -67,8 +66,10 @@ enregistre les événements et démarre la boucle.
 SavedVariables (écrites par WoW sur le disque à chaque `/reload` ou déconnexion, dans
 `WTF/Account/<COMPTE>/SavedVariables/ClockWork.lua`) :
 
-- `CLOCKWORK_ROTATIONS` : réglages des rotations Lua ;
-- `CLOCKWORK_SPELLBOOK` : dictionnaire des sorts, lu par le Java (voir plus bas).
+- `CLOCKWORK_ROTATIONS` : réglages des rotations Lua.
+
+Les noms des sorts ne passent pas par l'addon : la grille ne transmet que des identifiants, et le Java les traduit avec
+les tables du jeu (wago.tools).
 
 ### Réglages de WoW nécessaires
 
@@ -108,7 +109,7 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 | `core.lua` | Création de la table globale `Clockwork`. |
 | `core_functions.lua` | Constantes (`UPDATE_INTERVAL` = 0,2 s, modes) et `createDot`, qui crée une case de la grille. |
 | `init_addon.lua` | Grille historique (fond, cases, raid), échelle des pixels, événements, boucle `OnUpdate`. |
-| `qrcode_v2.lua` | **Grille v3** : quatre blocs de touches, codage des sorts, historique des lancements, export du dictionnaire. |
+| `qrcode_v2.lua` | **Grille v3** : quatre blocs de touches, codage des sorts, historique des lancements. |
 | `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
 | `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
 | `rotation_assisted.lua` | Rotation qui suit la recommandation de Blizzard (`C_AssistedCombat.GetNextCastSpell`). |
@@ -135,8 +136,7 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
    - `UNIT_SPELLCAST_SUCCEEDED` (joueur) mémorise l'heure et la cible de chaque lancement (`recordOwnCast`), d'où
      l'historique par touche ;
    - `UPDATE_BINDINGS` recalcule la correspondance raccourci → emplacement ;
-   - `DISPLAY_SIZE_CHANGED` / `UI_SCALE_CHANGED` recalculent l'échelle des pixels ;
-   - `PLAYER_LOGOUT` (donc aussi `/reload`) exporte le dictionnaire des sorts.
+   - `DISPLAY_SIZE_CHANGED` / `UI_SCALE_CHANGED` recalculent l'échelle des pixels.
 
 Les événements sont enregistrés un par un dans un `pcall`. Un événement interdit par le client est noté dans
 `Clockwork.refusedEvents` (section D de `/clk testsecret`) au lieu de faire échouer le chargement.
@@ -256,33 +256,6 @@ Ce qui est perdu :
 restrictions actives (`C_RestrictedActions`), niveau de secret par sort (`C_Secrets`), etc. La documentation des API
 vient de `Blizzard_APIDocumentationGenerated` (dépôt `wow-ui-source`, branche `live`). Elle indique pour chaque fonction
 `SecretArguments`, `SecretWhen…` et `ConditionalSecret`.
-
----
-
-## Le dictionnaire des sorts
-
-Les règles du Java désignent les sorts par leur **nom**, mais la grille ne transmet que des **identifiants**. À chaque
-`PLAYER_LOGOUT` (donc à chaque `/reload`), `Clockwork.exportSpellbook()` écrit dans la SavedVariable :
-
-```lua
-CLOCKWORK_SPELLBOOK = {
-    ["SHAMAN-262"] = {                       -- classe - identifiant de spécialisation
-        updated = "2026-10-02 15:40:12",
-        spells = {
-            [470411] = { name = "Horion de flamme", base = 188389, override = 0 },
-            ...
-        },
-    },
-}
-```
-
-Pour chaque sort des barres d'action (et chaque sort lancé depuis le chargement), on garde son nom, sa **forme de base** et sa **variante** : un talent remplace
-souvent un sort par une variante qui a un autre identifiant, et Blizzard recommande la forme de base. Le Java relit ce
-fichier à chaud.
-
-Le Java complète ce dictionnaire par les tables du jeu (wago.tools) : un sort qui n'est pas encore sur une barre au
-dernier `/reload` peut quand même être nommé dans une règle. En quittant le jeu, les barres sont déjà déchargées ; un
-export vide n'écrase donc pas le précédent.
 
 ---
 

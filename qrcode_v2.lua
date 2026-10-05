@@ -22,8 +22,7 @@
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
 --
--- Le dictionnaire des sorts (identifiant -> nom, sort de base) est exporté dans la SavedVariable CLOCKWORK_SPELLBOOK,
--- écrite sur le disque par WoW à chaque /reload ou déconnexion : le Java y traduit les noms des règles en identifiants.
+-- Les noms des sorts ne passent pas par l'addon : le Java les lit dans les tables du jeu (wago.tools).
 
 Clockwork.QR_VERSION = 3
 
@@ -247,32 +246,4 @@ function Clockwork:updateQrCodeV2()
         end
         self.numberOfTargets.texture:SetColorTexture(math.min(count, 255) / 255, 0, 0, 1)
     end)
-end
-
---- Exporte le dictionnaire des sorts des barres d'action (identifiant -> nom, sort de base, variante active) dans
---- CLOCKWORK_SPELLBOOK, que WoW écrit sur le disque au prochain /reload ou à la déconnexion.
-function Clockwork.exportSpellbook()
-    CLOCKWORK_SPELLBOOK = CLOCKWORK_SPELLBOOK or {}
-    local book = {}
-    local function add(spellID)
-        if not spellID or book[spellID] then return end
-        local name = C_Spell.GetSpellName(spellID)
-        if not name then return end
-        book[spellID] = { name = name, base = C_Spell.GetBaseSpell(spellID), override = C_Spell.GetOverrideSpell(spellID) }
-    end
-    for slot = 1, 180 do
-        local actionType, id = GetActionInfo(slot)
-        if actionType == "spell" then
-            add(id)
-            add(C_Spell.GetOverrideSpell(id))
-        end
-    end
-    for spellID in pairs(Clockwork.lastCasts) do add(spellID) end
-
-    -- En quittant le jeu (et non sur /reload), les barres sont déjà déchargées : on garde alors l'export précédent
-    if next(book) == nil then return end
-
-    local class = Clockwork.player.class and Clockwork.player.class.classFilename or "?"
-    local spec = Clockwork.player.specialization and Clockwork.player.specialization.id or 0
-    CLOCKWORK_SPELLBOOK[class .. "-" .. spec] = { updated = date("%Y-%m-%d %H:%M:%S"), spells = book }
 end
