@@ -17,10 +17,10 @@ Branche `12.0` : WoW Midnight (12.x, testé en 12.1.0 build 69933).
 2. [Installation et déploiement](#installation-et-déploiement)
 3. [Menu en jeu](#menu-en-jeu)
 4. [Commandes en jeu](#commandes-en-jeu)
-4. [Organisation du code](#organisation-du-code)
-5. [Cycle de mise à jour](#cycle-de-mise-à-jour)
-6. [La grille](#la-grille)
-7. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
+5. [Organisation du code](#organisation-du-code)
+6. [Cycle de mise à jour](#cycle-de-mise-à-jour)
+7. [La grille](#la-grille)
+8. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
 9. [Robustesse et diagnostic](#robustesse-et-diagnostic)
 
 ---
