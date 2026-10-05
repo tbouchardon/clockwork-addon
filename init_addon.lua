@@ -76,7 +76,6 @@ function Clockwork:playerEnteringWorld()
 
     self.inCombat = self:createDot("clockWork_inCombat", 2, -2)
     self.casting = self:createDot("clockWork_casting", 3, -2)
-    self.notRetaliating = self:createDot("clockWork_notRetaliating", 4, -2)
 
     self.playerHealth = self:createDot("clockWork_health", 12, -2)
     self.playerMana = self:createDot("clockWork_mana", 13, -2)
@@ -129,22 +128,6 @@ function Clockwork:playerEnteringWorld()
     self:setAllBindings()
 end
 
-function Clockwork:damageDone(arg1)
-    --if (not self.isPassiveDamage(arg1)) then
-    self.lastTimePlayerHit = time()
-    self.durationBeingHitWithoutRetaliating = self.lastTimePlayerHasBeenHit - self.lastTimePlayerHit
-    --Clockwork.log.debug("self : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
-    --end
-end
-
-function Clockwork:damageReceived(arg1)
-    --        if UnitAffectingCombat("player") then
-    self.lastTimePlayerHasBeenHit = time()
-    self.durationBeingHitWithoutRetaliating = self.lastTimePlayerHasBeenHit - self.lastTimePlayerHit
-    --Clockwork.log.debug("creature : " .. tostring(Clockwork.durationBeingHitWithoutRetaliating))
-    --        end
-end
-
 function Clockwork:onUpdate()
     local now = GetTime()
 
@@ -182,15 +165,6 @@ function Clockwork:onUpdate()
             if (finished) then
                 self.addWaypointList = nil
                 self.waypointListIndex = 0
-            end
-        end
-
-        -- Update notRetaliating status
-        if (self.notRetaliating) then
-            if (self.durationBeingHitWithoutRetaliating > 6) and not UnitIsDeadOrGhost("player") then
-                self.notRetaliating.texture:SetColorTexture(1, 1, 1, 1)
-            else
-                self.notRetaliating.texture:SetColorTexture(0, 0, 0, 1)
             end
         end
 

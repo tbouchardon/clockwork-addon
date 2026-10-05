@@ -91,7 +91,7 @@ les tables du jeu (wago.tools).
 | `tne` | *Target Nearest Enemy* : le Java appuie sur `Tab` quand il n'a rien à faire. |
 | `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |
 | `05,21-63,30;…` | Ajoute une liste de points de passage (coordonnées de carte). |
-| `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Ramasse le butin après chaque combat. |
+| `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Ramasse le butin après chaque combat, attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
 | `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |
 | `testsecret` | **Carte de ce que le client autorise** sur les valeurs secrètes (sections A à G). À lancer en combat contre un mannequin, puis hors combat pour comparer. |
@@ -199,7 +199,6 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (0,0) | Coin vert : grille visible (le Java vérifie ce pixel avant tout). |
 | (2,2) | En combat (blanc). |
 | (3,2) | Incantation en cours (blanc). |
-| (4,2) | Frappé sans riposter depuis plus de 6 s (pilote automatique). |
 | (6,2) | **Sort recommandé par Blizzard**, 24 bits, dans sa forme de base (`C_Spell.GetBaseSpell`). |
 | (7,2) | Direction du personnage sur 16 bits : `R` octet fort, `G` octet faible, 0 à 65 535 pour 0 à 2π. |
 | (10,2) | `R` = mode aggro, `G` = cible en combat. |

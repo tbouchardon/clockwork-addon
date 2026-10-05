@@ -98,13 +98,28 @@ function Clockwork:updateUIStatus()
 
     Clockwork.guard("drive", function()
         -- PV et mana étant secrets, on attend la fin du buff de nourriture ou de boisson au lieu de comparer à 100 %
-        if Clockwork.DRIVE_MOD == true
-            and (Clockwork.unitHasBuff("player", "Food") or Clockwork.unitHasBuff("player", "Drink")) then
+        if Clockwork.DRIVE_MOD == true and Clockwork.isEatingOrDrinking() then
             self.drive.texture:SetColorTexture(0, 0, 0, 1)
         elseif Clockwork.DRIVE_MOD == true then
             self.drive.texture:SetColorTexture(1, 1, 1, 1)
         end
     end)
+end
+
+-- Noms des buffs de repas, dans la langue du client (tables du jeu : Nourriture 433, Boisson 430, Rafraîchissement...)
+local MEAL_BUFFS = {
+    frFR = { "Nourriture", "Boisson", "Rafraîchissement" },
+    enUS = { "Food", "Drink", "Refreshment" },
+    enGB = { "Food", "Drink", "Refreshment" },
+}
+
+--- Le joueur mange ou boit (buff de repas) : le pilote automatique attend la fin. Buffs lisibles hors combat seulement.
+--- @return boolean
+function Clockwork.isEatingOrDrinking()
+    for _, name in ipairs(MEAL_BUFFS[GetLocale()] or MEAL_BUFFS.enUS) do
+        if Clockwork.unitHasBuff("player", name) then return true end
+    end
+    return false
 end
 
 --- Checks if both player and target are in combat.
@@ -298,9 +313,6 @@ end
 function Clockwork:resetCombat()
     self.inCombat.texture:SetColorTexture(0, 0, 0, 1)
     self.wasInCombat = false
-    self.lastTimePlayerHit = time()
-    self.lastTimePlayerHasBeenHit = time()
-    self.durationBeingHitWithoutRetaliating = 0
 end
 
 --- Affiche les PV d'un membre du groupe : rouge = ratio de vie, noir si absent.
