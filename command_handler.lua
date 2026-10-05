@@ -34,6 +34,8 @@ function Clockwork:commandHandler(msg)
     elseif (msg == 'wpcleared') then
         self.clearWaypoints.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Waypoint cleared")
+    elseif (msg == 'aggro') then
+        self:clickAggro()
     elseif (msg == 'fish') then
         self:clickFish()
     elseif (msg == 'drive') then
@@ -64,6 +66,7 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork 05,21-63,30;   -- Add new waypoint(s)")
         Clockwork.log.notice("/clockWork addwp          -- Add new waypoint")
         Clockwork.log.notice("/clockWork clearwp        -- Clear all waypoints")
+        Clockwork.log.notice("/clockWork aggro          -- Aggro : On/Off")
         Clockwork.log.notice("/clockWork fish           -- Pêche automatique : On/Off")
         Clockwork.log.notice("/clockWork drive          -- Start Autopilote")
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
@@ -118,6 +121,12 @@ end
 function Clockwork:clickClearWp()
     Clockwork.log.notice("Clearing Waypoints")
     self.clearWaypoints.texture:SetColorTexture(1, 1, 1, 1)
+end
+
+--- Aggro : attaquer aussi une cible qui n'est pas encore en combat (lu par le Java en (10, 2)).
+function Clockwork:clickAggro()
+    Clockwork.AGGRO_MOD = not Clockwork.AGGRO_MOD
+    Clockwork.log.notice("Aggro : " .. (Clockwork.AGGRO_MOD and "On" or "Off"))
 end
 
 --- Pêche : le Java lance la ligne et ferre tant que la case (12, 4) est allumée. Bouger la souris l'arrête aussi.

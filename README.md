@@ -15,12 +15,13 @@ Branche `12.0` : WoW Midnight (12.x, testé en 12.1.0 build 69933).
 
 1. [Principe](#principe)
 2. [Installation et déploiement](#installation-et-déploiement)
-3. [Commandes en jeu](#commandes-en-jeu)
+3. [Menu en jeu](#menu-en-jeu)
+4. [Commandes en jeu](#commandes-en-jeu)
 4. [Organisation du code](#organisation-du-code)
 5. [Cycle de mise à jour](#cycle-de-mise-à-jour)
 6. [La grille](#la-grille)
 7. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
-8. [Robustesse et diagnostic](#robustesse-et-diagnostic)
+9. [Robustesse et diagnostic](#robustesse-et-diagnostic)
 
 ---
 
@@ -66,7 +67,8 @@ enregistre les événements et démarre la boucle.
 SavedVariables (écrites par WoW sur le disque à chaque `/reload` ou déconnexion, dans
 `WTF/Account/<COMPTE>/SavedVariables/ClockWork.lua`) :
 
-- `CLOCKWORK_ROTATIONS` : réglages des rotations Lua.
+- `CLOCKWORK_ROTATIONS` : réglages des rotations Lua ;
+- `CLOCKWORK_SETTINGS` : position et épinglage du menu, modes mémorisés.
 
 Les noms des sorts ne passent pas par l'addon : la grille ne transmet que des identifiants, et le Java les traduit avec
 les tables du jeu (wago.tools).
@@ -80,6 +82,22 @@ les tables du jeu (wago.tools).
 
 ---
 
+## Menu en jeu
+
+Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
+
+- il **s'ouvre au survol** et se referme 1,5 s après la sortie de la souris ; un **clic sur le titre l'épingle** ouvert
+  (« épinglé » s'affiche), un autre le libère ;
+- une pastille verte ou grise montre l'état de chaque mode, toujours à jour, y compris après une commande `/clk` ; celle
+  du titre indique si ClockWork est actif ;
+- groupes : **Combat** (activation, aggro, rotation assistée, ciblage auto), **Déplacement** (pilote, boucle, ajout et
+  effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
+- en bas : spécialisation détectée, version de la grille et blocs en erreur ;
+- le **compartiment d'addons** de Blizzard (bouton près de la minicarte) l'affiche ou le masque ;
+- position, épinglage et modes (aggro, rotation assistée, ciblage auto, boucle, débogage) sont **mémorisés** d'une
+  session à l'autre (SavedVariable `CLOCKWORK_SETTINGS`). L'activation, le pilote et la pêche repartent éteints, par
+  prudence.
+
 ## Commandes en jeu
 
 `/clk` ou `/clockwork`, suivi de :
@@ -87,6 +105,7 @@ les tables du jeu (wago.tools).
 | Commande | Effet |
 |---|---|
 | `toggle` | Active ou désactive l'addon. Désactivé, la case (2,13) est éteinte et le Java ne fait rien. |
+| `aggro` | Active ou désactive le mode aggro. |
 | `assisted` | Active ou désactive la rotation assistée de Blizzard (`C_AssistedCombat`) dans les rotations Lua. |
 | `tne` | *Target Nearest Enemy* : le Java appuie sur `Tab` quand il n'a rien à faire. |
 | `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |

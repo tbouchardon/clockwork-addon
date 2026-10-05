@@ -238,6 +238,8 @@ local function handleAddonLoaded(self, addonName)
         self:playerEnteringWorld()
         self:addonLoaded()
         self:resetCombat()
+        -- Réglages mémorisés (position du menu, modes) : SavedVariables disponibles et grille créée
+        Clockwork.guard("applySettings", Clockwork.applySettings)
         return true -- Stop further processing
     end
 end

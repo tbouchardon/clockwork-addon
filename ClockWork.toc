@@ -4,7 +4,9 @@
 ## Notes: My Smart Addon
 ## Category: Combat
 ## DefaultState: Enabled
-## SavedVariables: CLOCKWORK_ROTATIONS
+## SavedVariables: CLOCKWORK_ROTATIONS, CLOCKWORK_SETTINGS
+## AddonCompartmentFunc: Clockwork_OnAddonCompartmentClick
+## IconTexture: Interface\Icons\INV_Misc_Gear_01
 
 ## Dependencies: 
 
