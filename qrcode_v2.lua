@@ -21,6 +21,8 @@
 --   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0)
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
+--   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
+--   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --
 -- Les noms des sorts ne passent pas par l'addon : le Java les lit dans les tables du jeu (wago.tools).
 
@@ -118,6 +120,8 @@ function Clockwork:initQrCodeV2()
     self.flags = self:createDot("flags", 10, -2)
     self.shapeshiftForm = self:createDot("shapeshiftForm", 8, -4)
     self.comboPoints = self:createDot("comboPoints", 9, -4)
+    self.playerClass = self:createDot("playerClass", 10, -4)
+    self.playerSpec = self:createDot("playerSpec", 11, -4)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -228,6 +232,15 @@ function Clockwork:updateQrCodeV2()
 
     Clockwork.guard("comboPoints", function()
         self.comboPoints.texture:SetColorTexture(UnitPower("player", Enum.PowerType.ComboPoints) / 255, 0, 0, 1)
+    end)
+
+    Clockwork.guard("classAndSpec", function()
+        -- Le Java choisit la rotation de la classe et de la spécialisation du personnage
+        local classID = select(3, UnitClass("player")) or 0
+        local index = GetSpecialization and GetSpecialization()
+        local specID = index and GetSpecializationInfo(index) or 0
+        self.playerClass.texture:SetColorTexture(classID / 255, 0, 0, 1)
+        self.playerSpec.texture:SetColorTexture(math.floor(specID / 256) / 255, (specID % 256) / 255, 0, 1)
     end)
 
     Clockwork.guard("facing", function()
