@@ -186,7 +186,7 @@ Pour chaque touche et dans chaque bloc, trois cases :
 
 | Case | Position | Contenu |
 |---|---|---|
-| **État** | touches 1 à 12 : `(position + 1, 6)` ; touches 13 à 18 : `(position − 11, 12)` | `R` = temps de recharge restant / 60 s (valeur secrète, passée par une courbe), `G` = utilisable (1/0), `B` = à portée (1), hors de portée (0), sans portée (0,5) |
+| **État** | touches 1 à 12 : `(position + 1, 6)` ; touches 13 à 18 : `(position − 11, 12)` | `R` = temps de recharge restant / 60 s (valeur secrète, passée par une courbe), `G` = utilisable (1), inutilisable (0), ou utilisable mais à incantation pendant un déplacement (0,5 : WoW le refuserait ; temps d'incantation actuel, procs compris), `B` = à portée (1), hors de portée (0), sans portée (0,5) |
 | **Historique** | touches 1 à 12 : `(position + 1, 9)` ; touches 13 à 18 : `(position − 5, 12)` | `R` = secondes depuis le dernier lancement **sur la cible actuelle** / 60 (1 = jamais ou plus de 60 s), `G` = proc (bouton en surbrillance), `B` = secondes depuis le dernier lancement, toutes cibles / 60 |
 | **Sort** (24 bits) | positions 1 à 8 : `(position + 2, 3)` ; 9 à 12 : `(position − 7, 7)` ; 13 à 16 : `(position − 11, 10)` ; 17 et 18 : `(position − 9, 2)` | Identifiant du sort sur la touche (0 = aucun) |
 
@@ -213,6 +213,7 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (2..7,13) | Modes : `toggle` (2), `tne` (3), ajout de point (4), effacement du parcours (5), `drive` (6), `loop` (7). |
 | (8,4) | **Forme active** : sort de la forme (druide : félin, ours, sélénien…) sur 24 bits, 0 = aucune. Le sort plutôt que l'index de `GetShapeshiftForm`, qui dépend des talents. |
 | (9,4) | **Points de combo** : `R` = nombre / 255. |
+| (11,13) | **Déplacement** : `R` = le joueur se déplace (`GetUnitSpeed`). |
 | (9,13) | **Sort en cours** d'incantation ou de canalisation, 24 bits (événements `UNIT_SPELLCAST_START` / `CHANNEL_START`), 0 = aucun. |
 | (10,13) | `R` = temps restant de l'incantation / 10 s (objet durée de `UnitCastingDuration` / `UnitChannelDuration`, passé par une courbe), `G` = canalisation. |
 | (13,4) | **Garde-fous** : `R` = joueur mort, `G` = cible marquée par un autre joueur (`UnitIsTapDenied`), `B` = sur une monture. Le Java n'agit pas dans ces cas. |

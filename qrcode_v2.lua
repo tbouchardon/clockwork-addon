@@ -7,7 +7,8 @@
 --
 -- Cases (x, y) relatives à un bloc, couleurs de 0 à 1 :
 --   ligne 6, sous chaque touche 1..= (x 2..13) et ligne 12 x 2..7 (Q D R T F G) : état de la touche
---       R = temps de recharge restant / 60 s, G = utilisable (1/0), B = à portée (1), hors de portée (0), sans portée (0,5)
+--       R = temps de recharge restant / 60 s, G = utilisable (1), inutilisable (0), utilisable mais à incantation
+--       pendant un déplacement (0,5 : WoW le refuserait), B = à portée (1), hors de portée (0), sans portée (0,5)
 --   ligne 9, sous chaque touche 1..= (x 2..13) et ligne 12 x 8..13 (Q D R T F G) : historique du sort de la touche
 --       R = temps depuis le dernier lancement sur la cible actuelle / 60 s (1 = jamais ou plus de 60 s)
 --       G = proc (bouton en surbrillance), B = temps depuis le dernier lancement, toutes cibles / 60 s
@@ -22,6 +23,7 @@
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
 --   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
+--   (11, 13) : R = le joueur se déplace (1/0)
 --   (9, 13) : sort en cours d'incantation ou de canalisation sur 24 bits, 0 = aucun
 --   (10, 13) : R = temps restant de l'incantation / 10 s (valeur secrète, passée par une courbe), G = canalisation (1/0)
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
@@ -130,6 +132,7 @@ function Clockwork:initQrCodeV2()
     self.safety = self:createDot("safety", 13, -4)
     self.castSpell = self:createDot("castSpell", 9, -13)
     self.castInfo = self:createDot("castInfo", 10, -13)
+    self.moving = self:createDot("moving", 11, -13)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -181,6 +184,23 @@ local function elapsedRatio(entry)
     return math.min((GetTime() - entry.time) / HORIZON, 1)
 end
 
+--- Le joueur se déplace : vitesse non nulle, sinon (vitesse illisible) changement de position sur la carte.
+--- @return boolean
+function Clockwork.isMoving()
+    local ok, moving = pcall(function() return GetUnitSpeed("player") > 0 end)
+    if ok then return moving end
+    return Clockwork.player.isMoving == true
+end
+
+--- Sort à incantation alors que le joueur se déplace : WoW le refuserait (comme actionCanBeCast pour les rotations Lua).
+--- Temps d'incantation actuel (procs compris) ; s'il est illisible, le sort n'est pas bloqué.
+--- @return boolean
+local function blockedByMovement(spellID)
+    if not spellID or not Clockwork.isMoving() then return false end
+    local ok, castTime = pcall(function() return C_Spell.GetSpellInfo(spellID).castTime > 0 end)
+    return ok and castTime == true
+end
+
 function Clockwork:updateKeyState(key)
     local spellID, slot = self:spellForKey(key)
     setColor24(self.keySpell[key].texture, spellID or 0)
@@ -195,7 +215,8 @@ function Clockwork:updateKeyState(key)
     local duration = C_ActionBar.GetActionCooldownDuration and C_ActionBar.GetActionCooldownDuration(slot)
     if duration then remaining = duration:EvaluateRemainingDuration(curve()) end
 
-    local usable = IsUsableAction(slot) and 1 or 0
+    local usable = 0
+    if IsUsableAction(slot) then usable = blockedByMovement(spellID) and 0.5 or 1 end
     local inRange = IsActionInRange(slot)
     local range = inRange == nil and 0.5 or (inRange and 1 or 0)
     self.keyState[key].texture:SetColorTexture(remaining, usable, range, 1)
@@ -240,6 +261,10 @@ function Clockwork:updateQrCodeV2()
 
     Clockwork.guard("comboPoints", function()
         self.comboPoints.texture:SetColorTexture(UnitPower("player", Enum.PowerType.ComboPoints) / 255, 0, 0, 1)
+    end)
+
+    Clockwork.guard("moving", function()
+        self.moving.texture:SetColorTexture(Clockwork.isMoving() and 1 or 0, 0, 0, 1)
     end)
 
     Clockwork.guard("cast", function()
