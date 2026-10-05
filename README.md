@@ -278,8 +278,9 @@ Pour chaque sort des barres d'action (et chaque sort lancé depuis le chargement
 souvent un sort par une variante qui a un autre identifiant, et Blizzard recommande la forme de base. Le Java relit ce
 fichier à chaud.
 
-Limite : un sort ajouté aux barres n'est connu du Java qu'après le prochain `/reload`. Une table complète des sorts
-(DB2 `SpellName` via wago.tools) est prévue côté Java pour lever cette limite.
+Le Java complète ce dictionnaire par les tables du jeu (wago.tools) : un sort qui n'est pas encore sur une barre au
+dernier `/reload` peut quand même être nommé dans une règle. En quittant le jeu, les barres sont déjà déchargées ; un
+export vide n'écrase donc pas le précédent.
 
 ---
 
