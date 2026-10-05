@@ -214,6 +214,8 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (2..7,13) | Modes : `toggle` (2), `tne` (3), ajout de point (4), effacement du parcours (5), `drive` (6), `loop` (7). |
 | (8,4) | **Forme active** : sort de la forme (druide : félin, ours, sélénien…) sur 24 bits, 0 = aucune. Le sort plutôt que l'index de `GetShapeshiftForm`, qui dépend des talents. |
 | (9,4) | **Points de combo** : `R` = nombre / 255. |
+| (9,13) | **Sort en cours** d'incantation ou de canalisation, 24 bits (événements `UNIT_SPELLCAST_START` / `CHANNEL_START`), 0 = aucun. |
+| (10,13) | `R` = temps restant de l'incantation / 10 s (objet durée de `UnitCastingDuration` / `UnitChannelDuration`, passé par une courbe), `G` = canalisation. |
 | (13,4) | **Garde-fous** : `R` = joueur mort, `G` = cible marquée par un autre joueur (`UnitIsTapDenied`), `B` = sur une monture. Le Java n'agit pas dans ces cas. |
 | (10,4) | **Classe** du personnage : `R` = identifiant / 255 (7 = chaman). |
 | (11,4) | **Spécialisation** active sur 16 bits : `R` octet fort, `G` octet faible (262 = Élémentaire). Le Java choisit la rotation d'après la classe et la spécialisation. |

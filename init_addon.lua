@@ -229,16 +229,23 @@ Event Handling
 
 local eventHandlers
 
-local function handleSpellcastStart(self, unit)
+local function handleSpellcastStart(self, unit, _, spellID)
     if unit ~= "player" then return end
     self.CASTING = true
     self.casting.texture:SetColorTexture(1, 1, 1, 1)
+    Clockwork.currentCast = { spellID = spellID, channel = false }
+end
+
+local function handleChannelStart(self, unit, _, spellID)
+    handleSpellcastStart(self, unit, nil, spellID)
+    if unit == "player" then Clockwork.currentCast.channel = true end
 end
 
 local function handleSpellcastStop(self, unit)
     if unit ~= "player" then return end
     self.CASTING = false
     self.casting.texture:SetColorTexture(0, 0, 0, 1)
+    Clockwork.currentCast = nil
 end
 
 local function handleAddonLoaded(self, addonName)
@@ -298,7 +305,7 @@ end
 
 eventHandlers = {
     ["UNIT_SPELLCAST_START"] = handleSpellcastStart,
-    ["UNIT_SPELLCAST_CHANNEL_START"] = handleSpellcastStart,
+    ["UNIT_SPELLCAST_CHANNEL_START"] = handleChannelStart,
     ["UNIT_SPELLCAST_STOP"] = handleSpellcastStop,
     ["UNIT_SPELLCAST_CHANNEL_STOP"] = handleSpellcastStop,
     ["UNIT_SPELLCAST_FAILED"] = handleSpellcastStop,

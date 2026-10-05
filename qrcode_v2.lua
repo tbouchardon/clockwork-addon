@@ -22,6 +22,8 @@
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
 --   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
+--   (9, 13) : sort en cours d'incantation ou de canalisation sur 24 bits, 0 = aucun
+--   (10, 13) : R = temps restant de l'incantation / 10 s (valeur secrète, passée par une courbe), G = canalisation (1/0)
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --
@@ -48,6 +50,8 @@ local HORIZON = 60 -- secondes encodées dans un canal (0..1)
 Clockwork.lastCasts = {}
 
 local cooldownCurve
+local castCurve
+local CAST_HORIZON = 10 -- secondes encodées pour le temps restant d'une incantation
 
 local function curve()
     if not cooldownCurve then
@@ -124,6 +128,8 @@ function Clockwork:initQrCodeV2()
     self.playerClass = self:createDot("playerClass", 10, -4)
     self.playerSpec = self:createDot("playerSpec", 11, -4)
     self.safety = self:createDot("safety", 13, -4)
+    self.castSpell = self:createDot("castSpell", 9, -13)
+    self.castInfo = self:createDot("castInfo", 10, -13)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
 end
@@ -234,6 +240,35 @@ function Clockwork:updateQrCodeV2()
 
     Clockwork.guard("comboPoints", function()
         self.comboPoints.texture:SetColorTexture(UnitPower("player", Enum.PowerType.ComboPoints) / 255, 0, 0, 1)
+    end)
+
+    Clockwork.guard("cast", function()
+        -- Sort en cours (événements de début d'incantation) et temps restant : l'objet durée est secret, il passe par
+        -- une courbe comme les temps de recharge
+        local cast = Clockwork.currentCast
+        setColor24(self.castSpell.texture, cast and cast.spellID or 0)
+        if not cast then
+            self.castInfo.texture:SetColorTexture(0, 0, 0, 1)
+            return
+        end
+        if not castCurve then
+            castCurve = C_CurveUtil.CreateCurve()
+            castCurve:AddPoint(0, 0)
+            castCurve:AddPoint(CAST_HORIZON, 1)
+        end
+        -- L'objet durée peut être secret : on ne le teste pas, on le transmet ; s'il manque, l'appel échoue et vaut 0
+        -- (pas de and/or sur une valeur secrète : seul if teste notre propre booléen)
+        local ok, remaining = pcall(function()
+            local duration
+            if cast.channel then duration = UnitChannelDuration("player") else duration = UnitCastingDuration("player") end
+            return duration:EvaluateRemainingDuration(castCurve)
+        end)
+        local channel = cast.channel and 1 or 0
+        if ok then
+            self.castInfo.texture:SetColorTexture(remaining, channel, 0, 1)
+        else
+            self.castInfo.texture:SetColorTexture(0, channel, 0, 1)
+        end
     end)
 
     Clockwork.guard("safety", function()
