@@ -108,6 +108,8 @@ local MEAL_BUFFS = {
 --- Le joueur mange ou boit (buff de repas) : le pilote automatique attend la fin. Buffs lisibles hors combat seulement.
 --- @return boolean
 function Clockwork.isEatingOrDrinking()
+    -- On ne mange pas en combat, et les auras y sont inaccessibles en 12.x (appel refusé, « Lua Taint »)
+    if UnitAffectingCombat("player") then return false end
     for _, name in ipairs(MEAL_BUFFS[GetLocale()] or MEAL_BUFFS.enUS) do
         if Clockwork.unitHasBuff("player", name) then return true end
     end

@@ -38,6 +38,8 @@
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --   (5, 1) : résultat du dernier lancer de pêche (voir fishing.lua)
+--   (7, 1) : R = un sort vient d'être refusé parce que la cible n'est pas devant le joueur (moins de 1,5 s), pour que
+--       le Java fasse demi-tour (monstre dans le dos)
 --   (6, 1) : identifiant de la cible sur 24 bits, tiré de la fin de son GUID (0 = pas de cible, ou GUID illisible) : le
 --       Java reconnaît une cible déjà vue (DoT répartis entre plusieurs ennemis)
 --   (4, 1) : enchantement temporaire de la main droite (leurre sur la canne à pêche...), R = actif (1/0),
@@ -70,6 +72,7 @@ local CLASS_RESOURCES = {
     EVOKER = Enum.PowerType.Essence,
     MAGE = Enum.PowerType.ArcaneCharges,
 }
+local FACING_ERROR_DELAY = 1.5 -- secondes pendant lesquelles un refus « cible pas devant vous » est publié
 local ITEM_FLAG = 8388608 -- bit 23 de la case du sort : la touche porte un objet (identifiant de sort toujours inférieur)
 
 -- Dernier lancement par sort : { time = GetTime(), guid = cible au moment du lancement }
@@ -166,6 +169,7 @@ function Clockwork:initQrCodeV2()
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.weaponEnchant = self:createDot("weaponEnchant", 4, -1)
     self.targetId = self:createDot("targetId", 6, -1)
+    self.notFacing = self:createDot("notFacing", 7, -1)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
     self:initGroupCells()
     self:initFishingCell()
@@ -302,6 +306,17 @@ end
 
 function Clockwork.recordTargetInterruptible(unit, interruptible)
     if unit == "target" and Clockwork.targetCast then Clockwork.targetCast.interruptible = interruptible end
+end
+
+--- Message d'erreur de l'interface (UI_ERROR_MESSAGE) : sort refusé parce que la cible n'est pas devant le joueur
+--- (sort ou attaque en mêlée), résultat d'un lancer de pêche.
+function Clockwork.recordUiError(message)
+    if message == nil then return end
+    if (SPELL_FAILED_UNIT_NOT_INFRONT and message == SPELL_FAILED_UNIT_NOT_INFRONT)
+        or (ERR_BADATTACKFACING and message == ERR_BADATTACKFACING) then
+        Clockwork.lastFacingError = GetTime()
+    end
+    Clockwork.recordFishingError(message)
 end
 
 --- Le joueur se déplace : vitesse non nulle, sinon (vitesse illisible) changement de position sur la carte.
@@ -470,6 +485,11 @@ function Clockwork:updateQrCodeV2()
     end)
 
     self:updateGroupCells()
+
+    Clockwork.guard("notFacing", function()
+        local recent = Clockwork.lastFacingError and GetTime() - Clockwork.lastFacingError < FACING_ERROR_DELAY
+        self.notFacing.texture:SetColorTexture(recent and 1 or 0, 0, 0, 1)
+    end)
 
     Clockwork.guard("targetId", function()
         setColor24(self.targetId.texture, targetId())

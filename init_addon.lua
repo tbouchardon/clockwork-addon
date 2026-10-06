@@ -312,7 +312,7 @@ eventHandlers = {
     ["PLAYER_REGEN_ENABLED"] = function() Clockwork.applyPendingSecureTargeting() end,
     ["LOOT_READY"] = function() Clockwork.recordFishingLoot() end,
     ["LOOT_OPENED"] = function() Clockwork.recordFishingLoot() end,
-    ["UI_ERROR_MESSAGE"] = function(_, _, message) Clockwork.recordFishingError(message) end,
+    ["UI_ERROR_MESSAGE"] = function(_, _, message) Clockwork.recordUiError(message) end,
 }
 
 function Clockwork:onEvent(event, ...)
