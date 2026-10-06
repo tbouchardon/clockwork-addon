@@ -125,7 +125,7 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
 | `multi` | Mode multi-cibles (aussi dans le menu) : les rotations répartissent leurs DoT et utilisent leurs sorts de zone. |
 | `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
-| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java avance jusqu'à la cible morte (elle est devant) et ouvre son butin. |
+| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java avance vers le cadavre (il est devant) en appuyant sur la touche d'interaction, et ouvre son butin. L'option « Activer la touche d'interaction » (Options > Contrôles) doit être cochée. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
 | `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |
@@ -152,7 +152,7 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 | `init_addon.lua` | Grille historique (fond, cases), échelle des pixels, événements, boucle `OnUpdate`. |
 | `qrcode_v2.lua` | **Grille v4** : quatre blocs de touches, codage des sorts, historique des lancements. |
 | `group.lua` | Membres du groupe ou du raid (bloc 2), mode soigneur, boutons sécurisés de ciblage des membres. |
-| `loot.lua` | Ramassage du butin : la cible est-elle un cadavre avec du butin pour le joueur. |
+| `loot.lua` | Ramassage du butin : ennemis ciblés récemment (GUID retenus) devenus des cadavres avec du butin pour le joueur. |
 | `fishing.lua` | Résultat de chaque lancer de pêche (prise, échappé, faux clic, rien) et statistiques du menu. |
 | `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
 | `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
@@ -276,7 +276,7 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | (3,1) | `R` = **mode soigneur**, `G` = en raid. |
-| (8,1) | **Ramassage** : `R` = mode ramassage, `G` = la cible est un cadavre avec du butin pour le joueur (`CanLootUnit`). |
+| (8,1) | **Ramassage** : `R` = mode ramassage, `G` = un ennemi ciblé dans la dernière minute est un cadavre avec du butin pour le joueur (`CanLootUnit` sur son GUID retenu : la cible disparaît souvent à sa mort), `B` = touche d'interaction de WoW active (option « Activer la touche d'interaction », CVar `softTargetInteract`, lue sans être modifiée). |
 | (7,1) | **Cible pas devant le joueur** : `R` = un sort vient d'être refusé pour cette raison (« La cible doit être devant vous », ou attaque en mêlée dans la mauvaise direction), il y a moins de 1,5 s. Le Java fait alors demi-tour. |
 | (6,1) | **Identifiant de la cible**, 24 bits : les 6 derniers chiffres hexadécimaux de son GUID (numéro propre à chaque monstre), 0 sans cible ou GUID illisible. Le Java reconnaît un ennemi déjà vu (DoT répartis). |
 | (5,1) | **Résultat du dernier lancer de pêche** : `R` = compteur de lancers terminés (modulo 256), `G` = résultat (1 prise, 2 échappé, 3 rien à ferrer, 4 rien), voir `fishing.lua`. |

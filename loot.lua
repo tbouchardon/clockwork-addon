@@ -1,28 +1,57 @@
 -- Ramassage du butin après un combat, piloté par le Java (mode « Ramassage » du menu, désactivé par défaut).
 --
--- Case (8, 1) du bloc 1 : R = mode ramassage, G = la cible est un cadavre qui a du butin pour le joueur (CanLootUnit).
--- Le Java avance alors vers le cadavre (il est devant : le personnage faisait face à sa cible pour la tuer) en appuyant
--- sur Alt+Maj+L, posé en surcharge sur « Interagir avec la cible » (INTERACTTARGET, bindings.lua), jusqu'à ouvrir le
--- butin. Aucun réglage du joueur n'est modifié.
+-- La cible morte ne reste pas forcément ciblée (elle disparaît souvent à sa mort, avant que son butin soit prêt) : l'addon
+-- retient l'identifiant (GUID) des derniers ennemis ciblés, et CanLootUnit dit, même sans les cibler, si l'un d'eux est
+-- un cadavre avec du butin pour le joueur.
+--
+-- Case (8, 1) du bloc 1 : R = mode ramassage, G = un ennemi récent a du butin, B = touche d'interaction de WoW active
+-- (option « Activer la touche d'interaction », CVar softTargetInteract). Le Java avance alors (le cadavre est devant :
+-- le personnage faisait face à sa cible) en appuyant sur Alt+Maj+L, posé en surcharge sur INTERACTTARGET
+-- (bindings.lua) : sans cible, c'est la touche d'interaction, qui agit sur le cadavre le plus proche devant. Aucun
+-- réglage du joueur n'est modifié.
 
 Clockwork.LOOT_MOD = false
+
+local REMEMBERED = 60 -- secondes pendant lesquelles un ennemi ciblé est retenu
+local recentEnemies = {} -- GUID -> GetTime() du dernier moment où il était ciblé
 
 function Clockwork:initLootCell()
     self.lootCell = self:createDot("loot", 8, -1)
 end
 
---- La cible est un cadavre avec du butin pour le joueur.
-function Clockwork.targetLootable()
-    if not UnitExists("target") or not UnitIsDead("target") then return false end
-    local ok, hasLoot, canLoot = pcall(CanLootUnit, UnitGUID("target"))
-    return ok and hasLoot == true and canLoot == true
+--- Retient la cible si c'est un ennemi (le GUID peut être secret en JcJ : il ne sert alors pas de clé).
+local function rememberTarget()
+    pcall(function()
+        if UnitExists("target") and UnitCanAttack("player", "target") then
+            local guid = UnitGUID("target")
+            if guid then recentEnemies[guid] = GetTime() end
+        end
+    end)
+end
+
+--- Un ennemi ciblé récemment est un cadavre avec du butin pour le joueur ; oublie les plus anciens.
+function Clockwork.recentEnemyLootable()
+    local now, lootable = GetTime(), false
+    for guid, seen in pairs(recentEnemies) do
+        if now - seen > REMEMBERED then
+            recentEnemies[guid] = nil
+        else
+            local ok, hasLoot, canLoot = pcall(CanLootUnit, guid)
+            if ok and hasLoot and canLoot then lootable = true end
+        end
+    end
+    return lootable
+end
+
+--- Touche d'interaction de WoW active : sans elle, Interagir avec la cible ne fait rien quand il n'y a pas de cible.
+local function interactKeyEnabled()
+    return tonumber(GetCVar("softTargetInteract")) == Enum.SoftTargetEnableFlags.Any
 end
 
 function Clockwork:updateLootCell()
-    -- Même « en combat » : le jeu garde ce statut quelques secondes après la mort du dernier ennemi ; le Java ne ramasse
-    -- que s'il ne reste aucun ennemi en combat
-    local lootable = Clockwork.LOOT_MOD and Clockwork.targetLootable()
-    self.lootCell.texture:SetColorTexture(Clockwork.LOOT_MOD and 1 or 0, lootable and 1 or 0, 0, 1)
+    rememberTarget()
+    local lootable = Clockwork.LOOT_MOD and Clockwork.recentEnemyLootable()
+    self.lootCell.texture:SetColorTexture(Clockwork.LOOT_MOD and 1 or 0, lootable and 1 or 0, interactKeyEnabled() and 1 or 0, 1)
 end
 
 --- Une version précédente activait le déplacement par clic pendant le ramassage, en mémorisant le réglage du joueur :
@@ -38,4 +67,7 @@ end
 function Clockwork:clickLoot()
     Clockwork.LOOT_MOD = not Clockwork.LOOT_MOD
     Clockwork.log.notice("Ramassage : " .. (Clockwork.LOOT_MOD and "On" or "Off"))
+    if Clockwork.LOOT_MOD and not interactKeyEnabled() then
+        Clockwork.log.notice("Ramassage : cocher « Activer la touche d'interaction » (Options > Contrôles) pour ramasser sans cible")
+    end
 end
