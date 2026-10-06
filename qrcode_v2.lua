@@ -37,6 +37,8 @@
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --   (5, 1) : résultat du dernier lancer de pêche (voir fishing.lua)
+--   (6, 1) : identifiant de la cible sur 24 bits, tiré de la fin de son GUID (0 = pas de cible, ou GUID illisible) : le
+--       Java reconnaît une cible déjà vue (DoT répartis entre plusieurs ennemis)
 --   (4, 1) : enchantement temporaire de la main droite (leurre sur la canne à pêche...), R = actif (1/0),
 --       G = temps restant / 30 min
 --
@@ -63,6 +65,9 @@ local ITEM_FLAG = 8388608 -- bit 23 de la case du sort : la touche porte un obje
 
 -- Dernier lancement par sort : { time = GetTime(), guid = cible au moment du lancement }
 Clockwork.lastCasts = {}
+-- Derniers lancements par cible : castsByTarget[guid][spellID] = GetTime(), pour retrouver ses DoT en revenant sur une
+-- cible (répartition des DoT entre plusieurs ennemis) ; purgé au-delà de HORIZON
+Clockwork.castsByTarget = {}
 
 local cooldownCurve
 local castCurve
@@ -151,6 +156,7 @@ function Clockwork:initQrCodeV2()
     self.targetCastSpell = self:createDot("targetCastSpell", 12, -13)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.weaponEnchant = self:createDot("weaponEnchant", 4, -1)
+    self.targetId = self:createDot("targetId", 6, -1)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
     self:initGroupCells()
     self:initFishingCell()
@@ -164,6 +170,48 @@ function Clockwork.recordOwnCast(spellID)
     Clockwork.lastCasts[spellID] = entry
     local base = C_Spell.GetBaseSpell and C_Spell.GetBaseSpell(spellID)
     if base and base ~= spellID then Clockwork.lastCasts[base] = entry end
+    -- Par cible : le GUID peut être secret (identités restreintes), il ne sert alors pas de clé
+    pcall(function()
+        if not entry.guid then return end
+        local casts = Clockwork.castsByTarget[entry.guid] or {}
+        Clockwork.castsByTarget[entry.guid] = casts
+        casts[spellID] = entry.time
+        if base then casts[base] = entry.time end
+    end)
+end
+
+--- Dernier lancement du sort sur la cible actuelle (même après être passé sur d'autres cibles), ou nil.
+local function castOnTarget(spellID)
+    local ok, time = pcall(function()
+        local guid = UnitGUID("target")
+        local casts = guid and Clockwork.castsByTarget[guid]
+        return casts and casts[spellID]
+    end)
+    if ok and time then return { time = time } end
+    return nil
+end
+
+--- Oublie les lancements de plus de HORIZON secondes (cibles mortes ou quittées).
+local function pruneCastsByTarget()
+    local now = GetTime()
+    for guid, casts in pairs(Clockwork.castsByTarget) do
+        local recent = false
+        for spellID, time in pairs(casts) do
+            if now - time > HORIZON then casts[spellID] = nil else recent = true end
+        end
+        if not recent then Clockwork.castsByTarget[guid] = nil end
+    end
+end
+
+--- Identifiant de la cible sur 24 bits : les 6 derniers chiffres hexadécimaux de son GUID (numéro d'apparition du
+--- monstre, propre à chaque exemplaire). 0 sans cible ou si le GUID est illisible.
+local function targetId()
+    local ok, id = pcall(function()
+        local guid = UnitGUID("target")
+        local suffix = guid and guid:match("(%x+)$")
+        return suffix and tonumber(suffix:sub(-6), 16) or 0
+    end)
+    return ok and id or 0
 end
 
 --- Nom de combinaison d'un raccourci : "3", "SHIFT-3", "CTRL-Q", "ALT-="... ; nil pour plusieurs modificateurs.
@@ -306,8 +354,7 @@ function Clockwork:updateKeyState(key)
         self.keyHistory[key].texture:SetColorTexture(math.min(count, 255) / 255, buff, elapsedRatio(entry), 1)
         return
     end
-    local onTarget = entry
-    if entry and entry.guid ~= UnitGUID("target") then onTarget = nil end
+    local onTarget = spellID and castOnTarget(spellID)
     local proc = spellID and C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed(spellID) and 1 or 0
     local buff = buffActive(spellID) and 1 or 0
     self.keyHistory[key].texture:SetColorTexture(elapsedRatio(onTarget), (proc + 2 * buff) / 3, elapsedRatio(entry), 1)
@@ -411,6 +458,11 @@ function Clockwork:updateQrCodeV2()
     end)
 
     self:updateGroupCells()
+
+    Clockwork.guard("targetId", function()
+        setColor24(self.targetId.texture, targetId())
+        pruneCastsByTarget()
+    end)
 
     Clockwork.guard("weaponEnchant", function()
         local active, expiration = GetWeaponEnchantInfo()

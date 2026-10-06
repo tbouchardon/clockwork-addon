@@ -223,7 +223,7 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | Case | Position | Contenu |
 |---|---|---|
 | **État** | touches 1 à 12 : `(position + 1, 6)` ; touches 13 à 18 : `(position − 11, 12)` | `R` = temps de recharge restant / 60 s (valeur secrète, passée par une courbe), `G` = utilisable (1), inutilisable (0), ou utilisable mais à incantation pendant un déplacement (0,5 : WoW le refuserait ; temps d'incantation actuel, procs compris), `B` = à portée (1), hors de portée (0), sans portée (0,5) |
-| **Historique** | touches 1 à 12 : `(position + 1, 9)` ; touches 13 à 18 : `(position − 5, 12)` | `R` = secondes depuis le dernier lancement **sur la cible actuelle** / 60 (1 = jamais ou plus de 60 s), `G` = proc (bouton en surbrillance) + 2 × buff actif sur le joueur, sur 3 (buff lu hors combat, dernier état connu en combat), `B` = secondes depuis le dernier lancement, toutes cibles / 60 |
+| **Historique** | touches 1 à 12 : `(position + 1, 9)` ; touches 13 à 18 : `(position − 5, 12)` | `R` = secondes depuis le dernier lancement **sur la cible actuelle** / 60 (1 = jamais ou plus de 60 s ; retenu par GUID de cible, donc retrouvé en revenant sur un ennemi déjà affligé), `G` = proc (bouton en surbrillance) + 2 × buff actif sur le joueur, sur 3 (buff lu hors combat, dernier état connu en combat), `B` = secondes depuis le dernier lancement, toutes cibles / 60 |
 | **Sort** (24 bits) | positions 1 à 8 : `(position + 2, 3)` ; 9 à 12 : `(position − 7, 7)` ; 13 à 16 : `(position − 11, 10)` ; 17 et 18 : `(position − 9, 2)` | Identifiant du sort sur la touche (0 = aucun) ; pour un **objet**, 8 388 608 (bit 23) + identifiant de l'objet |
 
 « Sans portée » (0,5) signifie que la portée n'a pas de sens : sort sans cible, ou pas de cible du tout.
@@ -266,9 +266,10 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | (3,1) | `R` = **mode soigneur**, `G` = en raid. |
+| (6,1) | **Identifiant de la cible**, 24 bits : les 6 derniers chiffres hexadécimaux de son GUID (numéro propre à chaque monstre), 0 sans cible ou GUID illisible. Le Java reconnaît un ennemi déjà vu (DoT répartis). |
 | (5,1) | **Résultat du dernier lancer de pêche** : `R` = compteur de lancers terminés (modulo 256), `G` = résultat (1 prise, 2 échappé, 3 rien à ferrer, 4 rien), voir `fishing.lua`. |
 | (4,1) | **Enchantement temporaire de la main droite** (leurre sur la canne à pêche) : `R` = actif, `G` = temps restant / 30 min (`GetWeaponEnchantInfo`). |
-| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1), (4,1) et (5,1). |
+| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1) à (6,1). |
 
 ### Cases « touche à appuyer » (mode v1)
 
