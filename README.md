@@ -261,7 +261,7 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (8,13) | **Version de la grille** : `R` = 4 / 255. |
 | (2..7,13) | Modes : `toggle` (2), `tne` (3), ajout de point (4), effacement du parcours (5), `drive` (6), `loop` (7). |
 | (8,4) | **Forme active** : sort de la forme (druide : félin, ours, sélénien…) sur 24 bits, 0 = aucune. Le sort plutôt que l'index de `GetShapeshiftForm`, qui dépend des talents. |
-| (9,4) | **Points de combo** : `R` = nombre / 255. |
+| (9,4) | **Ressource de classe** : `R` = nombre / 255. Points de combo (voleur, druide), éclats d'âme (démoniste), puissance sacrée (paladin), chi (moine), essence (évocateur), charges arcaniques (mage). |
 | (11,13) | `R` = le joueur **se déplace** (`GetUnitSpeed`), `G` = la **cible incante**, `B` = son sort est interruptible (vrai sauf indication contraire). Suivi par les événements d'incantation de la cible et `PLAYER_TARGET_CHANGED`. |
 | (12,13) | **Sort incanté par la cible**, 24 bits (0 si aucun ou si l'identifiant est secret). |
 | (9,13) | **Sort en cours** d'incantation ou de canalisation, 24 bits (événements `UNIT_SPELLCAST_START` / `CHANNEL_START`), 0 = aucun. |

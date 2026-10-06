@@ -28,7 +28,8 @@
 --   (11, 2) : compteur de mises à jour sur 24 bits (le Java détecte une grille figée)
 --   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0), B = mode multi-cibles (1/0)
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
---   (9, 4) : R = points de combo / 255
+--   (9, 4) : R = ressource de classe / 255 : points de combo (voleur, druide), éclats d'âme (démoniste), puissance sacrée
+--       (paladin), chi (moine), essence (évocateur), charges arcaniques (mage)
 --   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
 --   (11, 13) : R = le joueur se déplace (1/0), G = la cible incante (1/0), B = son sort est interruptible (1/0)
 --   (12, 13) : sort incanté par la cible sur 24 bits (0 si aucun, ou si l'identifiant est secret)
@@ -61,6 +62,14 @@ local NUMBER_KEYS = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ")", "="
 local LETTER_KEYS = { "Q", "D", "R", "T", "F", "G" }
 local HORIZON = 60 -- secondes encodées dans un canal (0..1)
 local WEAPON_ENCHANT_HORIZON = 30 * 60 -- secondes encodées pour un enchantement temporaire de l'arme
+-- Ressource de classe publiée en (9, 4) (points de combo par défaut : voleur, druide)
+local CLASS_RESOURCES = {
+    WARLOCK = Enum.PowerType.SoulShards,
+    PALADIN = Enum.PowerType.HolyPower,
+    MONK = Enum.PowerType.Chi,
+    EVOKER = Enum.PowerType.Essence,
+    MAGE = Enum.PowerType.ArcaneCharges,
+}
 local ITEM_FLAG = 8388608 -- bit 23 de la case du sort : la touche porte un objet (identifiant de sort toujours inférieur)
 
 -- Dernier lancement par sort : { time = GetTime(), guid = cible au moment du lancement }
@@ -393,7 +402,9 @@ function Clockwork:updateQrCodeV2()
     end)
 
     Clockwork.guard("comboPoints", function()
-        self.comboPoints.texture:SetColorTexture(UnitPower("player", Enum.PowerType.ComboPoints) / 255, 0, 0, 1)
+        local _, classFile = UnitClass("player")
+        local powerType = CLASS_RESOURCES[classFile] or Enum.PowerType.ComboPoints
+        self.comboPoints.texture:SetColorTexture(UnitPower("player", powerType) / 255, 0, 0, 1)
     end)
 
     Clockwork.guard("moving", function()
