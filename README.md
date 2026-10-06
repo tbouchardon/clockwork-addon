@@ -213,9 +213,15 @@ Pour chaque touche et dans chaque bloc, trois cases :
 |---|---|---|
 | **État** | touches 1 à 12 : `(position + 1, 6)` ; touches 13 à 18 : `(position − 11, 12)` | `R` = temps de recharge restant / 60 s (valeur secrète, passée par une courbe), `G` = utilisable (1), inutilisable (0), ou utilisable mais à incantation pendant un déplacement (0,5 : WoW le refuserait ; temps d'incantation actuel, procs compris), `B` = à portée (1), hors de portée (0), sans portée (0,5) |
 | **Historique** | touches 1 à 12 : `(position + 1, 9)` ; touches 13 à 18 : `(position − 5, 12)` | `R` = secondes depuis le dernier lancement **sur la cible actuelle** / 60 (1 = jamais ou plus de 60 s), `G` = proc (bouton en surbrillance) + 2 × buff actif sur le joueur, sur 3 (buff lu hors combat, dernier état connu en combat), `B` = secondes depuis le dernier lancement, toutes cibles / 60 |
-| **Sort** (24 bits) | positions 1 à 8 : `(position + 2, 3)` ; 9 à 12 : `(position − 7, 7)` ; 13 à 16 : `(position − 11, 10)` ; 17 et 18 : `(position − 9, 2)` | Identifiant du sort sur la touche (0 = aucun) |
+| **Sort** (24 bits) | positions 1 à 8 : `(position + 2, 3)` ; 9 à 12 : `(position − 7, 7)` ; 13 à 16 : `(position − 11, 10)` ; 17 et 18 : `(position − 9, 2)` | Identifiant du sort sur la touche (0 = aucun) ; pour un **objet**, 8 388 608 (bit 23) + identifiant de l'objet |
 
 « Sans portée » (0,5) signifie que la portée n'a pas de sens : sort sans cible, ou pas de cible du tout.
+
+**Objets** (potion, pierre de soins, leurre…) : la case du sort porte le bit 23 et l'identifiant de l'objet. La case
+d'état garde son sens (recharge, utilisable, portée). Celle d'historique change : `R` = nombre possédé / 255 (charges
+comprises, `C_Item.GetItemCount`), `G` = 2/3 si l'aura du sort de l'objet est active sur le joueur, `B` = temps depuis la
+dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu'elle affiche (sous-type de
+`GetActionInfo`).
 
 ### Cases d'état du combat (bloc 1)
 
@@ -249,7 +255,8 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | (3,1) | `R` = **mode soigneur**, `G` = en raid. |
-| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1). |
+| (4,1) | **Enchantement temporaire de la main droite** (leurre sur la canne à pêche) : `R` = actif, `G` = temps restant / 30 min (`GetWeaponEnchantInfo`). |
+| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1) et (4,1). |
 
 ### Cases « touche à appuyer » (mode v1)
 

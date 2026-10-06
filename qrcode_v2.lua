@@ -17,6 +17,10 @@
 --       Le buff n'est lisible que hors combat : en combat, c'est l'état lu juste avant d'y entrer
 --   identifiant du sort de chaque touche sur 24 bits (R octet fort, G, B octet faible), dans l'ordre de KEY_ORDER :
 --       touches 1..8 en (3..10, 3), 9..12 en (2..5, 7), 13..16 en (2..5, 10), 17..18 en (8..9, 2) ; 0 = pas de sort
+--       Objet (potion, pierre de soins, leurre...) : 8388608 (bit 23) + identifiant de l'objet. Son historique change
+--       alors de sens : R = nombre d'objets possédés / 255 (charges comprises), G = 2/3 si l'aura de son sort est
+--       active sur le joueur, B = temps depuis la dernière utilisation / 60 s. Une macro est décrite par le sort ou
+--       l'objet qu'elle affiche.
 --   (6, 2) : identifiant du sort recommandé par Blizzard sur 24 bits (0 = aucun)
 --   (7, 2) : direction du personnage sur 16 bits, R = octet fort, G = octet faible (0..65535 pour 0..2π)
 --   (2, 3) : nombre d'ennemis en combat (barres de vie), R = nombre / 255
@@ -32,6 +36,8 @@
 --   (10, 13) : R = temps restant de l'incantation / 10 s (valeur secrète, passée par une courbe), G = canalisation (1/0)
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
+--   (4, 1) : enchantement temporaire de la main droite (leurre sur la canne à pêche...), R = actif (1/0),
+--       G = temps restant / 30 min
 --
 -- Les noms des sorts ne passent pas par l'addon : le Java les lit dans les tables du jeu (wago.tools).
 
@@ -51,6 +57,8 @@ Clockwork.KEY_ORDER = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ")", "
 local NUMBER_KEYS = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ")", "=" }
 local LETTER_KEYS = { "Q", "D", "R", "T", "F", "G" }
 local HORIZON = 60 -- secondes encodées dans un canal (0..1)
+local WEAPON_ENCHANT_HORIZON = 30 * 60 -- secondes encodées pour un enchantement temporaire de l'arme
+local ITEM_FLAG = 8388608 -- bit 23 de la case du sort : la touche porte un objet (identifiant de sort toujours inférieur)
 
 -- Dernier lancement par sort : { time = GetTime(), guid = cible au moment du lancement }
 Clockwork.lastCasts = {}
@@ -141,6 +149,7 @@ function Clockwork:initQrCodeV2()
     self.moving = self:createDot("moving", 11, -13)
     self.targetCastSpell = self:createDot("targetCastSpell", 12, -13)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
+    self.weaponEnchant = self:createDot("weaponEnchant", 4, -1)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
     self:initGroupCells()
 end
@@ -178,13 +187,31 @@ function Clockwork:buildKeySlotMap()
     return map
 end
 
---- Sort et emplacement de barre associés à une touche sans modificateur, ou nil.
-function Clockwork:spellForKey(key)
+--- Sort lancé par l'utilisation d'un objet (potion, leurre...), ou nil.
+local function itemSpell(itemID)
+    local ok, _, spellID = pcall(C_Item.GetItemSpell, itemID)
+    if ok then return spellID end
+    return nil
+end
+
+--- Contenu d'une touche : sort, ou objet et le sort de son utilisation, et emplacement de barre ; nil sans emplacement.
+--- Une macro vaut le sort ou l'objet qu'elle affiche (sous-type de GetActionInfo).
+--- @return number|nil spellID, number|nil slot, number|nil itemID
+function Clockwork:actionForKey(key)
     local slot = self.keySlotMap and self.keySlotMap[key]
     if not slot then return nil end
-    local actionType, id = GetActionInfo(slot)
-    if actionType ~= "spell" then return nil, slot end
-    return id, slot
+    local actionType, id, subType = GetActionInfo(slot)
+    if actionType == "macro" then actionType = subType end
+    if actionType == "spell" then return id, slot end
+    if actionType == "item" and id then return itemSpell(id), slot, id end
+    return nil, slot
+end
+
+--- Sort et emplacement de barre associés à une touche, ou nil (sort seulement : pas les objets).
+function Clockwork:spellForKey(key)
+    local spellID, slot, itemID = self:actionForKey(key)
+    if itemID then return nil, slot end
+    return spellID, slot
 end
 
 local function elapsedRatio(entry)
@@ -250,8 +277,8 @@ local function buffActive(spellID)
 end
 
 function Clockwork:updateKeyState(key)
-    local spellID, slot = self:spellForKey(key)
-    setColor24(self.keySpell[key].texture, spellID or 0)
+    local spellID, slot, itemID = self:actionForKey(key)
+    setColor24(self.keySpell[key].texture, itemID and ITEM_FLAG + itemID or spellID or 0)
     if not slot then
         self.keyState[key].texture:SetColorTexture(0, 0, 0, 1)
         self.keyHistory[key].texture:SetColorTexture(1, 0, 1, 1)
@@ -270,6 +297,13 @@ function Clockwork:updateKeyState(key)
     self.keyState[key].texture:SetColorTexture(remaining, usable, range, 1)
 
     local entry = spellID and Clockwork.lastCasts[spellID]
+    if itemID then
+        -- Objet : nombre possédé (charges comprises) à la place du temps sur la cible ; pas de proc
+        local count = C_Item.GetItemCount(itemID, false, true) or 0
+        local buff = buffActive(spellID) and 2 / 3 or 0
+        self.keyHistory[key].texture:SetColorTexture(math.min(count, 255) / 255, buff, elapsedRatio(entry), 1)
+        return
+    end
     local onTarget = entry
     if entry and entry.guid ~= UnitGUID("target") then onTarget = nil end
     local proc = spellID and C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed(spellID) and 1 or 0
@@ -375,6 +409,15 @@ function Clockwork:updateQrCodeV2()
     end)
 
     self:updateGroupCells()
+
+    Clockwork.guard("weaponEnchant", function()
+        local active, expiration = GetWeaponEnchantInfo()
+        if active then
+            self.weaponEnchant.texture:SetColorTexture(1, math.min((expiration or 0) / 1000 / WEAPON_ENCHANT_HORIZON, 1), 0, 1)
+        else
+            self.weaponEnchant.texture:SetColorTexture(0, 0, 0, 1)
+        end
+    end)
 
     Clockwork.guard("enemies", function()
         local count = 0
