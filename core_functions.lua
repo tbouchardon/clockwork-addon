@@ -8,6 +8,7 @@ Clockwork.TOGGLE_ON_OFF = false
 Clockwork.TARGET_NEAREST_ENEMY = false
 Clockwork.DRIVE_MOD = false
 Clockwork.AGGRO_MOD = true
+Clockwork.MULTI_MOD = false
 Clockwork.DRIVE_LOOP = false
 Clockwork.FISH_MOD = false
 

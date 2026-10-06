@@ -93,20 +93,20 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
   (« épinglé » s'affiche), un autre le libère ;
 - une pastille verte ou grise montre l'état de chaque mode, toujours à jour, y compris après une commande `/clk` ; celle
   du titre indique si ClockWork est actif ;
-- groupes : **Combat** (activation, aggro, rotation assistée, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ajout et
+- groupes : **Combat** (activation, aggro, rotation assistée, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ajout et
   effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
 - sous la pêche : **statistiques de la session** (prises sur lancers, poissons échappés, faux clics), d'après le résultat
   de chaque lancer (voir *Pêche : résultat de chaque lancer*) ;
 - en bas : spécialisation détectée, version de la grille et blocs en erreur ;
 - le **compartiment d'addons** de Blizzard (bouton près de la minicarte) l'affiche ou le masque ;
-- position, épinglage et modes (aggro, rotation assistée, ciblage auto, boucle, débogage) sont **mémorisés** d'une
+- position, épinglage et modes (aggro, multi-cibles, rotation assistée, ciblage auto, boucle, débogage) sont **mémorisés** d'une
   session à l'autre (SavedVariable `CLOCKWORK_SETTINGS`). L'activation, le pilote et la pêche repartent éteints, par
   prudence.
 
 ## Raccourcis clavier
 
 Dans **Options > Raccourcis > Addons > ClockWork** (aucune touche par défaut, pour ne rien écraser) : activer ou
-désactiver ClockWork, pêche automatique, mode soigneur, mode aggro, pilote automatique, afficher ou masquer le menu.
+désactiver ClockWork, pêche automatique, mode soigneur, mode multi-cibles, mode aggro, pilote automatique, afficher ou masquer le menu.
 Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindings.xml`, libellés dans `bindings.lua`).
 
 ## Commandes en jeu
@@ -122,6 +122,7 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |
 | `05,21-63,30;…` | Ajoute une liste de points de passage (coordonnées de carte). |
 | `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Ramasse le butin après chaque combat, attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
+| `multi` | Mode multi-cibles (aussi dans le menu) : les rotations répartissent leurs DoT et utilisent leurs sorts de zone. |
 | `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
@@ -131,6 +132,12 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 
 Le **mode aggro** (`AGGRO_MOD`, bouton du menu) autorise l'attaque d'une cible qui n'est pas encore en combat.
 Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en combat.
+
+| Pour… | Aggro | Ciblage auto | Multi-cibles |
+|---|---|---|---|
+| tuer une cible à la fois, puis la suivante | oui | oui | non |
+| tuer tout ce qui est à portée | oui | oui | oui |
+| ne combattre que ce qui m'attaque | non | oui | au choix |
 
 ---
 
@@ -243,7 +250,7 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (3,2) | Incantation en cours (blanc). |
 | (6,2) | **Sort recommandé par Blizzard**, 24 bits, dans sa forme de base (`C_Spell.GetBaseSpell`). |
 | (7,2) | Direction du personnage sur 16 bits : `R` octet fort, `G` octet faible, 0 à 65 535 pour 0 à 2π. |
-| (10,2) | `R` = mode aggro, `G` = cible en combat. |
+| (10,2) | `R` = mode aggro, `G` = cible en combat, `B` = mode multi-cibles. |
 | (11,2) | **Compteur de mises à jour**, 24 bits : s'il ne bouge plus, WoW est figé (écran de chargement…). |
 | (12,2) | Vie du joueur (`R`, valeur secrète affichée telle quelle). |
 | (13,2) | Ressource principale du joueur (`B`, secrète). |

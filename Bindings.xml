@@ -9,6 +9,9 @@
     <Binding name="CLOCKWORK_HEALER" category="ADDONS">
         Clockwork:clickHealer()
     </Binding>
+    <Binding name="CLOCKWORK_MULTI" category="ADDONS">
+        Clockwork:clickMulti()
+    </Binding>
     <Binding name="CLOCKWORK_AGGRO" category="ADDONS">
         Clockwork:clickAggro()
     </Binding>

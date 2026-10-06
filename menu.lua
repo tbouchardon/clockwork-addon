@@ -117,10 +117,12 @@ end
 header("Combat")
 toggle("Activation", "Allume ou éteint ClockWork : le Java n'agit que s'il est actif (/clk toggle).",
     function() return Clockwork.TOGGLE_ON_OFF end, function() Clockwork:clickToggle() end)
-toggle("Aggro", "Attaquer aussi une cible qui n'est pas encore en combat.",
+toggle("Aggro", "Attaquer aussi une cible qui n'est pas encore en combat. Sans aggro, en combat, ne combattre que ce qui est en combat.",
     function() return Clockwork.AGGRO_MOD end, function() Clockwork:clickAggro() end)
 toggle("Rotation assistée", "Suivre la recommandation de Blizzard dans les rotations de l'addon (/clk assisted).",
     function() return Clockwork.ASSISTED_ENABLED end, function() Clockwork:clickAssisted() end)
+toggle("Multi-cibles", "Les rotations répartissent leurs DoT entre plusieurs ennemis et utilisent leurs sorts de zone (/clk multi).",
+    function() return Clockwork.MULTI_MOD end, function() Clockwork:clickMulti() end)
 toggle("Mode soigneur", "Le cerveau Java soigne aussi les autres membres du groupe. Allumé d'office pour une spécialisation de soin (/clk healer).",
     function() return Clockwork.HEALER_MOD end, function() Clockwork:clickHealer() end)
 toggle("Ciblage auto", "Cibler l'ennemi le plus proche quand il n'y a rien à faire (/clk tne).",
@@ -177,6 +179,7 @@ end
 -- Modes mémorisés d'une session à l'autre ; les actions (activation, pilote, pêche) repartent éteintes par prudence
 local SAVED_MODES = {
     { key = "AGGRO_MOD", click = function() Clockwork:clickAggro() end },
+    { key = "MULTI_MOD", click = function() Clockwork:clickMulti() end },
     { key = "ASSISTED_ENABLED", click = function() Clockwork:clickAssisted() end },
     { key = "TARGET_NEAREST_ENEMY", click = function() Clockwork:clickTNE() end },
     { key = "DRIVE_LOOP", click = function() Clockwork:clickLoop() end },

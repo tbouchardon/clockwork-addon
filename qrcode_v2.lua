@@ -26,7 +26,7 @@
 --   (2, 3) : nombre d'ennemis en combat (barres de vie), R = nombre / 255
 --   (8, 13) : version de la grille, R = 4 / 255
 --   (11, 2) : compteur de mises à jour sur 24 bits (le Java détecte une grille figée)
---   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0)
+--   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0), B = mode multi-cibles (1/0)
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
 --   (9, 4) : R = points de combo / 255
 --   (10, 4) : R = classe / 255 (identifiant du jeu : 7 = chaman)
@@ -381,7 +381,8 @@ function Clockwork:updateQrCodeV2()
     end)
 
     Clockwork.guard("flags", function()
-        self.flags.texture:SetColorTexture(Clockwork.AGGRO_MOD and 1 or 0, UnitAffectingCombat("target") and 1 or 0, 0, 1)
+        self.flags.texture:SetColorTexture(Clockwork.AGGRO_MOD and 1 or 0, UnitAffectingCombat("target") and 1 or 0,
+            Clockwork.MULTI_MOD and 1 or 0, 1)
     end)
 
     Clockwork.guard("shapeshiftForm", function()
