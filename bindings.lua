@@ -28,7 +28,7 @@ function Clockwork.applyBotBindings()
     if InCombatLockdown() then return end
     ClearOverrideBindings(botBindingOwner)
     SetOverrideBinding(botBindingOwner, true, Clockwork.AUTORUN_KEY, "TOGGLEAUTORUN")
-    -- Ramassage : interagir avec la cible (cadavre), le personnage y marche (déplacement par clic, voir loot.lua)
+    -- Ramassage : interagir avec la cible (cadavre à portée), voir loot.lua
     SetOverrideBinding(botBindingOwner, true, Clockwork.INTERACT_KEY, "INTERACTTARGET")
 end
 

@@ -125,7 +125,7 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
 | `multi` | Mode multi-cibles (aussi dans le menu) : les rotations répartissent leurs DoT et utilisent leurs sorts de zone. |
 | `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
-| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java fait marcher le personnage jusqu'à la cible morte et ouvre son butin. |
+| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java avance jusqu'à la cible morte (elle est devant) et ouvre son butin. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
 | `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |
@@ -152,7 +152,7 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 | `init_addon.lua` | Grille historique (fond, cases), échelle des pixels, événements, boucle `OnUpdate`. |
 | `qrcode_v2.lua` | **Grille v4** : quatre blocs de touches, codage des sorts, historique des lancements. |
 | `group.lua` | Membres du groupe ou du raid (bloc 2), mode soigneur, boutons sécurisés de ciblage des membres. |
-| `loot.lua` | Ramassage du butin : cadavre avec butin, déplacement par clic le temps du ramassage. |
+| `loot.lua` | Ramassage du butin : la cible est-elle un cadavre avec du butin pour le joueur. |
 | `fishing.lua` | Résultat de chaque lancer de pêche (prise, échappé, faux clic, rien) et statistiques du menu. |
 | `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
 | `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
@@ -325,9 +325,7 @@ configuration du joueur) :
 
 `Alt+Maj+V` est aussi posé en surcharge pour la **course automatique** (`TOGGLEAUTORUN`), dont se sert le pilote
 automatique, et `Alt+Maj+L` pour **interagir avec la cible** (`INTERACTTARGET`), dont se sert le ramassage
-(`bindings.lua`). Pendant un ramassage, `loot.lua` active le déplacement par clic (`autointeract`) pour que le
-personnage marche jusqu'au cadavre, puis rétablit le réglage du joueur, y compris à la connexion suivante si le jeu a
-été quitté entre-temps.
+(`bindings.lua`). Aucun réglage du joueur n'est modifié.
 
 Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revient à la cible précédente (option
 `returnToTarget` de la rotation). Les boutons ne s'appuient que sur la touche enfoncée (`useOnKeyDown`). Unités et
