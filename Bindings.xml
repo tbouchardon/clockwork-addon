@@ -1,4 +1,24 @@
 <Bindings>
+    <!-- Raccourcis du joueur : Options > Raccourcis > Addons > ClockWork (aucune touche par défaut) -->
+    <Binding name="CLOCKWORK_TOGGLE" header="CLOCKWORK" category="ADDONS">
+        Clockwork:clickToggle()
+    </Binding>
+    <Binding name="CLOCKWORK_FISH" category="ADDONS">
+        Clockwork:clickFish()
+    </Binding>
+    <Binding name="CLOCKWORK_HEALER" category="ADDONS">
+        Clockwork:clickHealer()
+    </Binding>
+    <Binding name="CLOCKWORK_AGGRO" category="ADDONS">
+        Clockwork:clickAggro()
+    </Binding>
+    <Binding name="CLOCKWORK_DRIVE" category="ADDONS">
+        Clockwork:clickDrive()
+    </Binding>
+    <Binding name="CLOCKWORK_MENU" category="ADDONS">
+        Clockwork_OnAddonCompartmentClick()
+    </Binding>
+
     <!--<Binding name="TEST_BINDING" header="CLOCKWORK" runOnUp="true">-->
     <!--if ( keystate == "down" ) then-->
     <!--&#45;&#45;-->

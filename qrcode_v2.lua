@@ -36,6 +36,7 @@
 --   (10, 13) : R = temps restant de l'incantation / 10 s (valeur secrète, passée par une courbe), G = canalisation (1/0)
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
+--   (5, 1) : résultat du dernier lancer de pêche (voir fishing.lua)
 --   (4, 1) : enchantement temporaire de la main droite (leurre sur la canne à pêche...), R = actif (1/0),
 --       G = temps restant / 30 min
 --
@@ -152,6 +153,7 @@ function Clockwork:initQrCodeV2()
     self.weaponEnchant = self:createDot("weaponEnchant", 4, -1)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
     self:initGroupCells()
+    self:initFishingCell()
 end
 
 --- Enregistre un lancement réussi du joueur, sous l'identifiant du sort et sous celui de sa forme de base

@@ -25,6 +25,7 @@ secret_tests.lua
 keys_functions.lua
 qrcode_v2.lua
 group.lua
+fishing.lua
 rotations_functions.lua
 rotation_assisted.lua
 rotation_warlock.lua

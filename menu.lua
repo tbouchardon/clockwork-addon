@@ -140,6 +140,14 @@ header("Pêche")
 toggle("Pêche automatique", "Le Java lance la ligne et ferre tant que c'est allumé ; bouger la souris l'arrête (/clk fish).",
     function() return Clockwork.FISH_MOD end, function() Clockwork:clickFish() end)
 
+-- Statistiques de pêche de la session (prises, poissons échappés, faux clics), d'après le résultat de chaque lancer
+local fishingStats = frame:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+fishingStats:SetPoint("TOPLEFT", 8, cursor - 2)
+fishingStats:SetPoint("TOPRIGHT", -8, cursor - 2)
+fishingStats:SetJustifyH("LEFT")
+table.insert(content, fishingStats)
+cursor = cursor - 28
+
 header("Outils")
 toggle("Débogage", "Journal détaillé dans le chat (/clk debug).",
     function() return Clockwork.DEBUG_MOD end, function() Clockwork:clickDebug() end)
@@ -187,6 +195,7 @@ function frame.refresh()
         errors == 0 and "aucune erreur" or (errors .. " bloc(s) en erreur")))
 
     for _, mode in ipairs(SAVED_MODES) do settings().modes[mode.key] = Clockwork[mode.key] == true end
+    fishingStats:SetText(Clockwork.fishingSummary and Clockwork.fishingSummary() or "")
 end
 
 function frame.Expand()

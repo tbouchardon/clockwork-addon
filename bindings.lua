@@ -6,6 +6,15 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+-- Noms affichés dans Options > Raccourcis > Addons (Bindings.xml)
+BINDING_HEADER_CLOCKWORK = "ClockWork"
+BINDING_NAME_CLOCKWORK_TOGGLE = "Activer / désactiver ClockWork"
+BINDING_NAME_CLOCKWORK_FISH = "Pêche automatique"
+BINDING_NAME_CLOCKWORK_HEALER = "Mode soigneur"
+BINDING_NAME_CLOCKWORK_AGGRO = "Mode aggro"
+BINDING_NAME_CLOCKWORK_DRIVE = "Pilote automatique"
+BINDING_NAME_CLOCKWORK_MENU = "Afficher / masquer le menu"
+
 function Clockwork:setAllBindings()
 
     --    local key = "ALT-CTRL-SHIFT-Y"

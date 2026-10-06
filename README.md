@@ -16,13 +16,15 @@ Branche `12.0` : WoW Midnight (12.x, testé en 12.1.0 build 69933).
 1. [Principe](#principe)
 2. [Installation et déploiement](#installation-et-déploiement)
 3. [Menu en jeu](#menu-en-jeu)
-4. [Commandes en jeu](#commandes-en-jeu)
-5. [Organisation du code](#organisation-du-code)
-6. [Cycle de mise à jour](#cycle-de-mise-à-jour)
-7. [La grille](#la-grille)
-8. [Groupe, raid et mode soigneur](#groupe-raid-et-mode-soigneur)
-9. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
-10. [Robustesse et diagnostic](#robustesse-et-diagnostic)
+4. [Raccourcis clavier](#raccourcis-clavier)
+5. [Commandes en jeu](#commandes-en-jeu)
+6. [Organisation du code](#organisation-du-code)
+7. [Cycle de mise à jour](#cycle-de-mise-à-jour)
+8. [La grille](#la-grille)
+9. [Groupe, raid et mode soigneur](#groupe-raid-et-mode-soigneur)
+10. [Pêche : résultat de chaque lancer](#pêche--résultat-de-chaque-lancer)
+11. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
+12. [Robustesse et diagnostic](#robustesse-et-diagnostic)
 
 ---
 
@@ -93,11 +95,19 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
   du titre indique si ClockWork est actif ;
 - groupes : **Combat** (activation, aggro, rotation assistée, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ajout et
   effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
+- sous la pêche : **statistiques de la session** (prises sur lancers, poissons échappés, faux clics), d'après le résultat
+  de chaque lancer (voir *Pêche : résultat de chaque lancer*) ;
 - en bas : spécialisation détectée, version de la grille et blocs en erreur ;
 - le **compartiment d'addons** de Blizzard (bouton près de la minicarte) l'affiche ou le masque ;
 - position, épinglage et modes (aggro, rotation assistée, ciblage auto, boucle, débogage) sont **mémorisés** d'une
   session à l'autre (SavedVariable `CLOCKWORK_SETTINGS`). L'activation, le pilote et la pêche repartent éteints, par
   prudence.
+
+## Raccourcis clavier
+
+Dans **Options > Raccourcis > Addons > ClockWork** (aucune touche par défaut, pour ne rien écraser) : activer ou
+désactiver ClockWork, pêche automatique, mode soigneur, mode aggro, pilote automatique, afficher ou masquer le menu.
+Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindings.xml`, libellés dans `bindings.lua`).
 
 ## Commandes en jeu
 
@@ -133,12 +143,13 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 | `init_addon.lua` | Grille historique (fond, cases), échelle des pixels, événements, boucle `OnUpdate`. |
 | `qrcode_v2.lua` | **Grille v4** : quatre blocs de touches, codage des sorts, historique des lancements. |
 | `group.lua` | Membres du groupe ou du raid (bloc 2), mode soigneur, boutons sécurisés de ciblage des membres. |
+| `fishing.lua` | Résultat de chaque lancer de pêche (prise, échappé, faux clic, rien) et statistiques du menu. |
 | `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
 | `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
 | `rotation_assisted.lua` | Rotation qui suit la recommandation de Blizzard (`C_AssistedCombat.GetNextCastSpell`). |
 | `keys_functions.lua` | Correspondance sort → emplacement de barre → raccourci clavier, et allumage d'une touche (mode v1). |
 | `coordinates_functions.lua` | Coordonnées de carte du joueur en binaire (pilote automatique). |
-| `bindings.lua`, `Bindings.xml` | Anciens raccourcis internes (mode v1). Le ciblage des membres est dans `group.lua`. |
+| `bindings.lua`, `Bindings.xml` | Raccourcis clavier du joueur (activation, pêche, mode soigneur…) et anciens raccourcis internes (mode v1). Le ciblage des membres est dans `group.lua`. |
 | `menu.lua` | Petit menu en jeu (boutons On/Off, Aggro…). |
 | `guard.lua` | `Clockwork.guard` : isole chaque bloc de mise à jour (voir *Robustesse*). |
 | `secret_tests.lua` | `/clk testsecret`. |
@@ -255,8 +266,9 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | (3,1) | `R` = **mode soigneur**, `G` = en raid. |
+| (5,1) | **Résultat du dernier lancer de pêche** : `R` = compteur de lancers terminés (modulo 256), `G` = résultat (1 prise, 2 échappé, 3 rien à ferrer, 4 rien), voir `fishing.lua`. |
 | (4,1) | **Enchantement temporaire de la main droite** (leurre sur la canne à pêche) : `R` = actif, `G` = temps restant / 30 min (`GetWeaponEnchantInfo`). |
-| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1) et (4,1). |
+| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1), (4,1) et (5,1). |
 
 ### Cases « touche à appuyer » (mode v1)
 
@@ -302,6 +314,24 @@ Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revien
 `returnToTarget` de la rotation). Les boutons ne s'appuient que sur la touche enfoncée (`useOnKeyDown`). Unités et
 raccourcis ne se modifient que hors combat : un changement de composition en combat est appliqué à la sortie du combat
 (`PLAYER_REGEN_ENABLED`).
+
+---
+
+## Pêche : résultat de chaque lancer
+
+`fishing.lua`. Un lancer est une canalisation du joueur pendant que la pêche est demandée. Son résultat est arrêté
+1,5 s après la fin de la canalisation, le butin pouvant arriver juste après :
+
+| Résultat | Signal |
+|---|---|
+| Prise | Butin de pêche ouvert (`LOOT_READY` ou `LOOT_OPENED`, et `IsFishingLoot()`), butin automatique compris. |
+| Échappé | Message d'erreur « Votre poisson s'est échappé » (`UI_ERROR_MESSAGE`, `ERR_FISH_ESCAPED`) : clic trop tardif. |
+| Rien à ferrer | « Aucun poisson n'a mordu » (`ERR_FISH_NOT_HOOKED`) : clic trop tôt, faux clic. |
+| Rien | Fin de la canalisation sans rien de tout cela : pas de clic, ou clic à côté du bouchon. |
+
+Le résultat est publié en (5,1) avec un compteur, pour que le Java l'associe à son clic, et alimente les statistiques
+du menu. Aucune de ces informations n'est secrète. Pendant la pêche, la grille est mise à jour même si ClockWork est
+éteint : le Java y lit les touches du leurre et de l'appât.
 
 ---
 

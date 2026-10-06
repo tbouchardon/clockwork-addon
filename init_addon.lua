@@ -125,6 +125,9 @@ function Clockwork:onUpdate()
                 self:updatePositionCoordinates()
             end
             self:rotation()
+        elseif Clockwork.FISH_MOD then
+            -- Pêche demandée, ClockWork éteint : la grille décrit quand même les touches (leurre, appât) et l'état
+            self:updateUIStatus()
         end
 
         if self.addWaypointList ~= nil and Clockwork.ADDING_WP == false then
@@ -198,7 +201,10 @@ end
 
 local function handleChannelStart(self, unit, _, spellID)
     handleSpellcastStart(self, unit, nil, spellID)
-    if unit == "player" then Clockwork.currentCast.channel = true end
+    if unit == "player" then
+        Clockwork.currentCast.channel = true
+        Clockwork.recordFishingStart()
+    end
 end
 
 local function handleSpellcastStop(self, unit)
@@ -276,7 +282,10 @@ eventHandlers = {
     ["UNIT_SPELLCAST_START"] = handleSpellcastStart,
     ["UNIT_SPELLCAST_CHANNEL_START"] = handleChannelStart,
     ["UNIT_SPELLCAST_STOP"] = handleSpellcastStop,
-    ["UNIT_SPELLCAST_CHANNEL_STOP"] = handleSpellcastStop,
+    ["UNIT_SPELLCAST_CHANNEL_STOP"] = function(self, unit)
+        handleSpellcastStop(self, unit)
+        if unit == "player" then Clockwork.recordFishingStop() end
+    end,
     ["UNIT_SPELLCAST_FAILED"] = handleSpellcastStop,
     ["UNIT_SPELLCAST_INTERRUPTED"] = handleSpellcastStop,
     ["UNIT_AURA"] = function(_, unit, updateInfo) Clockwork.recordUnitAura(unit, updateInfo) end,
@@ -300,6 +309,9 @@ eventHandlers = {
     ["UNIT_SPELLCAST_NOT_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, false) end,
     ["GROUP_ROSTER_UPDATE"] = function() Clockwork.updateSecureTargeting() end,
     ["PLAYER_REGEN_ENABLED"] = function() Clockwork.applyPendingSecureTargeting() end,
+    ["LOOT_READY"] = function() Clockwork.recordFishingLoot() end,
+    ["LOOT_OPENED"] = function() Clockwork.recordFishingLoot() end,
+    ["UI_ERROR_MESSAGE"] = function(_, _, message) Clockwork.recordFishingError(message) end,
 }
 
 function Clockwork:onEvent(event, ...)
@@ -343,7 +355,10 @@ local eventsToRegister = {
     "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
     "UNIT_PET",
     "GROUP_ROSTER_UPDATE",
-    "PLAYER_REGEN_ENABLED"
+    "PLAYER_REGEN_ENABLED",
+    "LOOT_READY",
+    "LOOT_OPENED",
+    "UI_ERROR_MESSAGE"
 }
 -- EventRegistry:RegisterCallback n'écoute que les événements déclenchés par EventRegistry:TriggerEvent, pas ceux du jeu :
 -- l'abonnement se fait sur la frame. Un événement refusé par le client (ex. journal de combat en 12.0) est ignoré
