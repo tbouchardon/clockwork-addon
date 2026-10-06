@@ -23,6 +23,16 @@ function Clockwork:updateLootCell()
     self.lootCell.texture:SetColorTexture(Clockwork.LOOT_MOD and 1 or 0, lootable and 1 or 0, 0, 1)
 end
 
+--- Une version précédente activait le déplacement par clic pendant le ramassage, en mémorisant le réglage du joueur :
+--- s'il est resté mémorisé, on le rétablit une fois pour toutes.
+function Clockwork.restoreLegacyAutoInteract()
+    if CLOCKWORK_SETTINGS and CLOCKWORK_SETTINGS.savedAutoInteract ~= nil and not InCombatLockdown() then
+        SetCVar("autointeract", CLOCKWORK_SETTINGS.savedAutoInteract)
+        CLOCKWORK_SETTINGS.savedAutoInteract = nil
+        Clockwork.log.notice("Déplacement par clic rétabli à ton réglage d'origine")
+    end
+end
+
 function Clockwork:clickLoot()
     Clockwork.LOOT_MOD = not Clockwork.LOOT_MOD
     Clockwork.log.notice("Ramassage : " .. (Clockwork.LOOT_MOD and "On" or "Off"))
