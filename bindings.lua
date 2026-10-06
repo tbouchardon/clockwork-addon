@@ -16,6 +16,18 @@ BINDING_NAME_CLOCKWORK_AGGRO = "Mode aggro"
 BINDING_NAME_CLOCKWORK_DRIVE = "Pilote automatique"
 BINDING_NAME_CLOCKWORK_MENU = "Afficher / masquer le menu"
 
+-- Raccourcis du bot, en surcharge (jamais enregistrés dans la configuration du joueur), identiques côté Java (TomTom) :
+-- le pilote automatique lance la course automatique sans dépendre des touches du joueur (J ouvre Guilde et communautés)
+local botBindingOwner = CreateFrame("Frame", "ClockworkBotBindings")
+Clockwork.AUTORUN_KEY = "ALT-SHIFT-V"
+
+--- Pose les raccourcis du bot ; hors combat seulement (sinon refusé), d'où l'appel à l'entrée dans le monde.
+function Clockwork.applyBotBindings()
+    if InCombatLockdown() then return end
+    ClearOverrideBindings(botBindingOwner)
+    SetOverrideBinding(botBindingOwner, true, Clockwork.AUTORUN_KEY, "TOGGLEAUTORUN")
+end
+
 function Clockwork:setAllBindings()
 
     --    local key = "ALT-CTRL-SHIFT-Y"

@@ -248,6 +248,7 @@ local function handlePlayerEnteringWorld(self)
 
     self:updateBindings()
     Clockwork.updateSecureTargeting()
+    Clockwork.applyBotBindings()
     Clockwork.applySpecRole()
 end
 

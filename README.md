@@ -319,6 +319,9 @@ configuration du joueur) :
 | `Alt+Ctrl+A` à `Alt+Ctrl+T` | Cibler les membres 21 à 40. |
 | `Alt+Maj+U` | Revenir à la cible précédente (`/targetlasttarget`). |
 
+`Alt+Maj+V` est aussi posé en surcharge pour la **course automatique** (`TOGGLEAUTORUN`), dont se sert le pilote
+automatique (`bindings.lua`).
+
 Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revient à la cible précédente (option
 `returnToTarget` de la rotation). Les boutons ne s'appuient que sur la touche enfoncée (`useOnKeyDown`). Unités et
 raccourcis ne se modifient que hors combat : un changement de composition en combat est appliqué à la sortie du combat
