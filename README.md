@@ -7,7 +7,8 @@ cette grille, la décode et appuie sur les touches à la place du joueur.
 L'addon ne joue jamais lui-même : il n'en a pas le droit. Un addon ne peut ni lancer un sort ni déplacer le personnage
 en dehors d'un clic du joueur. Il se contente de **décrire** la situation, et c'est le programme externe qui agit.
 
-Branche `12.0` : WoW Midnight (12.x, testé en 12.1.0 build 69933).
+Branche `12.0` : WoW Midnight (12.x). Grille v3 testée en 12.1.0 build 69933 ; la v4 (groupe, objets, résultat de
+pêche, identifiant de cible, ressource de classe) et les raccourcis clavier ne sont pas encore testés en jeu.
 
 ---
 
