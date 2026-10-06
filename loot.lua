@@ -19,7 +19,9 @@ function Clockwork.targetLootable()
 end
 
 function Clockwork:updateLootCell()
-    local lootable = Clockwork.LOOT_MOD and not UnitAffectingCombat("player") and Clockwork.targetLootable()
+    -- Même « en combat » : le jeu garde ce statut quelques secondes après la mort du dernier ennemi ; le Java ne ramasse
+    -- que s'il ne reste aucun ennemi en combat
+    local lootable = Clockwork.LOOT_MOD and Clockwork.targetLootable()
     self.lootCell.texture:SetColorTexture(Clockwork.LOOT_MOD and 1 or 0, lootable and 1 or 0, 0, 1)
 end
 
