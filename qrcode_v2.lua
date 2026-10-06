@@ -1,4 +1,5 @@
--- QR code v3 : carré de 32x32 en quatre blocs de 16x16, pour que le Java décide lui-même (règles YAML).
+-- QR code v4 : carré de 32x32 en quatre blocs de 16x16, pour que le Java décide lui-même (règles YAML).
+-- v4 = v3 + groupe et raid dans les cases libres du bloc 2, et mode soigneur (voir group.lua).
 --   bloc 1 (0, 0) : touches sans modificateur et état du combat (disposition de la v2, inchangée)
 --   bloc 2 (16, 0) : Maj + touche, bloc 3 (0, 16) : Ctrl + touche, bloc 4 (16, 16) : Alt + touche
 --   Les blocs 2 à 4 reprennent exactement les cases de touches du bloc 1 (état, historique, sort), décalées.
@@ -19,7 +20,7 @@
 --   (6, 2) : identifiant du sort recommandé par Blizzard sur 24 bits (0 = aucun)
 --   (7, 2) : direction du personnage sur 16 bits, R = octet fort, G = octet faible (0..65535 pour 0..2π)
 --   (2, 3) : nombre d'ennemis en combat (barres de vie), R = nombre / 255
---   (8, 13) : version de la grille, R = 3 / 255
+--   (8, 13) : version de la grille, R = 4 / 255
 --   (11, 2) : compteur de mises à jour sur 24 bits (le Java détecte une grille figée)
 --   (10, 2) : R = mode aggro (1/0), G = cible en combat (1/0)
 --   (8, 4) : sort de la forme active (druide : félin, ours, sélénien...) sur 24 bits, 0 = aucune forme
@@ -34,7 +35,7 @@
 --
 -- Les noms des sorts ne passent pas par l'addon : le Java les lit dans les tables du jeu (wago.tools).
 
-Clockwork.QR_VERSION = 3
+Clockwork.QR_VERSION = 4
 
 -- Blocs de la grille : préfixe de touche (modificateur) et décalage du bloc
 Clockwork.QR_BLOCKS = {
@@ -141,6 +142,7 @@ function Clockwork:initQrCodeV2()
     self.targetCastSpell = self:createDot("targetCastSpell", 12, -13)
     self.qrVersion = self:createDot("qrVersion", 8, -13)
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
+    self:initGroupCells()
 end
 
 --- Enregistre un lancement réussi du joueur, sous l'identifiant du sort et sous celui de sa forme de base
@@ -371,6 +373,8 @@ function Clockwork:updateQrCodeV2()
         local value = math.floor(facing / (2 * math.pi) * 65535 + 0.5)
         self.facing.texture:SetColorTexture(math.floor(value / 256) / 255, (value % 256) / 255, 0, 1)
     end)
+
+    self:updateGroupCells()
 
     Clockwork.guard("enemies", function()
         local count = 0

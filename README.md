@@ -20,8 +20,9 @@ Branche `12.0` : WoW Midnight (12.x, testé en 12.1.0 build 69933).
 5. [Organisation du code](#organisation-du-code)
 6. [Cycle de mise à jour](#cycle-de-mise-à-jour)
 7. [La grille](#la-grille)
-8. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
-9. [Robustesse et diagnostic](#robustesse-et-diagnostic)
+8. [Groupe, raid et mode soigneur](#groupe-raid-et-mode-soigneur)
+9. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
+10. [Robustesse et diagnostic](#robustesse-et-diagnostic)
 
 ---
 
@@ -41,7 +42,7 @@ Deux modes de décision coexistent :
 | Mode | Qui décide ? | Grille utilisée |
 |---|---|---|
 | **Historique (v1)** | L'addon : chaque rotation Lua (`rotation_<classe>.lua`) allume la case de la touche à appuyer, avec une priorité. | Cases « touche à appuyer » (lignes 4 et 5). |
-| **Cerveau Java (v2/v3)** | Le Java : l'addon décrit l'état de *toutes* les touches (prête, à portée, temps de recharge, dernier lancement…), le Java applique les règles de `rotation.yaml`. | Cases d'état, d'historique et de sort de chaque touche, dans les quatre blocs. |
+| **Cerveau Java (v2 à v4)** | Le Java : l'addon décrit l'état de *toutes* les touches (prête, à portée, temps de recharge, dernier lancement…) et du groupe, le Java applique les règles de `rotation.yaml`. | Cases d'état, d'historique et de sort de chaque touche, dans les quatre blocs ; membres du groupe dans le bloc 2. |
 
 Depuis la 12.x, la plupart des valeurs de combat sont **secrètes** pour les addons (voir plus bas). Les rotations Lua ne
 peuvent plus comparer la vie ou les temps de recharge. Le mode cerveau Java contourne le problème : l'addon passe ces
@@ -90,7 +91,7 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
   (« épinglé » s'affiche), un autre le libère ;
 - une pastille verte ou grise montre l'état de chaque mode, toujours à jour, y compris après une commande `/clk` ; celle
   du titre indique si ClockWork est actif ;
-- groupes : **Combat** (activation, aggro, rotation assistée, ciblage auto), **Déplacement** (pilote, boucle, ajout et
+- groupes : **Combat** (activation, aggro, rotation assistée, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ajout et
   effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
 - en bas : spécialisation détectée, version de la grille et blocs en erreur ;
 - le **compartiment d'addons** de Blizzard (bouton près de la minicarte) l'affiche ou le masque ;
@@ -111,6 +112,7 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
 | `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |
 | `05,21-63,30;…` | Ajoute une liste de points de passage (coordonnées de carte). |
 | `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Ramasse le butin après chaque combat, attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
+| `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
 | `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |
@@ -128,14 +130,15 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 |---|---|
 | `core.lua` | Création de la table globale `Clockwork`. |
 | `core_functions.lua` | Constantes (`UPDATE_INTERVAL` = 0,2 s, modes) et `createDot`, qui crée une case de la grille. |
-| `init_addon.lua` | Grille historique (fond, cases, raid), échelle des pixels, événements, boucle `OnUpdate`. |
-| `qrcode_v2.lua` | **Grille v3** : quatre blocs de touches, codage des sorts, historique des lancements. |
+| `init_addon.lua` | Grille historique (fond, cases), échelle des pixels, événements, boucle `OnUpdate`. |
+| `qrcode_v2.lua` | **Grille v4** : quatre blocs de touches, codage des sorts, historique des lancements. |
+| `group.lua` | Membres du groupe ou du raid (bloc 2), mode soigneur, boutons sécurisés de ciblage des membres. |
 | `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
 | `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
 | `rotation_assisted.lua` | Rotation qui suit la recommandation de Blizzard (`C_AssistedCombat.GetNextCastSpell`). |
 | `keys_functions.lua` | Correspondance sort → emplacement de barre → raccourci clavier, et allumage d'une touche (mode v1). |
 | `coordinates_functions.lua` | Coordonnées de carte du joueur en binaire (pilote automatique). |
-| `bindings.lua`, `Bindings.xml` | Raccourcis internes (ciblage des membres du raid). |
+| `bindings.lua`, `Bindings.xml` | Anciens raccourcis internes (mode v1). Le ciblage des membres est dans `group.lua`. |
 | `menu.lua` | Petit menu en jeu (boutons On/Off, Aggro…). |
 | `guard.lua` | `Clockwork.guard` : isole chaque bloc de mise à jour (voir *Robustesse*). |
 | `secret_tests.lua` | `/clk testsecret`. |
@@ -147,8 +150,8 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 ## Cycle de mise à jour
 
 1. `OnUpdate` est appelé à chaque image. Toutes les **200 ms** (`UPDATE_INTERVAL`), l'addon lance `Clockwork:rotation()`.
-2. `rotation()` appelle d'abord `updateUIStatus()`, qui repeint toutes les cases d'état (vie, cible, combat, raid…) puis
-   la grille v3 (`updateQrCodeV2`).
+2. `rotation()` appelle d'abord `updateUIStatus()`, qui repeint toutes les cases d'état (vie, cible, combat…) puis
+   la grille v4 (`updateQrCodeV2`, membres du groupe compris).
 3. Il éteint ensuite les touches du mode v1. Si le joueur n'incante pas, n'est pas monté et a le droit d'agir (mode
    aggro, ou joueur et cible en combat, ou hors combat), il lance la rotation Lua de la spécialisation puis la rotation
    assistée. Chacune peut allumer une touche.
@@ -191,7 +194,9 @@ Java. Une case « 24 bits » code un entier : `R` octet fort, `G` octet du milie
 
 Chaque bloc a le même fond : un cadre **vert** de 16x16 dont l'intérieur est noir, sauf aux coins (repérage par le
 Java). Les blocs 2 à 4 reprennent **exactement** les cases de touches du bloc 1, décalées de (16, 0), (0, 16) et
-(16, 16). Le préfixe de la combinaison est `""`, `SHIFT-`, `CTRL-` ou `ALT-`.
+(16, 16). Le préfixe de la combinaison est `""`, `SHIFT-`, `CTRL-` ou `ALT-`. Les touches n'occupent que 54 des 196
+cases intérieures d'un bloc : la v4 range le groupe dans les cases libres du bloc 2, et les blocs 3 et 4 restent en
+réserve (142 cases libres chacun).
 
 ### Touches décrites
 
@@ -229,7 +234,7 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (11,3) | **Réaction de la cible** : rouge = hostile, jaune = neutre, vert = amicale, **gris = morte**, noir = pas de cible. |
 | (12,3) | Vie de la cible (`R`, secrète). |
 | (13,3) | Ressource de la cible (`B`, secrète). |
-| (8,13) | **Version de la grille** : `R` = 3 / 255. |
+| (8,13) | **Version de la grille** : `R` = 4 / 255. |
 | (2..7,13) | Modes : `toggle` (2), `tne` (3), ajout de point (4), effacement du parcours (5), `drive` (6), `loop` (7). |
 | (8,4) | **Forme active** : sort de la forme (druide : félin, ours, sélénien…) sur 24 bits, 0 = aucune. Le sort plutôt que l'index de `GetShapeshiftForm`, qui dépend des talents. |
 | (9,4) | **Points de combo** : `R` = nombre / 255. |
@@ -243,13 +248,53 @@ Pour chaque touche et dans chaque bloc, trois cases :
 | (11,4) | **Spécialisation** active sur 16 bits : `R` octet fort, `G` octet faible (262 = Élémentaire). Le Java choisit la rotation d'après la classe et la spécialisation. |
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
-| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Vie des membres du groupe ou du raid (1 à 40). |
+| (3,1) | `R` = **mode soigneur**, `G` = en raid. |
+| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1). |
 
 ### Cases « touche à appuyer » (mode v1)
 
 Lignes 4 (`Q D R T F G`, x = 2 à 7) et 5 (`1` à `=`, x = 2 à 13). Une touche allumée par une rotation Lua contient :
 `R` = modificateur (1 = Ctrl, 2 = Alt, 4 = Maj), `G` = priorité (0 = éteinte), `B` = durée d'appui / 30 s. Le Java
 appuie sur la touche allumée de plus haute priorité. Le cerveau Java ignore ces cases.
+
+---
+
+## Groupe, raid et mode soigneur
+
+`group.lua`, grille v4. Le Java peut soigner n'importe quel membre (règles `on` de ses rotations).
+
+**Emplacements.** En raid, l'emplacement *n* est `raidN`. Sinon (groupe ou seul), l'emplacement 1 est le joueur et 2 à 5
+sont `party1` à `party4`.
+
+**Cases des membres**, dans le bloc 2 : membres 1 à 14 en ligne 1 (x = 17 à 30), 15 à 28 en ligne 4, 29 à 40 en ligne 5
+(x = 17 à 28).
+
+| Canal | Contenu |
+|---|---|
+| `R` | Vie en % (`UnitHealthPercent`, valeur secrète transmise telle quelle) ; 0 si mort. |
+| `G` | À portée de soin (1), hors de portée (0), inconnu (0,5). `UnitInRange` est secret, mais un `if` l'accepte. |
+| `B` | Drapeaux / 255 : 1 existe, 2 mort, 4 déconnecté, 8 c'est le joueur, rôle × 16 (0 aucun, 1 tank, 2 soigneur, 3 dégâts). |
+
+Une case noire (sans le drapeau « existe ») est un emplacement vide.
+
+**Mode soigneur** (`/clk healer`, menu) : case (3,1). Le cerveau Java ne soigne les *autres* membres qu'en mode soigneur,
+sauf règle d'urgence (`always`). Il s'allume ou s'éteint d'office quand la spécialisation change, selon son rôle
+(Restauration, Sacré… : allumé), puis reste au choix du joueur.
+
+**Ciblage.** `TargetUnit` est protégé : l'addon crée des boutons sécurisés (`SecureActionButtonTemplate`, type
+`target`) et leur relie des raccourcis en **surcharge** (`SetOverrideBindingClick`, jamais enregistrés dans la
+configuration du joueur) :
+
+| Raccourci | Effet |
+|---|---|
+| `Alt+Maj+A` à `Alt+Maj+T` | Cibler les membres 1 à 20. |
+| `Alt+Ctrl+A` à `Alt+Ctrl+T` | Cibler les membres 21 à 40. |
+| `Alt+Maj+U` | Revenir à la cible précédente (`/targetlasttarget`). |
+
+Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revient à la cible précédente (option
+`returnToTarget` de la rotation). Les boutons ne s'appuient que sur la touche enfoncée (`useOnKeyDown`). Unités et
+raccourcis ne se modifient que hors combat : un changement de composition en combat est appliqué à la sortie du combat
+(`PLAYER_REGEN_ENABLED`).
 
 ---
 

@@ -102,36 +102,12 @@ function Clockwork:playerEnteringWorld()
         self.debug.texture:SetColorTexture(1, 0, 0, 1)
     end
 
-    self.raid = {}
-
-    -- Raid 1-10: x=3 to 12, y=-1
-    for i = 1, 10 do
-        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 2 + i, -1))
-    end
-
-    -- Raid 11-20: x=14, y=-3 to -12
-    for i = 11, 20 do
-        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 14, -(i - 8)))
-    end
-
-    -- Raid 21-30: x=12 to 3, y=-14
-    for i = 21, 30 do
-        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 12 - (i - 21), -14))
-    end
-
-    -- Raid 31-40: x=1, y=-12 to -3
-    for i = 31, 40 do
-        table.insert(self.raid, i, self:createDot("clockWork_raid" .. i, 1, -(12 - (i - 31))))
-    end
-
     self:initKeys()
     self:initQrCodeV2()
     self:initCoords()
     self:initLocalization()
 
     self:resetCombat()
-
-    self:setAllBindings()
 end
 
 function Clockwork:onUpdate()
@@ -265,6 +241,8 @@ local function handlePlayerEnteringWorld(self)
     end
 
     self:updateBindings()
+    Clockwork.updateSecureTargeting()
+    Clockwork.applySpecRole()
 end
 
 local function handlePetChanged(self, unit)
@@ -290,6 +268,7 @@ local function handleSpecializationChanged(self)
         local id, name, description, icon, role = GetSpecializationInfoForClassID(self.player.class.classId, GetSpecialization())
         self.player.specialization = { id = id, name = name, description = description, icon = icon, role = role }
         self:updateCommandBindingMap()
+        Clockwork.applySpecRole()
     end
 end
 
@@ -319,6 +298,8 @@ eventHandlers = {
     ["PLAYER_TARGET_CHANGED"] = function() Clockwork.recordTargetChanged() end,
     ["UNIT_SPELLCAST_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, true) end,
     ["UNIT_SPELLCAST_NOT_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, false) end,
+    ["GROUP_ROSTER_UPDATE"] = function() Clockwork.updateSecureTargeting() end,
+    ["PLAYER_REGEN_ENABLED"] = function() Clockwork.applyPendingSecureTargeting() end,
 }
 
 function Clockwork:onEvent(event, ...)
@@ -360,7 +341,9 @@ local eventsToRegister = {
     "PLAYER_TARGET_CHANGED",
     "UNIT_SPELLCAST_INTERRUPTIBLE",
     "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-    "UNIT_PET"
+    "UNIT_PET",
+    "GROUP_ROSTER_UPDATE",
+    "PLAYER_REGEN_ENABLED"
 }
 -- EventRegistry:RegisterCallback n'écoute que les événements déclenchés par EventRegistry:TriggerEvent, pas ceux du jeu :
 -- l'abonnement se fait sur la frame. Un événement refusé par le client (ex. journal de combat en 12.0) est ignoré

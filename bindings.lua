@@ -37,12 +37,7 @@ function Clockwork:setAllBindings()
     --    SetBinding("ALT-CTRL-)", "CLOCKWORK_PRIORITY_OOC_CAST_5")
     --    SetBinding("ALT-CTRL-=", "CLOCKWORK_PRIORITY_OOC_CAST_6")
 
-    local keys = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"}
-
-    for i = 1, 20 do
-        SetBinding("ALT-SHIFT-" .. keys[i], "CLOCKWORK_TARGET_RAID_" .. i)
-        SetBinding("ALT-CTRL-" .. keys[i], "CLOCKWORK_TARGET_RAID_" .. (i + 20))
-    end
+    -- Ciblage des membres : boutons sécurisés et raccourcis surchargés, voir group.lua
 end
 
 function Clockwork.printAllBindings()

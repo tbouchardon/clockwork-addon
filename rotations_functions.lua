@@ -50,14 +50,6 @@ function Clockwork:updateUIStatus()
         end
     end)
 
-    Clockwork.guard("groupHealth", function()
-        if UnitExists("raid1") then
-            self:updateRaidHealth()
-        elseif UnitExists("party1") then
-            self:updatePartyHealth()
-        end
-    end)
-
     Clockwork.guard("playerHealth", function()
         self.playerHealth.texture:SetColorTexture(Clockwork.healthRatio("player"), 0, 0, 1)
     end)
@@ -313,35 +305,6 @@ end
 function Clockwork:resetCombat()
     self.inCombat.texture:SetColorTexture(0, 0, 0, 1)
     self.wasInCombat = false
-end
-
---- Affiche les PV d'un membre du groupe : rouge = ratio de vie, noir si absent.
---- Le bleu est réservé au signal « cibler ce membre » lu par le Java (ComplexKey).
---- @param index number
---- @param unit string
---- @return nil
-function Clockwork:showMemberHealth(index, unit)
-    if UnitExists(unit) then
-        self.raid[index].texture:SetColorTexture(Clockwork.healthRatio(unit), 0, 0, 1)
-    else
-        self.raid[index].texture:SetColorTexture(0, 0, 0, 1)
-    end
-end
-
---- Updates party health information.
---- @return nil
-function Clockwork:updatePartyHealth()
-    for index = 1, 4 do
-        self:showMemberHealth(index, "party" .. tostring(index))
-    end
-end
-
---- Updates raid health information.
---- @return nil
-function Clockwork:updateRaidHealth()
-    for index = 1, 40 do
-        self:showMemberHealth(index, "raid" .. tostring(index))
-    end
 end
 
 --- Checks if the player is out of combat.

@@ -121,6 +121,8 @@ toggle("Aggro", "Attaquer aussi une cible qui n'est pas encore en combat.",
     function() return Clockwork.AGGRO_MOD end, function() Clockwork:clickAggro() end)
 toggle("Rotation assistée", "Suivre la recommandation de Blizzard dans les rotations de l'addon (/clk assisted).",
     function() return Clockwork.ASSISTED_ENABLED end, function() Clockwork:clickAssisted() end)
+toggle("Mode soigneur", "Le cerveau Java soigne aussi les autres membres du groupe. Allumé d'office pour une spécialisation de soin (/clk healer).",
+    function() return Clockwork.HEALER_MOD end, function() Clockwork:clickHealer() end)
 toggle("Ciblage auto", "Cibler l'ennemi le plus proche quand il n'y a rien à faire (/clk tne).",
     function() return Clockwork.TARGET_NEAREST_ENEMY end, function() Clockwork:clickTNE() end)
 

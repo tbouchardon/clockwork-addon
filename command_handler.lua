@@ -38,6 +38,8 @@ function Clockwork:commandHandler(msg)
         self:clickAggro()
     elseif (msg == 'fish') then
         self:clickFish()
+    elseif (msg == 'healer') then
+        self:clickHealer()
     elseif (msg == 'drive') then
         self:clickDrive()
     elseif (msg == 'loop') then
@@ -68,6 +70,7 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork clearwp        -- Clear all waypoints")
         Clockwork.log.notice("/clockWork aggro          -- Aggro : On/Off")
         Clockwork.log.notice("/clockWork fish           -- Pêche automatique : On/Off")
+        Clockwork.log.notice("/clockWork healer         -- Mode soigneur (soigner les autres membres) : On/Off")
         Clockwork.log.notice("/clockWork drive          -- Start Autopilote")
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
