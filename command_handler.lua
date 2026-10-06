@@ -40,6 +40,8 @@ function Clockwork:commandHandler(msg)
         self:clickFish()
     elseif (msg == 'healer') then
         self:clickHealer()
+    elseif (msg == 'loot') then
+        self:clickLoot()
     elseif (msg == 'multi') then
         self:clickMulti()
     elseif (msg == 'drive') then
@@ -75,6 +77,7 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork healer         -- Mode soigneur (soigner les autres membres) : On/Off")
         Clockwork.log.notice("/clockWork multi          -- Mode multi-cibles (DoT répartis, sorts de zone) : On/Off")
         Clockwork.log.notice("/clockWork drive          -- Start Autopilote")
+        Clockwork.log.notice("/clockWork loot           -- Ramassage du butin après combat : On/Off")
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork update actions -- Update action buttons")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")

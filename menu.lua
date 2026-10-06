@@ -133,6 +133,8 @@ toggle("Pilote automatique", "Suivre le parcours de points de passage (/clk driv
     function() return Clockwork.DRIVE_MOD end, function() Clockwork:clickDrive() end)
 toggle("Boucle", "Recommencer le parcours une fois terminé (/clk loop).",
     function() return Clockwork.DRIVE_LOOP end, function() Clockwork:clickLoop() end)
+toggle("Ramassage", "Après un combat, aller ramasser le butin de la cible morte (/clk loot). Active le déplacement par clic le temps du ramassage.",
+    function() return Clockwork.LOOT_MOD end, function() Clockwork:clickLoot() end)
 actions({
     { "+ Point", "Ajouter la position actuelle au parcours (/clk addwp).", function() Clockwork:clickAddWp() end },
     { "Effacer", "Vider le parcours (/clk clearwp).", function() Clockwork:clickClearWp() end },
@@ -183,6 +185,7 @@ local SAVED_MODES = {
     { key = "ASSISTED_ENABLED", click = function() Clockwork:clickAssisted() end },
     { key = "TARGET_NEAREST_ENEMY", click = function() Clockwork:clickTNE() end },
     { key = "DRIVE_LOOP", click = function() Clockwork:clickLoop() end },
+    { key = "LOOT_MOD", click = function() Clockwork:clickLoot() end },
     { key = "DEBUG_MOD", click = function() Clockwork:clickDebug() end },
 }
 

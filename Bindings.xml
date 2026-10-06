@@ -18,6 +18,9 @@
     <Binding name="CLOCKWORK_DRIVE" category="ADDONS">
         Clockwork:clickDrive()
     </Binding>
+    <Binding name="CLOCKWORK_LOOT" category="ADDONS">
+        Clockwork:clickLoot()
+    </Binding>
     <Binding name="CLOCKWORK_MENU" category="ADDONS">
         Clockwork_OnAddonCompartmentClick()
     </Binding>

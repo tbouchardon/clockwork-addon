@@ -94,7 +94,7 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
   (« épinglé » s'affiche), un autre le libère ;
 - une pastille verte ou grise montre l'état de chaque mode, toujours à jour, y compris après une commande `/clk` ; celle
   du titre indique si ClockWork est actif ;
-- groupes : **Combat** (activation, aggro, rotation assistée, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ajout et
+- groupes : **Combat** (activation, aggro, rotation assistée, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ramassage, ajout et
   effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
 - sous la pêche : **statistiques de la session** (prises sur lancers, poissons échappés, faux clics), d'après le résultat
   de chaque lancer (voir *Pêche : résultat de chaque lancer*) ;
@@ -107,7 +107,7 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
 ## Raccourcis clavier
 
 Dans **Options > Raccourcis > Addons > ClockWork** (aucune touche par défaut, pour ne rien écraser) : activer ou
-désactiver ClockWork, pêche automatique, mode soigneur, mode multi-cibles, mode aggro, pilote automatique, afficher ou masquer le menu.
+désactiver ClockWork, pêche automatique, mode soigneur, mode multi-cibles, mode aggro, pilote automatique, ramassage du butin, afficher ou masquer le menu.
 Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindings.xml`, libellés dans `bindings.lua`).
 
 ## Commandes en jeu
@@ -122,9 +122,10 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `tne` | *Target Nearest Enemy* : le Java appuie sur `Tab` quand il n'a rien à faire. |
 | `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |
 | `05,21-63,30;…` | Ajoute une liste de points de passage (coordonnées de carte). |
-| `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Ramasse le butin après chaque combat, attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
+| `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
 | `multi` | Mode multi-cibles (aussi dans le menu) : les rotations répartissent leurs DoT et utilisent leurs sorts de zone. |
 | `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
+| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java fait marcher le personnage jusqu'à la cible morte et ouvre son butin. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
 | `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |
@@ -151,6 +152,7 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 | `init_addon.lua` | Grille historique (fond, cases), échelle des pixels, événements, boucle `OnUpdate`. |
 | `qrcode_v2.lua` | **Grille v4** : quatre blocs de touches, codage des sorts, historique des lancements. |
 | `group.lua` | Membres du groupe ou du raid (bloc 2), mode soigneur, boutons sécurisés de ciblage des membres. |
+| `loot.lua` | Ramassage du butin : cadavre avec butin, déplacement par clic le temps du ramassage. |
 | `fishing.lua` | Résultat de chaque lancer de pêche (prise, échappé, faux clic, rien) et statistiques du menu. |
 | `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
 | `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
@@ -274,11 +276,12 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (13,13) | Mode débogage. |
 | lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | (3,1) | `R` = **mode soigneur**, `G` = en raid. |
+| (8,1) | **Ramassage** : `R` = mode ramassage, `G` = la cible est un cadavre avec du butin pour le joueur (`CanLootUnit`). |
 | (7,1) | **Cible pas devant le joueur** : `R` = un sort vient d'être refusé pour cette raison (« La cible doit être devant vous », ou attaque en mêlée dans la mauvaise direction), il y a moins de 1,5 s. Le Java fait alors demi-tour. |
 | (6,1) | **Identifiant de la cible**, 24 bits : les 6 derniers chiffres hexadécimaux de son GUID (numéro propre à chaque monstre), 0 sans cible ou GUID illisible. Le Java reconnaît un ennemi déjà vu (DoT répartis). |
 | (5,1) | **Résultat du dernier lancer de pêche** : `R` = compteur de lancers terminés (modulo 256), `G` = résultat (1 prise, 2 échappé, 3 rien à ferrer, 4 rien), voir `fishing.lua`. |
 | (4,1) | **Enchantement temporaire de la main droite** (leurre sur la canne à pêche) : `R` = actif, `G` = temps restant / 30 min (`GetWeaponEnchantInfo`). |
-| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1) à (7,1). |
+| bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1) à (8,1). |
 
 ### Cases « touche à appuyer » (mode v1)
 
@@ -321,7 +324,10 @@ configuration du joueur) :
 | `Alt+Maj+U` | Revenir à la cible précédente (`/targetlasttarget`). |
 
 `Alt+Maj+V` est aussi posé en surcharge pour la **course automatique** (`TOGGLEAUTORUN`), dont se sert le pilote
-automatique (`bindings.lua`).
+automatique, et `Alt+Maj+L` pour **interagir avec la cible** (`INTERACTTARGET`), dont se sert le ramassage
+(`bindings.lua`). Pendant un ramassage, `loot.lua` active le déplacement par clic (`autointeract`) pour que le
+personnage marche jusqu'au cadavre, puis rétablit le réglage du joueur, y compris à la connexion suivante si le jeu a
+été quitté entre-temps.
 
 Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revient à la cible précédente (option
 `returnToTarget` de la rotation). Les boutons ne s'appuient que sur la touche enfoncée (`useOnKeyDown`). Unités et

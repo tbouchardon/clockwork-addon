@@ -38,6 +38,7 @@
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --   (5, 1) : résultat du dernier lancer de pêche (voir fishing.lua)
+--   (8, 1) : ramassage du butin (voir loot.lua), R = mode ramassage, G = cible morte avec du butin
 --   (7, 1) : R = un sort vient d'être refusé parce que la cible n'est pas devant le joueur (moins de 1,5 s), pour que
 --       le Java fasse demi-tour (monstre dans le dos)
 --   (6, 1) : identifiant de la cible sur 24 bits, tiré de la fin de son GUID (0 = pas de cible, ou GUID illisible) : le
@@ -173,6 +174,7 @@ function Clockwork:initQrCodeV2()
     self.qrVersion.texture:SetColorTexture(Clockwork.QR_VERSION / 255, 0, 0, 1)
     self:initGroupCells()
     self:initFishingCell()
+    self:initLootCell()
 end
 
 --- Enregistre un lancement réussi du joueur, sous l'identifiant du sort et sous celui de sa forme de base
@@ -485,6 +487,8 @@ function Clockwork:updateQrCodeV2()
     end)
 
     self:updateGroupCells()
+
+    Clockwork.guard("loot", function() self:updateLootCell() end)
 
     Clockwork.guard("notFacing", function()
         local recent = Clockwork.lastFacingError and GetTime() - Clockwork.lastFacingError < FACING_ERROR_DELAY
