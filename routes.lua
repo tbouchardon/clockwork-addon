@@ -158,14 +158,18 @@ local function edit(action)
     changed()
 end
 
+local function append(route, x, y)
+    if #route.points >= Clockwork.ROUTE_MAX_POINTS then
+        return Clockwork.log.notice("Parcours : " .. Clockwork.ROUTE_MAX_POINTS .. " points au plus (place dans la grille)")
+    end
+    table.insert(route.points, { math.floor(x * 10000 + 0.5) / 10000, math.floor(y * 10000 + 0.5) / 10000 })
+end
+
 function Clockwork.addRoutePoint()
     edit(function(route)
         local x, y = playerOn(route)
         if not x then return Clockwork.log.notice("Parcours : tu n'es pas sur la carte de ce parcours (" .. mapName(route.map) .. ")") end
-        if #route.points >= Clockwork.ROUTE_MAX_POINTS then
-            return Clockwork.log.notice("Parcours : " .. Clockwork.ROUTE_MAX_POINTS .. " points au plus (place dans la grille)")
-        end
-        table.insert(route.points, { math.floor(x * 10000 + 0.5) / 10000, math.floor(y * 10000 + 0.5) / 10000 })
+        append(route, x, y)
     end)
 end
 
@@ -372,20 +376,71 @@ local drawn = {}
 local lastMapError
 local lastMapReport = "carte du monde jamais ouverte"
 
---- Fonction qui place un point du parcours (fractions de sa carte) sur la carte affichée, ou nil si aucune ne contient
---- l'autre.
+--- Passage des fractions de la carte du parcours à celles de la carte affichée (place) et retour (unplace), ou nil si
+--- aucune des deux cartes ne contient l'autre.
 local function projection(routeMap, shownMap)
-    if routeMap == shownMap then return function(x, y) return x, y end end
+    if routeMap == shownMap then
+        local same = function(x, y) return x, y end
+        return same, same
+    end
     -- Carte du parcours dans la carte affichée (zone sur son continent)
     local minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(routeMap, shownMap)
     if minX and maxX > minX and maxY > minY then
-        return function(x, y) return minX + x * (maxX - minX), minY + y * (maxY - minY) end
+        return function(x, y) return minX + x * (maxX - minX), minY + y * (maxY - minY) end,
+            function(x, y) return (x - minX) / (maxX - minX), (y - minY) / (maxY - minY) end
     end
     -- Carte affichée dans la carte du parcours (sous-zone de la zone)
     minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(shownMap, routeMap)
     if minX and maxX > minX and maxY > minY then
-        return function(x, y) return (x - minX) / (maxX - minX), (y - minY) / (maxY - minY) end
+        return function(x, y) return (x - minX) / (maxX - minX), (y - minY) / (maxY - minY) end,
+            function(x, y) return minX + x * (maxX - minX), minY + y * (maxY - minY) end
     end
+end
+
+--- Alt+clic gauche sur la carte : point ajouté au bout du parcours actif ; Alt+clic droit : point le plus proche retiré.
+--- Un parcours vide prend la zone affichée (ou celle qui contient la carte affichée). Ctrl+clic reste au point de
+--- navigation de Blizzard.
+local function onMapClick(map, button, x, y)
+    if not IsAltKeyDown() or (button ~= "LeftButton" and button ~= "RightButton") then return false end
+    local route = Clockwork.activeRoute()
+    if not route then
+        Clockwork.log.notice("Parcours : aucun parcours actif (en créer un dans le menu)")
+        return true
+    end
+    local shown = map:GetMapID()
+    if button == "LeftButton" and #route.points == 0 then
+        local zone = shown and Clockwork.zoneMapOf(shown)
+        if zone and route.map ~= zone then
+            route.map = zone
+            Clockwork.log.notice("Parcours « " .. Clockwork.activeRouteName() .. " » déplacé sur " .. mapName(zone))
+        end
+    end
+    local place, unplace = projection(route.map, shown)
+    if not place then
+        Clockwork.log.notice("Parcours : cette carte ne contient pas celle du parcours (" .. mapName(route.map) .. ")")
+        return true
+    end
+    if button == "LeftButton" then
+        local rx, ry = unplace(x, y)
+        if rx < 0 or rx > 1 or ry < 0 or ry > 1 then
+            Clockwork.log.notice("Parcours : point hors de " .. mapName(route.map))
+            return true
+        end
+        edit(function(edited) append(edited, rx, ry) end)
+        return true
+    end
+    -- Le plus proche à l'écran, à moins de 12 pixels environ
+    local canvas = map:GetCanvas()
+    local width, height = canvas:GetSize()
+    local tolerance = 12 / map:GetCanvasScale()
+    local nearest, best
+    for index, point in ipairs(route.points) do
+        local px, py = place(point[1], point[2])
+        local distance = math.sqrt(((px - x) * width) ^ 2 + ((py - y) * height) ^ 2)
+        if distance <= tolerance and (not best or distance < best) then nearest, best = index, distance end
+    end
+    if nearest then edit(function(edited) table.remove(edited.points, nearest) end) end
+    return true
 end
 
 local function installMapProvider()
@@ -411,7 +466,7 @@ local function installMapProvider()
             lastMapReport = "aucun parcours actif, ou parcours vide"
             return
         end
-        local place = shown and projection(route.map, shown)
+        local place = shown and (projection(route.map, shown))
         if not place then
             lastMapReport = "carte affichée " .. mapName(shown) .. " sans rapport avec celle du parcours, " .. mapName(route.map)
             return
@@ -482,6 +537,12 @@ local function installMapProvider()
     function provider:OnMapChanged()
         self:RefreshAllData()
     end
+
+    -- Avant le point de navigation de Blizzard (90) ; curseur d'épingle tant que Alt est enfoncé
+    WorldMapFrame:AddCanvasClickHandler(onMapClick, 95)
+    WorldMapFrame:AddCursorHandler(function()
+        if IsAltKeyDown() and Clockwork.activeRoute() then return "MAP_PIN_CURSOR" end
+    end, 95)
 
     function provider:OnCanvasScaleChanged()
         self:RefreshAllData()

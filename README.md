@@ -347,7 +347,10 @@ Mêmes actions en commandes : `/clk route …`, `/clk wp …` (voir *Commandes e
 
 **Carte du monde.** Le tracé du parcours actif y est dessiné (points, le premier en vert, et segments, refermés si le
 parcours boucle), sur la carte du parcours comme sur une carte qui la contient (continent) ou qu'elle contient
-(sous-zone). Rien ne s'affiche ? `/clk route carte` dit pourquoi.
+(sous-zone). Rien ne s'affiche ? `/clk route carte` dit pourquoi. On y édite aussi le parcours actif :
+**Alt+clic gauche** ajoute un point au bout du parcours, **Alt+clic droit** retire le point le plus proche (le curseur
+devient une épingle tant que Alt est enfoncé). Un parcours vide prend la zone où l'on pose son premier point.
+Ctrl+clic reste au point de navigation de Blizzard.
 
 **Changement de zone.** Tant que le joueur est sur la carte du parcours actif, rien ne change. Sinon, le dernier
 parcours utilisé sur la nouvelle carte devient actif (aucun s'il n'y en a pas), et **le pilote automatique est coupé** :
