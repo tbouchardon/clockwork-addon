@@ -427,35 +427,52 @@ local function installMapProvider()
         local width, height = canvas:GetSize()
         local scale = 1 / map:GetCanvasScale()
         local used = 0
-        local function region(kind)
+        -- Lignes, puis disques (anneau sombre sous un disque de couleur) : le masque rond de Blizzard arrondit les textures
+        local function region(kind, subLevel)
             used = used + 1
             local existing = drawn[used]
             if existing and existing.kind == kind then existing:Show() return existing end
-            local created = kind == "line" and layer:CreateLine(nil, "OVERLAY") or layer:CreateTexture(nil, "OVERLAY")
+            local created
+            if kind == "line" then
+                created = layer:CreateLine(nil, "OVERLAY", nil, 0)
+            else
+                created = layer:CreateTexture(nil, "OVERLAY", nil, subLevel)
+                local mask = layer:CreateMaskTexture()
+                mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+                mask:SetAllPoints(created)
+                created:AddMaskTexture(mask)
+            end
             created.kind = kind
             if existing then existing:Hide() end
             drawn[used] = created
             return created
+        end
+        local function disc(kind, subLevel, x, y, size, r, g, b, a)
+            local texture = region(kind, subLevel)
+            texture:SetColorTexture(r, g, b, a)
+            texture:SetSize(size * scale, size * scale)
+            texture:ClearAllPoints()
+            texture:SetPoint("CENTER", layer, "TOPLEFT", x * width, -y * height)
         end
 
         local count = #route.points
         for index = 1, route.loop and count or count - 1 do
             local a, b = route.points[index], route.points[index % count + 1]
             local line = region("line")
-            line:SetColorTexture(1, 0.82, 0, 0.8)
-            line:SetThickness(3 * scale)
+            line:SetColorTexture(1, 0.85, 0.3, 0.55)
+            line:SetThickness(1.5 * scale)
             local ax, ay = place(a[1], a[2])
             local bx, by = place(b[1], b[2])
             line:SetStartPoint("TOPLEFT", layer, ax * width, -ay * height)
             line:SetEndPoint("TOPLEFT", layer, bx * width, -by * height)
         end
         for index, point in ipairs(route.points) do
-            local dot = region("dot")
-            dot:SetColorTexture(index == 1 and 0.2 or 1, index == 1 and 1 or 0.6, 0.1, 1)
-            dot:SetSize(8 * scale, 8 * scale)
-            dot:ClearAllPoints()
             local x, y = place(point[1], point[2])
-            dot:SetPoint("CENTER", layer, "TOPLEFT", x * width, -y * height)
+            local first = index == 1
+            local size = first and 9 or 6
+            disc("ring", 1, x, y, size + 2, 0.1, 0.08, 0.05, 0.85)
+            if first then disc("dot", 2, x, y, size, 0.35, 0.95, 0.35, 1)
+            else disc("dot", 2, x, y, size, 1, 0.82, 0.3, 1) end
         end
         for index = used + 1, #drawn do drawn[index]:Hide() end
         lastMapReport = #route.points .. " point(s) dessiné(s) sur " .. mapName(shown) .. " (canevas " .. math.floor(width)
