@@ -98,6 +98,13 @@ local function toggle(text, tooltip, isOn, onClick)
     cursor = cursor - ROW_HEIGHT
 end
 
+--- Petite police dans tous les états du bouton : le modèle passe sinon à sa police normale, plus grosse, au survol.
+local function smallFont(button)
+    button:SetNormalFontObject("GameFontHighlightSmall")
+    button:SetHighlightFontObject("GameFontHighlightSmall")
+    button:SetDisabledFontObject("GameFontDisableSmall")
+end
+
 --- Ligne de boutons d'action (sans état).
 local function actions(list)
     local width = (WIDTH - 12 - 4 * (#list - 1)) / #list
@@ -106,7 +113,7 @@ local function actions(list)
         button:SetSize(width, ROW_HEIGHT + 2)
         button:SetPoint("TOPLEFT", 6 + (index - 1) * (width + 4), cursor - 1)
         button:SetText(action[1])
-        button:GetFontString():SetFontObject("GameFontHighlightSmall")
+        smallFont(button)
         button:SetScript("OnClick", action[3])
         attachTooltip(button, action[2])
         table.insert(content, button)
@@ -133,7 +140,7 @@ local routeSelector = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 routeSelector:SetSize(WIDTH - 12, ROW_HEIGHT + 2)
 routeSelector:SetPoint("TOPLEFT", 6, cursor - 1)
 routeSelector:SetText("Aucun parcours")
-routeSelector:GetFontString():SetFontObject("GameFontHighlightSmall")
+smallFont(routeSelector)
 routeSelector:SetScript("OnClick", function(self) Clockwork.showRouteMenu(self) end)
 attachTooltip(routeSelector, "Parcours actif : un clic pour en choisir un autre, en créer, le renommer, l'exporter, le supprimer...")
 table.insert(content, routeSelector)

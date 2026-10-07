@@ -46,12 +46,7 @@ function Clockwork.showTextWindow(text)
         f.editBox:SetFontObject(ChatFontNormal)
         f.editBox:SetWidth(650)
         f.scrollArea:SetScrollChild(f.editBox)
-
-        f.close = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-        f.close:SetPoint("BOTTOM", 0, 10)
-        f.close:SetSize(100, 25)
-        f.close:SetText("Close")
-        f.close:SetScript("OnClick", function() f:Hide() end)
+        -- DialogBoxFrame a déjà son bouton OK, qui ferme la fenêtre
     end
 
     f.editBox:SetText(text)
