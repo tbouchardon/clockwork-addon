@@ -30,8 +30,6 @@ function Clockwork:playerEnteringWorld()
     self:updatePixelScale()
 
     self.nextUpdate = 0
-    self.addWaypointList = nil
-    self.waypointListIndex = 0
 
     self.blackBackground3 = CreateFrame("FRAME", "clockWork_Background3", self.frame)
     self.blackBackground3:SetPoint("CENTER", 0, 0)
@@ -84,10 +82,7 @@ function Clockwork:playerEnteringWorld()
 
     self.toggle = self:createDot("clockWork_toggle", 2, -13)
     self.targetNearestEnemy = self:createDot("clockWork_targetNearestEnemy", 3, -13)
-    self.addWaypoint = self:createDot("clockWork_addWaypoint", 4, -13)
-    self.clearWaypoints = self:createDot("clockWork_clearWaypoints", 5, -13)
     self.drive = self:createDot("clockWork_drive", 6, -13)
-    self.driveLoop = self:createDot("clockWork_driveLoop", 7, -13)
     self.debug = self:createDot("clockWork_debug", 13, -13)
     -- Pêche demandée au Java (blanc) : il pêche tant que la case est allumée
     self.fish = self:createDot("clockWork_fish", 12, -4)
@@ -96,7 +91,6 @@ function Clockwork:playerEnteringWorld()
     end
 
     self:initQrCodeV2()
-    self:initCoords()
 
     self:resetCombat()
 end
@@ -105,43 +99,11 @@ function Clockwork:onUpdate()
     local now = GetTime()
 
     if self.nextUpdate and (self.nextUpdate < now) then
-        local bestMap = C_Map.GetBestMapForUnit("player")
-        if (bestMap == nil) then
-            Clockwork.log.debug("Player is nowhere to be found.")
-            --return
-        end
-
-        if (Clockwork.TOGGLE_ON_OFF and Clockwork.ADDING_WP == false) then
-            if (bestMap ~= nil) then
-                self:updatePositionCoordinates()
-            end
+        if Clockwork.TOGGLE_ON_OFF then
             self:updateGrid()
         elseif Clockwork.FISH_MOD then
             -- Pêche demandée, ClockWork éteint : la grille décrit quand même les touches (leurre, appât) et l'état
             self:updateUIStatus()
-        end
-
-        if self.addWaypointList ~= nil and Clockwork.ADDING_WP == false then
-            local index = 0
-            local finished = true
-
-            for coords in string.gmatch(self.addWaypointList, ".-;") do
-                if index == self.waypointListIndex then
-                    finished = false
-                    Clockwork.log.notice("Adding Waypoint : " .. coords)
-                    self:updatePositionFromCoordinates(coords)
-                    self.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
-                    Clockwork.ADDING_WP = true;
-                end
-                index = index + 1
-            end
-
-            self.waypointListIndex = self.waypointListIndex + 1
-
-            if (finished) then
-                self.addWaypointList = nil
-                self.waypointListIndex = 0
-            end
         end
 
         self.nextUpdate = now + Clockwork.UPDATE_INTERVAL;
@@ -214,6 +176,8 @@ local function handlePlayerEnteringWorld(self)
     self:updateBindings()
     Clockwork.updateSecureTargeting()
     Clockwork.applyBotBindings()
+    -- La carte du joueur n'est pas toujours connue à l'entrée dans le monde : parcours choisi un instant après
+    C_Timer.After(1, Clockwork.onZoneChanged)
     Clockwork.restoreLegacyAutoInteract()
     Clockwork.applySpecRole()
 end
@@ -275,6 +239,7 @@ eventHandlers = {
     ["UNIT_SPELLCAST_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, true) end,
     ["UNIT_SPELLCAST_NOT_INTERRUPTIBLE"] = function(_, unit) Clockwork.recordTargetInterruptible(unit, false) end,
     ["GROUP_ROSTER_UPDATE"] = function() Clockwork.updateSecureTargeting() end,
+    ["ZONE_CHANGED_NEW_AREA"] = function() Clockwork.onZoneChanged() end,
     ["PLAYER_REGEN_ENABLED"] = function() Clockwork.applyPendingSecureTargeting() end,
     ["LOOT_READY"] = function() Clockwork.recordFishingLoot() end,
     ["LOOT_OPENED"] = function() Clockwork.recordFishingLoot() end,
@@ -322,6 +287,7 @@ local eventsToRegister = {
     "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
     "UNIT_PET",
     "GROUP_ROSTER_UPDATE",
+    "ZONE_CHANGED_NEW_AREA",
     "PLAYER_REGEN_ENABLED",
     "LOOT_READY",
     "LOOT_OPENED",

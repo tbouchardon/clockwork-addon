@@ -4,7 +4,8 @@
 ## Notes: My Smart Addon
 ## Category: Combat
 ## DefaultState: Enabled
-## SavedVariables: CLOCKWORK_SETTINGS
+## SavedVariables: CLOCKWORK_SETTINGS, CLOCKWORK_ROUTES
+## SavedVariablesPerCharacter: CLOCKWORK_CHARACTER
 ## AddonCompartmentFunc: Clockwork_OnAddonCompartmentClick
 ## IconTexture: Interface\Icons\INV_Misc_Gear_01
 
@@ -15,7 +16,6 @@ menu.lua
 logger.lua
 guard.lua
 core_functions.lua
-coordinates_functions.lua
 debug_functions.lua
 secret_tests.lua
 keys_functions.lua
@@ -23,6 +23,7 @@ qrcode_v2.lua
 group.lua
 fishing.lua
 loot.lua
+routes.lua
 status.lua
 command_handler.lua
 bindings.lua

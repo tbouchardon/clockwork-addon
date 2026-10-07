@@ -2,23 +2,17 @@ Clockwork.DEBUG_MOD = false
 Clockwork.CASTING = false;
 
 Clockwork.UPDATE_INTERVAL = 0.2 -- 200ms
-Clockwork.ADDING_WP = false;
 Clockwork.TOGGLE_ON_OFF = false
 Clockwork.TARGET_NEAREST_ENEMY = false
 Clockwork.DRIVE_MOD = false
 Clockwork.AGGRO_MOD = true
 Clockwork.MULTI_MOD = false
-Clockwork.DRIVE_LOOP = false
 Clockwork.FISH_MOD = false
 
 Clockwork.player = {}
 ---@alias PlayerClass { className:string, classFilename:string, classId:number }
 ---@type PlayerClass
 Clockwork.player.class = nil
-Clockwork.player.position = {}
-Clockwork.player.position.posX = 0
-Clockwork.player.position.posY = 0
-Clockwork.player.isMoving = false
 Clockwork.player.GUID = nil
 
 Clockwork.pet = {}

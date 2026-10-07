@@ -5,35 +5,19 @@ function Clockwork:commandHandler(msg)
 
     Clockwork.log.debug("Command Handler")
 
-    local coordinates
-    if msg ~= nil then coordinates = string.find(msg, '%d%d,%d%d.%d%d,%d%d;') end
-
     Clockwork.log.debug("msg : " .. tostring(msg))
+    local command, argument = (msg or ""):match("^(%S*)%s*(.-)$")
     if msg == 'toggle' then
         self:clickToggle()
-    elseif coordinates ~= nil then
-        coordinates = ""
-
-        Clockwork.log.debug(msg)
-
-        for coords in string.gmatch(msg, '%d%d,%d%d.%d%d,%d%d;') do
-            coordinates = coordinates .. coords
-        end
-
-        self.addWaypointList = coordinates;
     elseif (msg == 'tne') then
         self:clickTNE()
-    elseif (msg == 'addwp') then
-        self:clickAddWp()
-    elseif (msg == 'wpadded') then
-        self.addWaypoint.texture:SetColorTexture(0, 0, 0, 1)
-        Clockwork.ADDING_WP = false
-        Clockwork.log.notice("Waypoint Added")
-    elseif (msg == 'clearwp') then
-        self:clickClearWp()
-    elseif (msg == 'wpcleared') then
-        self.clearWaypoints.texture:SetColorTexture(0, 0, 0, 1)
-        Clockwork.log.notice("Waypoint cleared")
+    elseif command == 'route' then
+        self:routeCommand(argument)
+    elseif command == 'wp' then
+        if argument == 'add' then Clockwork.addRoutePoint()
+        elseif argument == 'undo' then Clockwork.undoRoutePoint()
+        elseif argument == 'clear' then Clockwork.clearRoute()
+        else Clockwork.log.notice("/clk wp add | undo | clear") end
     elseif (msg == 'aggro') then
         self:clickAggro()
     elseif (msg == 'fish') then
@@ -46,8 +30,6 @@ function Clockwork:commandHandler(msg)
         self:clickMulti()
     elseif (msg == 'drive') then
         self:clickDrive()
-    elseif (msg == 'loop') then
-        self:clickLoop()
     elseif (msg == 'debug') then
         self:clickDebug()
     elseif (msg == 'list actions') then
@@ -65,16 +47,14 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
         Clockwork.log.notice("/clockWork tne            -- Target Nearest Enemy : On/Off")
-        Clockwork.log.notice("/clockWork 05,21-63,30;   -- Add new waypoint(s)")
-        Clockwork.log.notice("/clockWork addwp          -- Add new waypoint")
-        Clockwork.log.notice("/clockWork clearwp        -- Clear all waypoints")
+        Clockwork.log.notice("/clockWork route ...      -- Parcours : new, use, rename, delete, loop, reverse, list, export, import")
+        Clockwork.log.notice("/clockWork wp add|undo|clear -- Points du parcours actif")
         Clockwork.log.notice("/clockWork aggro          -- Aggro : On/Off")
         Clockwork.log.notice("/clockWork fish           -- Pêche automatique : On/Off")
         Clockwork.log.notice("/clockWork healer         -- Mode soigneur (soigner les autres membres) : On/Off")
         Clockwork.log.notice("/clockWork multi          -- Mode multi-cibles (DoT répartis, sorts de zone) : On/Off")
         Clockwork.log.notice("/clockWork drive          -- Start Autopilote")
         Clockwork.log.notice("/clockWork loot           -- Ramassage du butin après combat : On/Off")
-        Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")
         Clockwork.log.notice("/clockWork testsecret     -- Tester les valeurs secrètes (à lancer en combat)")
         Clockwork.log.notice("/clockWork errors [reset] -- Blocs du QR code en erreur")
@@ -114,15 +94,26 @@ function Clockwork:clickTNE()
     end
 end
 
-function Clockwork:clickAddWp()
-    Clockwork.log.notice("Adding Waypoint")
-    self.addWaypoint.texture:SetColorTexture(1, 1, 1, 1)
-    Clockwork.ADDING_WP = true
-end
-
-function Clockwork:clickClearWp()
-    Clockwork.log.notice("Clearing Waypoints")
-    self.clearWaypoints.texture:SetColorTexture(1, 1, 1, 1)
+--- /clk route ... : parcours du pilote automatique (routes.lua).
+function Clockwork:routeCommand(argument)
+    local action, name = argument:match("^(%S*)%s*(.-)$")
+    if action == 'new' then Clockwork.newRoute(name)
+    elseif action == 'use' then
+        if CLOCKWORK_ROUTES and CLOCKWORK_ROUTES[name] then Clockwork.useRoute(name) else Clockwork.log.notice("Parcours inconnu : " .. name) end
+    elseif action == 'rename' then Clockwork.renameRoute(name)
+    elseif action == 'delete' then StaticPopup_Show("CLOCKWORK_ROUTE_DELETE", Clockwork.activeRouteName())
+    elseif action == 'loop' then Clockwork.toggleRouteLoop()
+    elseif action == 'reverse' then Clockwork.reverseRoute()
+    elseif action == 'export' then Clockwork.showTextWindow(Clockwork.exportRoute() or "Aucun parcours actif")
+    elseif action == 'import' then Clockwork.importRoute(name)
+    elseif action == 'list' then
+        for _, routeName in ipairs(Clockwork.routeNames()) do
+            local route = CLOCKWORK_ROUTES[routeName]
+            Clockwork.log.notice((routeName == Clockwork.activeRouteName() and "> " or "  ") .. routeName .. " : " .. #route.points .. " point(s)")
+        end
+    else
+        Clockwork.log.notice("/clk route new <nom> | use <nom> | rename <nom> | delete | loop | reverse | list | export | import <texte>")
+    end
 end
 
 --- Aggro : attaquer aussi une cible qui n'est pas encore en combat (lu par le Java en (10, 2)).
@@ -153,18 +144,6 @@ function Clockwork:clickDrive()
         Clockwork.DRIVE_MOD = false
         self.drive.texture:SetColorTexture(0, 0, 0, 1)
         Clockwork.log.notice("Drive Mod : Off")
-    end
-end
-
-function Clockwork:clickLoop()
-    if Clockwork.DRIVE_LOOP == false then
-        Clockwork.DRIVE_LOOP = true
-        self.driveLoop.texture:SetColorTexture(1, 1, 1, 1)
-        Clockwork.log.notice("Drive Loop : On")
-    else
-        Clockwork.DRIVE_LOOP = false
-        self.driveLoop.texture:SetColorTexture(0, 0, 0, 1)
-        Clockwork.log.notice("Drive Loop : Off")
     end
 end
 

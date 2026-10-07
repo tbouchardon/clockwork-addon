@@ -38,6 +38,7 @@
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --   (5, 1) : résultat du dernier lancer de pêche (voir fishing.lua)
+--   blocs 3 et 4, cases libres : parcours actif du pilote automatique (voir routes.lua)
 --   (8, 1) : ramassage du butin (voir loot.lua), R = mode ramassage, G = cible morte avec du butin
 --   (7, 1) : R = un sort vient d'être refusé parce que la cible n'est pas devant le joueur (moins de 1,5 s), pour que
 --       le Java fasse demi-tour (monstre dans le dos)
@@ -175,6 +176,7 @@ function Clockwork:initQrCodeV2()
     self:initGroupCells()
     self:initFishingCell()
     self:initLootCell()
+    self:initRouteCells()
 end
 
 --- Enregistre un lancement réussi du joueur, sous l'identifiant du sort et sous celui de sa forme de base
@@ -321,12 +323,11 @@ function Clockwork.recordUiError(message)
     Clockwork.recordFishingError(message)
 end
 
---- Le joueur se déplace : vitesse non nulle, sinon (vitesse illisible) changement de position sur la carte.
+--- Le joueur se déplace (vitesse non nulle ; illisible : considéré immobile).
 --- @return boolean
 function Clockwork.isMoving()
     local ok, moving = pcall(function() return GetUnitSpeed("player") > 0 end)
-    if ok then return moving end
-    return Clockwork.player.isMoving == true
+    return ok and moving
 end
 
 --- Sort à incantation alors que le joueur se déplace : WoW le refuserait (comme actionCanBeCast pour les rotations Lua).
@@ -489,6 +490,7 @@ function Clockwork:updateQrCodeV2()
     self:updateGroupCells()
 
     Clockwork.guard("loot", function() self:updateLootCell() end)
+    Clockwork.guard("route", function() self:updateRouteCells() end)
 
     Clockwork.guard("notFacing", function()
         local recent = Clockwork.lastFacingError and GetTime() - Clockwork.lastFacingError < FACING_ERROR_DELAY

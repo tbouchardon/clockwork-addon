@@ -23,9 +23,10 @@ pêche, identifiant de cible, ressource de classe) et les raccourcis clavier ne 
 7. [Cycle de mise à jour](#cycle-de-mise-à-jour)
 8. [La grille](#la-grille)
 9. [Groupe, raid et mode soigneur](#groupe-raid-et-mode-soigneur)
-10. [Pêche : résultat de chaque lancer](#pêche--résultat-de-chaque-lancer)
-11. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
-12. [Robustesse et diagnostic](#robustesse-et-diagnostic)
+10. [Parcours du pilote automatique](#parcours-du-pilote-automatique)
+11. [Pêche : résultat de chaque lancer](#pêche--résultat-de-chaque-lancer)
+12. [Les valeurs secrètes de la 12.x](#les-valeurs-secrètes-de-la-12x)
+13. [Robustesse et diagnostic](#robustesse-et-diagnostic)
 
 ---
 
@@ -70,6 +71,8 @@ SavedVariables (écrites par WoW sur le disque à chaque `/reload` ou déconnexi
 `WTF/Account/<COMPTE>/SavedVariables/ClockWork.lua`) :
 
 - `CLOCKWORK_SETTINGS` : position et épinglage du menu, modes mémorisés.
+- `CLOCKWORK_ROUTES` : parcours du pilote automatique, **partagés par tous les personnages** du compte.
+- `CLOCKWORK_CHARACTER` (propre à chaque personnage) : parcours actif, dernier parcours utilisé sur chaque carte.
 
 Les noms des sorts ne passent pas par l'addon : la grille ne transmet que des identifiants, et le Java les traduit avec
 les tables du jeu (wago.tools).
@@ -91,13 +94,13 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
   (« épinglé » s'affiche), un autre le libère ;
 - une pastille verte ou grise montre l'état de chaque mode, toujours à jour, y compris après une commande `/clk` ; celle
   du titre indique si ClockWork est actif ;
-- groupes : **Combat** (activation, aggro, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ramassage, ajout et
-  effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
+- groupes : **Combat** (activation, aggro, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (parcours actif et sa gestion, points,
+  boucle, pilote, ramassage), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
 - sous la pêche : **statistiques de la session** (prises sur lancers, poissons échappés, faux clics), d'après le résultat
   de chaque lancer (voir *Pêche : résultat de chaque lancer*) ;
 - en bas : spécialisation détectée, version de la grille et blocs en erreur ;
 - le **compartiment d'addons** de Blizzard (bouton près de la minicarte) l'affiche ou le masque ;
-- position, épinglage et modes (aggro, multi-cibles, ciblage auto, boucle, débogage) sont **mémorisés** d'une
+- position, épinglage et modes (aggro, multi-cibles, ciblage auto, débogage) sont **mémorisés** d'une
   session à l'autre (SavedVariable `CLOCKWORK_SETTINGS`). L'activation, le pilote et la pêche repartent éteints, par
   prudence.
 
@@ -116,9 +119,10 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `toggle` | Active ou désactive l'addon. Désactivé, la case (2,13) est éteinte et le Java ne fait rien. |
 | `aggro` | Active ou désactive le mode aggro. |
 | `tne` | *Target Nearest Enemy* : le Java appuie sur `Tab` quand il n'a rien à faire. |
-| `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |
-| `05,21-63,30;…` | Ajoute une liste de points de passage (coordonnées de carte). |
-| `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
+| `route new <nom>` / `use <nom>` / `rename <nom>` / `delete` / `list` | Parcours du pilote automatique (voir *Parcours*). |
+| `route loop` / `reverse` / `export` / `import <texte>` | Boucle, sens, partage du parcours actif. |
+| `wp add` / `wp undo` / `wp clear` | Ajoute la position actuelle au parcours actif, retire le dernier point, retire tous les points. |
+| `drive` | Pilote automatique : suit le parcours actif. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
 | `multi` | Mode multi-cibles (aussi dans le menu) : les rotations répartissent leurs DoT et utilisent leurs sorts de zone. |
 | `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
 | `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java appuie sur la touche d'interaction sur place, puis après un seul petit pas en avant : le butin d'un cadavre à portée est ramassé, un cadavre plus loin est laissé. L'option « Activer la touche d'interaction » (Options > Contrôles) doit être cochée. |
@@ -152,7 +156,7 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 | `fishing.lua` | Résultat de chaque lancer de pêche (prise, échappé, faux clic, rien) et statistiques du menu. |
 | `status.lua` | `updateGrid()` : état du joueur et de la cible (vie, ressource, combat, réaction), puis la grille v4 ; repas en cours (pilote automatique). |
 | `keys_functions.lua` | Correspondance emplacement de barre → raccourci clavier, pour décrire chaque touche. |
-| `coordinates_functions.lua` | Coordonnées de carte du joueur en binaire (pilote automatique). |
+| `routes.lua` | Parcours du pilote automatique : enregistrement, gestion, partage, grille, carte du monde, changement de zone. |
 | `bindings.lua`, `Bindings.xml` | Raccourcis clavier du joueur (activation, pêche, mode soigneur…) et raccourcis du bot posés en surcharge (course automatique, interaction). Le ciblage des membres est dans `group.lua`. |
 | `menu.lua` | Petit menu en jeu (boutons On/Off, Aggro…). |
 | `guard.lua` | `Clockwork.guard` : isole chaque bloc de mise à jour (voir *Robustesse*). |
@@ -253,7 +257,7 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (12,3) | Vie de la cible (`R`, secrète). |
 | (13,3) | Ressource de la cible (`B`, secrète). |
 | (8,13) | **Version de la grille** : `R` = 4 / 255. |
-| (2..7,13) | Modes : `toggle` (2), `tne` (3), ajout de point (4), effacement du parcours (5), `drive` (6), `loop` (7). |
+| (2,13), (3,13), (6,13) | Modes : `toggle`, `tne`, `drive`. |
 | (8,4) | **Forme active** : sort de la forme (druide : félin, ours, sélénien…) sur 24 bits, 0 = aucune. Le sort plutôt que l'index de `GetShapeshiftForm`, qui dépend des talents. |
 | (9,4) | **Ressource de classe** : `R` = nombre / 255. Points de combo (voleur, druide), éclats d'âme (démoniste), puissance sacrée (paladin), chi (moine), essence (évocateur), charges arcaniques (mage). |
 | (11,13) | `R` = le joueur **se déplace** (`GetUnitSpeed`), `G` = la **cible incante**, `B` = son sort est interruptible (vrai sauf indication contraire). Suivi par les événements d'incantation de la cible et `PLAYER_TARGET_CHANGED`. |
@@ -265,7 +269,6 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (10,4) | **Classe** du personnage : `R` = identifiant / 255 (7 = chaman). |
 | (11,4) | **Spécialisation** active sur 16 bits : `R` octet fort, `G` octet faible (262 = Élémentaire). Le Java choisit la rotation d'après la classe et la spécialisation. |
 | (13,13) | Mode débogage. |
-| lignes 7-8 et 10-11 | Coordonnées de carte du joueur en binaire, 20 bits chacune (pixel blanc = 1). |
 | (3,1) | `R` = **mode soigneur**, `G` = en raid. |
 | (8,1) | **Ramassage** : `R` = mode ramassage, `G` = un ennemi ciblé dans la dernière minute est un cadavre avec du butin pour le joueur (`CanLootUnit` sur son GUID retenu : la cible disparaît souvent à sa mort), `B` = touche d'interaction de WoW active (option « Activer la touche d'interaction », CVar `softTargetInteract`, lue sans être modifiée). |
 | (7,1) | **Cible pas devant le joueur** : `R` = un sort vient d'être refusé pour cette raison (« La cible doit être devant vous », ou attaque en mêlée dans la mauvaise direction), il y a moins de 1,5 s. Le Java fait alors demi-tour. |
@@ -316,6 +319,50 @@ Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revien
 `returnToTarget` de la rotation). Les boutons ne s'appuient que sur la touche enfoncée (`useOnKeyDown`). Unités et
 raccourcis ne se modifient que hors combat : un changement de composition en combat est appliqué à la sortie du combat
 (`PLAYER_REGEN_ENABLED`).
+
+---
+
+## Parcours du pilote automatique
+
+`routes.lua`. **L'addon garde les parcours**, le Java les suit : plus aucun accusé de réception tapé dans le chat.
+
+**Données.** Un parcours a un nom, une carte (la carte de *zone*), une boucle et ses points, en fraction de la carte
+(0 à 1). Les parcours sont partagés par tous les personnages du compte (`CLOCKWORK_ROUTES`) ; chaque personnage a son
+parcours actif et retient le dernier utilisé sur chaque carte (`CLOCKWORK_CHARACTER`). Comme WoW donne la position du
+joueur sur toute carte qui contient sa zone, un parcours reste valable dans les sous-zones (village, grotte…).
+
+**Menu, section Déplacement.**
+
+- le **parcours actif** (nom et nombre de points) : un clic ouvre la liste des parcours, ceux de la carte actuelle en
+  premier, et les actions **Nouveau**, **Renommer**, **Dupliquer**, **Inverser le sens**, **Exporter**, **Importer**,
+  **Supprimer** (avec confirmation) ;
+- **+ Point**, **Annuler** (retire le dernier), **Vider** ;
+- **Boucle** (propre au parcours), **Pilote automatique**, **Ramassage**.
+
+Mêmes actions en commandes : `/clk route …`, `/clk wp …` (voir *Commandes en jeu*).
+
+**Partage.** *Exporter* affiche le parcours en texte (`CW1;nom;carte;boucle;x,y;x,y;…`, 4 décimales), à copier ;
+*Importer* le reprend, sous un nouveau nom s'il existe déjà.
+
+**Carte du monde.** Quand elle affiche la carte du parcours actif, le tracé y est dessiné (points, le premier en vert, et
+segments, refermés si le parcours boucle).
+
+**Changement de zone.** Tant que le joueur est sur la carte du parcours actif, rien ne change. Sinon, le dernier
+parcours utilisé sur la nouvelle carte devient actif (aucun s'il n'y en a pas), et **l'automate est coupé** (activation
+et pilote) : un parcours ne se lance jamais seul.
+
+**Grille.** Le parcours actif occupe les cases libres des blocs 3 et 4 (celles que les touches n'utilisent pas), dans
+l'ordre bloc 3 puis bloc 4, ligne par ligne :
+
+| Case | Contenu |
+|---|---|
+| 1 | Révision, 24 bits : change à chaque modification ou changement de parcours. |
+| 2 | Carte du parcours, 24 bits (0 = aucun). |
+| 3 | `R` = nombre de points / 255, `G` = boucle, `B` = le joueur est sur la carte du parcours. |
+| 4, 5 | Position du joueur sur la carte du parcours, x puis y, 24 bits (fraction × 16 777 215). |
+| 6, 7… | Chaque point : x puis y, 24 bits. |
+
+130 points au plus (place dans la grille) : au-delà, l'ajout est refusé et signalé.
 
 ---
 

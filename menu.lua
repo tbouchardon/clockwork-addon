@@ -127,16 +127,29 @@ toggle("Ciblage auto", "Cibler l'ennemi le plus proche quand il n'y a rien à fa
     function() return Clockwork.TARGET_NEAREST_ENEMY end, function() Clockwork:clickTNE() end)
 
 header("Déplacement")
-toggle("Pilote automatique", "Suivre le parcours de points de passage (/clk drive).",
+
+-- Parcours actif : un clic ouvre la liste des parcours et leur gestion (nouveau, renommer, exporter, supprimer...)
+local routeSelector = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+routeSelector:SetSize(WIDTH - 12, ROW_HEIGHT + 2)
+routeSelector:SetPoint("TOPLEFT", 6, cursor - 1)
+routeSelector:SetText("Aucun parcours")
+routeSelector:GetFontString():SetFontObject("GameFontHighlightSmall")
+routeSelector:SetScript("OnClick", function(self) Clockwork.showRouteMenu(self) end)
+attachTooltip(routeSelector, "Parcours actif : un clic pour en choisir un autre, en créer, le renommer, l'exporter, le supprimer...")
+table.insert(content, routeSelector)
+cursor = cursor - ROW_HEIGHT - 4
+
+actions({
+    { "+ Point", "Ajouter la position actuelle au parcours actif (/clk wp add).", function() Clockwork.addRoutePoint() end },
+    { "Annuler", "Retirer le dernier point (/clk wp undo).", function() Clockwork.undoRoutePoint() end },
+    { "Vider", "Retirer tous les points du parcours actif (/clk wp clear).", function() Clockwork.clearRoute() end },
+})
+toggle("Boucle", "Recommencer le parcours actif une fois terminé (/clk route loop).",
+    function() local route = Clockwork.activeRoute() return route and route.loop end, function() Clockwork.toggleRouteLoop() end)
+toggle("Pilote automatique", "Suivre le parcours actif ; le Java rejoint d'abord le point le plus proche (/clk drive).",
     function() return Clockwork.DRIVE_MOD end, function() Clockwork:clickDrive() end)
-toggle("Boucle", "Recommencer le parcours une fois terminé (/clk loop).",
-    function() return Clockwork.DRIVE_LOOP end, function() Clockwork:clickLoop() end)
 toggle("Ramassage", "Après un combat, ramasser le butin d'un cadavre à portée, au plus un petit pas en avant (/clk loot). Demande « Activer la touche d'interaction » (Options > Contrôles).",
     function() return Clockwork.LOOT_MOD end, function() Clockwork:clickLoot() end)
-actions({
-    { "+ Point", "Ajouter la position actuelle au parcours (/clk addwp).", function() Clockwork:clickAddWp() end },
-    { "Effacer", "Vider le parcours (/clk clearwp).", function() Clockwork:clickClearWp() end },
-})
 
 header("Pêche")
 toggle("Pêche automatique", "Le Java lance la ligne et ferre tant que c'est allumé ; bouger la souris l'arrête (/clk fish).",
@@ -181,7 +194,6 @@ local SAVED_MODES = {
     { key = "AGGRO_MOD", click = function() Clockwork:clickAggro() end },
     { key = "MULTI_MOD", click = function() Clockwork:clickMulti() end },
     { key = "TARGET_NEAREST_ENEMY", click = function() Clockwork:clickTNE() end },
-    { key = "DRIVE_LOOP", click = function() Clockwork:clickLoop() end },
     { key = "LOOT_MOD", click = function() Clockwork:clickLoot() end },
     { key = "DEBUG_MOD", click = function() Clockwork:clickDebug() end },
 }
@@ -199,6 +211,8 @@ function frame.refresh()
 
     for _, mode in ipairs(SAVED_MODES) do settings().modes[mode.key] = Clockwork[mode.key] == true end
     fishingStats:SetText(Clockwork.fishingSummary and Clockwork.fishingSummary() or "")
+    local route = Clockwork.activeRoute and Clockwork.activeRoute()
+    routeSelector:SetText(route and (Clockwork.activeRouteName() .. " · " .. #route.points .. " pt") or "Aucun parcours ▾")
 end
 
 function frame.Expand()
