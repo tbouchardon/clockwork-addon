@@ -360,8 +360,10 @@ end
 -- --- Carte du monde --------------------------------------------------------------------------------------------------
 
 --- Le parcours actif dessiné sur la carte du monde quand elle affiche sa carte : points et tracé (premier point en vert).
---- La carte du monde peut être chargée après l'addon : tout est créé une fois Blizzard_WorldMap prêt.
+--- La carte du monde peut être chargée après l'addon : tout est créé une fois Blizzard_WorldMap prêt. Les tuiles de la
+--- carte sont des cadres enfants du canevas : dessiner sur le canevas lui-même les cacherait, d'où un calque au-dessus.
 local provider
+local layer
 local drawn = {}
 
 local function installMapProvider()
@@ -377,6 +379,12 @@ local function installMapProvider()
         if not route or #route.points == 0 or map:GetMapID() ~= route.map then return end
 
         local canvas = map:GetCanvas()
+        if not layer then
+            layer = CreateFrame("Frame", nil, canvas)
+            layer:SetAllPoints(canvas)
+        end
+        layer:SetFrameLevel(canvas:GetFrameLevel() + 500)
+        layer:Show()
         local width, height = canvas:GetSize()
         local scale = 1 / map:GetCanvasScale()
         local used = 0
@@ -384,7 +392,7 @@ local function installMapProvider()
             used = used + 1
             local existing = drawn[used]
             if existing and existing.kind == kind then existing:Show() return existing end
-            local created = kind == "line" and canvas:CreateLine(nil, "OVERLAY") or canvas:CreateTexture(nil, "OVERLAY")
+            local created = kind == "line" and layer:CreateLine(nil, "OVERLAY") or layer:CreateTexture(nil, "OVERLAY")
             created.kind = kind
             if existing then existing:Hide() end
             drawn[used] = created
@@ -397,15 +405,15 @@ local function installMapProvider()
             local line = region("line")
             line:SetColorTexture(1, 0.82, 0, 0.8)
             line:SetThickness(3 * scale)
-            line:SetStartPoint("TOPLEFT", canvas, a[1] * width, -a[2] * height)
-            line:SetEndPoint("TOPLEFT", canvas, b[1] * width, -b[2] * height)
+            line:SetStartPoint("TOPLEFT", layer, a[1] * width, -a[2] * height)
+            line:SetEndPoint("TOPLEFT", layer, b[1] * width, -b[2] * height)
         end
         for index, point in ipairs(route.points) do
             local dot = region("dot")
             dot:SetColorTexture(index == 1 and 0.2 or 1, index == 1 and 1 or 0.6, 0.1, 1)
             dot:SetSize(8 * scale, 8 * scale)
             dot:ClearAllPoints()
-            dot:SetPoint("CENTER", canvas, "TOPLEFT", point[1] * width, -point[2] * height)
+            dot:SetPoint("CENTER", layer, "TOPLEFT", point[1] * width, -point[2] * height)
         end
         for index = used + 1, #drawn do drawn[index]:Hide() end
     end
