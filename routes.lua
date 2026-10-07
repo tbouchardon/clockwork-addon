@@ -6,8 +6,8 @@
 -- Coordonnées relatives à la carte de zone du parcours (0 à 1) : WoW donne la position du joueur sur une carte qui contient
 -- sa zone actuelle, un parcours tracé sur une zone reste donc valable dans ses sous-zones (village, grotte...).
 --
--- Grille : le parcours actif occupe les cases libres des blocs 3 et 4 (celles que les touches n'utilisent pas), dans
--- l'ordre (bloc 3 puis 4, ligne par ligne) :
+-- Grille : le parcours actif occupe les cases libres du bloc 3 (celles que les touches n'utilisent pas), ligne par ligne ;
+-- le bloc 4 reste en réserve :
 --   1 : révision, 24 bits (change à chaque modification ou changement de parcours : le Java relit alors le parcours)
 --   2 : carte du parcours, 24 bits (0 = aucun parcours)
 --   3 : R = nombre de points / 255, G = boucle, B = le joueur est sur la carte du parcours
@@ -15,10 +15,10 @@
 --   puis chaque point : x, y (24 bits chacun)
 -- Le Java ne garde rien : plus d'accusé de réception tapé dans le chat.
 --
--- Au changement de zone, le dernier parcours utilisé sur la nouvelle carte devient actif, et l'automate est coupé
--- (activation et pilote) : un parcours ne se lance jamais seul.
+-- Au changement de zone, le dernier parcours utilisé sur la nouvelle carte devient actif, et le pilote automatique est
+-- coupé (ClockWork reste actif) : un parcours ne se lance jamais seul.
 
-Clockwork.ROUTE_MAX_POINTS = 130
+Clockwork.ROUTE_MAX_POINTS = 60
 
 local FRACTION = 16777215
 local routeCells = {}
@@ -222,7 +222,7 @@ end
 -- --- Changement de zone ----------------------------------------------------------------------------------------------
 
 --- Nouvelle zone : le parcours actif est gardé tant que le joueur est sur sa carte ; sinon, le dernier utilisé sur la
---- nouvelle carte le remplace, et l'automate est coupé.
+--- nouvelle carte le remplace, et le pilote automatique est coupé.
 function Clockwork.onZoneChanged()
     local active = Clockwork.activeRoute()
     if active and playerOn(active) then return end
@@ -232,9 +232,9 @@ function Clockwork.onZoneChanged()
     if next == Clockwork.activeRouteName() then return end
 
     Clockwork.useRoute(next)
-    if Clockwork.TOGGLE_ON_OFF then Clockwork:clickToggle() end
+    -- Seul le pilote est coupé : un parcours ne se lance jamais seul, mais le combat continue
     if Clockwork.DRIVE_MOD then Clockwork:clickDrive() end
-    Clockwork.log.notice("Changement de zone : parcours " .. (next and ("« " .. next .. " »") or "aucun") .. ", automate coupé")
+    Clockwork.log.notice("Changement de zone : parcours " .. (next and ("« " .. next .. " »") or "aucun") .. ", pilote coupé")
 end
 
 -- --- Grille ----------------------------------------------------------------------------------------------------------
@@ -254,10 +254,10 @@ local function keyCells()
     return cells
 end
 
---- Cases libres des blocs 3 (0, 16) et 4 (16, 16), dans l'ordre de la grille.
+--- Cases libres du bloc 3 (0, 16), dans l'ordre de la grille : 5 d'en-tête et 2 par point, 60 points au plus.
 function Clockwork.routeCellPositions()
     local used, positions = keyCells(), {}
-    for _, block in ipairs({ { 0, 16 }, { 16, 16 } }) do
+    for _, block in ipairs({ { 0, 16 } }) do
         for y = 1, 14 do
             for x = 1, 14 do
                 if not used[x .. "," .. y] then table.insert(positions, { block[1] + x, block[2] + y }) end

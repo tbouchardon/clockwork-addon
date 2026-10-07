@@ -38,7 +38,7 @@
 --   (13, 4) : garde-fous, R = joueur mort (1/0), G = cible marquée par un autre joueur (1/0), B = sur une monture (1/0)
 --   (11, 4) : spécialisation active sur 16 bits, R = octet fort, G = octet faible (identifiant du jeu : 262 = Élémentaire)
 --   (5, 1) : résultat du dernier lancer de pêche (voir fishing.lua)
---   blocs 3 et 4, cases libres : parcours actif du pilote automatique (voir routes.lua)
+--   bloc 3, cases libres : parcours actif du pilote automatique (voir routes.lua) ; bloc 4 libre, en réserve
 --   (8, 1) : ramassage du butin (voir loot.lua), R = mode ramassage, G = cible morte avec du butin
 --   (7, 1) : R = un sort vient d'être refusé parce que la cible n'est pas devant le joueur (moins de 1,5 s), pour que
 --       le Java fasse demi-tour (monstre dans le dos)

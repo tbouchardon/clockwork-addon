@@ -348,11 +348,11 @@ Mêmes actions en commandes : `/clk route …`, `/clk wp …` (voir *Commandes e
 segments, refermés si le parcours boucle).
 
 **Changement de zone.** Tant que le joueur est sur la carte du parcours actif, rien ne change. Sinon, le dernier
-parcours utilisé sur la nouvelle carte devient actif (aucun s'il n'y en a pas), et **l'automate est coupé** (activation
-et pilote) : un parcours ne se lance jamais seul.
+parcours utilisé sur la nouvelle carte devient actif (aucun s'il n'y en a pas), et **le pilote automatique est coupé** :
+un parcours ne se lance jamais seul. ClockWork reste actif et continue de combattre.
 
-**Grille.** Le parcours actif occupe les cases libres des blocs 3 et 4 (celles que les touches n'utilisent pas), dans
-l'ordre bloc 3 puis bloc 4, ligne par ligne :
+**Grille.** Le parcours actif occupe les cases libres du bloc 3 (celles que les touches n'utilisent pas), ligne par
+ligne ; le bloc 4 reste en réserve :
 
 | Case | Contenu |
 |---|---|
@@ -362,7 +362,8 @@ l'ordre bloc 3 puis bloc 4, ligne par ligne :
 | 4, 5 | Position du joueur sur la carte du parcours, x puis y, 24 bits (fraction × 16 777 215). |
 | 6, 7… | Chaque point : x puis y, 24 bits. |
 
-130 points au plus (place dans la grille) : au-delà, l'ajout est refusé et signalé.
+60 points au plus, largement de quoi tracer une boucle de farm (le pilote va en ligne droite d'un point à l'autre) :
+au-delà, l'ajout est refusé et signalé.
 
 ---
 
