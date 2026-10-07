@@ -359,12 +359,32 @@ end
 
 -- --- Carte du monde --------------------------------------------------------------------------------------------------
 
---- Le parcours actif dessiné sur la carte du monde quand elle affiche sa carte : points et tracé (premier point en vert).
+--- Le parcours actif dessiné sur la carte du monde : points et tracé (premier point en vert), sur la carte du parcours
+--- comme sur une carte qui la contient (continent) ou qu'elle contient (sous-zone).
 --- La carte du monde peut être chargée après l'addon : tout est créé une fois Blizzard_WorldMap prêt. Les tuiles de la
 --- carte sont des cadres enfants du canevas : dessiner sur le canevas lui-même les cacherait, d'où un calque au-dessus.
+--- La carte appelle le fournisseur par secureexecuterange, qui tait les erreurs : elles sont signalées ici, une fois.
 local provider
 local layer
 local drawn = {}
+local lastMapError
+local lastMapReport = "carte du monde jamais ouverte"
+
+--- Fonction qui place un point du parcours (fractions de sa carte) sur la carte affichée, ou nil si aucune ne contient
+--- l'autre.
+local function projection(routeMap, shownMap)
+    if routeMap == shownMap then return function(x, y) return x, y end end
+    -- Carte du parcours dans la carte affichée (zone sur son continent)
+    local minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(routeMap, shownMap)
+    if minX and maxX > minX and maxY > minY then
+        return function(x, y) return minX + x * (maxX - minX), minY + y * (maxY - minY) end
+    end
+    -- Carte affichée dans la carte du parcours (sous-zone de la zone)
+    minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(shownMap, routeMap)
+    if minX and maxX > minX and maxY > minY then
+        return function(x, y) return (x - minX) / (maxX - minX), (y - minY) / (maxY - minY) end
+    end
+end
 
 local function installMapProvider()
     provider = CreateFromMixins(MapCanvasDataProviderMixin)
@@ -374,9 +394,26 @@ local function installMapProvider()
     end
 
     function provider:RefreshAllData()
+        local ok, err = pcall(self.Draw, self)
+        if not ok and err ~= lastMapError then
+            lastMapError = err
+            Clockwork.log.error("Parcours sur la carte : " .. tostring(err))
+        end
+    end
+
+    function provider:Draw()
         self:RemoveAllData()
         local map, route = self:GetMap(), Clockwork.activeRoute()
-        if not route or #route.points == 0 or map:GetMapID() ~= route.map then return end
+        local shown = map:GetMapID()
+        if not route or #route.points == 0 then
+            lastMapReport = "aucun parcours actif, ou parcours vide"
+            return
+        end
+        local place = shown and projection(route.map, shown)
+        if not place then
+            lastMapReport = "carte affichée " .. mapName(shown) .. " sans rapport avec celle du parcours, " .. mapName(route.map)
+            return
+        end
 
         local canvas = map:GetCanvas()
         if not layer then
@@ -405,17 +442,22 @@ local function installMapProvider()
             local line = region("line")
             line:SetColorTexture(1, 0.82, 0, 0.8)
             line:SetThickness(3 * scale)
-            line:SetStartPoint("TOPLEFT", layer, a[1] * width, -a[2] * height)
-            line:SetEndPoint("TOPLEFT", layer, b[1] * width, -b[2] * height)
+            local ax, ay = place(a[1], a[2])
+            local bx, by = place(b[1], b[2])
+            line:SetStartPoint("TOPLEFT", layer, ax * width, -ay * height)
+            line:SetEndPoint("TOPLEFT", layer, bx * width, -by * height)
         end
         for index, point in ipairs(route.points) do
             local dot = region("dot")
             dot:SetColorTexture(index == 1 and 0.2 or 1, index == 1 and 1 or 0.6, 0.1, 1)
             dot:SetSize(8 * scale, 8 * scale)
             dot:ClearAllPoints()
-            dot:SetPoint("CENTER", layer, "TOPLEFT", point[1] * width, -point[2] * height)
+            local x, y = place(point[1], point[2])
+            dot:SetPoint("CENTER", layer, "TOPLEFT", x * width, -y * height)
         end
         for index = used + 1, #drawn do drawn[index]:Hide() end
+        lastMapReport = #route.points .. " point(s) dessiné(s) sur " .. mapName(shown) .. " (canevas " .. math.floor(width)
+            .. "x" .. math.floor(height) .. ")"
     end
 
     function provider:OnMapChanged()
@@ -427,6 +469,14 @@ local function installMapProvider()
     end
 
     WorldMapFrame:AddDataProvider(provider)
+end
+
+--- Diagnostic (/clk route carte) : ce que le dernier affichage de la carte du monde a donné.
+function Clockwork.reportRouteMap()
+    local route = Clockwork.activeRoute()
+    Clockwork.log.notice("Carte du monde : " .. (provider and "fournisseur installé" or "Blizzard_WorldMap pas encore chargé")
+        .. " ; parcours " .. (route and (Clockwork.activeRouteName() .. " sur " .. mapName(route.map) .. ", " .. #route.points .. " point(s)") or "aucun")
+        .. " ; dernier affichage : " .. lastMapReport .. (lastMapError and (" ; erreur : " .. tostring(lastMapError)) or ""))
 end
 
 function Clockwork.refreshRouteMap()

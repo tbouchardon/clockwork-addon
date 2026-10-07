@@ -5,7 +5,7 @@
 -- un cadavre avec du butin pour le joueur.
 --
 -- Case (8, 1) du bloc 1 : R = mode ramassage, G = un ennemi récent a du butin, B = touche d'interaction de WoW active
--- (option « Activer la touche d'interaction », CVar softTargetInteract). Le Java appuie alors sur place sur Alt+Maj+L,
+-- (option « Activer la touche d'interaction », CVar softTargetInteract). Le Java appuie alors sur place sur Alt+Maj+X,
 -- posé en surcharge sur INTERACTTARGET (bindings.lua) : sans cible, c'est la touche d'interaction, qui agit sur le
 -- cadavre à portée devant le personnage. Aucun réglage du joueur n'est modifié.
 

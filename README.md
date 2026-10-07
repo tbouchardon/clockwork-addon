@@ -120,6 +120,7 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `aggro` | Active ou désactive le mode aggro. |
 | `tne` | *Target Nearest Enemy* : le Java appuie sur `Tab` quand il n'a rien à faire. |
 | `route new <nom>` / `use <nom>` / `rename <nom>` / `delete` / `list` | Parcours du pilote automatique (voir *Parcours*). |
+| `route carte` | Diagnostic du tracé sur la carte du monde : parcours, carte affichée, dernière erreur. |
 | `route loop` / `reverse` / `export` / `import <texte>` | Boucle, sens, partage du parcours actif. |
 | `wp add` / `wp undo` / `wp clear` | Ajoute la position actuelle au parcours actif, retire le dernier point, retire tous les points. |
 | `drive` | Pilote automatique : suit le parcours actif. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
@@ -312,7 +313,7 @@ configuration du joueur) :
 | `Alt+Maj+U` | Revenir à la cible précédente (`/targetlasttarget`). |
 
 `Alt+Maj+V` est aussi posé en surcharge pour la **course automatique** (`TOGGLEAUTORUN`), dont se sert le pilote
-automatique, et `Alt+Maj+L` pour **interagir avec la cible** (`INTERACTTARGET`), dont se sert le ramassage
+automatique, et `Alt+Maj+X` pour **interagir avec la cible** (`INTERACTTARGET`), dont se sert le ramassage
 (`bindings.lua`). Aucun réglage du joueur n'est modifié.
 
 Pour soigner, le Java cible le membre, appuie sur la touche du sort, puis revient à la cible précédente (option
@@ -344,8 +345,9 @@ Mêmes actions en commandes : `/clk route …`, `/clk wp …` (voir *Commandes e
 **Partage.** *Exporter* affiche le parcours en texte (`CW1;nom;carte;boucle;x,y;x,y;…`, 4 décimales), à copier ;
 *Importer* le reprend, sous un nouveau nom s'il existe déjà.
 
-**Carte du monde.** Quand elle affiche la carte du parcours actif, le tracé y est dessiné (points, le premier en vert, et
-segments, refermés si le parcours boucle).
+**Carte du monde.** Le tracé du parcours actif y est dessiné (points, le premier en vert, et segments, refermés si le
+parcours boucle), sur la carte du parcours comme sur une carte qui la contient (continent) ou qu'elle contient
+(sous-zone). Rien ne s'affiche ? `/clk route carte` dit pourquoi.
 
 **Changement de zone.** Tant que le joueur est sur la carte du parcours actif, rien ne change. Sinon, le dernier
 parcours utilisé sur la nouvelle carte devient actif (aucun s'il n'y en a pas), et **le pilote automatique est coupé** :

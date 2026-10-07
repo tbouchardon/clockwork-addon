@@ -10,10 +10,12 @@ BINDING_NAME_CLOCKWORK_LOOT = "Ramassage du butin"
 BINDING_NAME_CLOCKWORK_MENU = "Afficher / masquer le menu"
 
 -- Raccourcis du bot, en surcharge (jamais enregistrés dans la configuration du joueur), identiques côté Java (TomTom) :
--- le pilote automatique lance la course automatique sans dépendre des touches du joueur (J ouvre Guilde et communautés)
+-- le pilote automatique lance la course automatique sans dépendre des touches du joueur (J ouvre Guilde et communautés).
+-- Hors de Alt+Maj+A..T, Alt+Ctrl+A..T (ciblage des membres) et Alt+Maj+U (dernière cible) : deux surcharges sur la
+-- même touche, la dernière posée l'emporte
 local botBindingOwner = CreateFrame("Frame", "ClockworkBotBindings")
 Clockwork.AUTORUN_KEY = "ALT-SHIFT-V"
-Clockwork.INTERACT_KEY = "ALT-SHIFT-L"
+Clockwork.INTERACT_KEY = "ALT-SHIFT-X"
 
 --- Pose les raccourcis du bot ; hors combat seulement (sinon refusé), d'où l'appel à l'entrée dans le monde.
 function Clockwork.applyBotBindings()

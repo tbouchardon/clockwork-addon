@@ -47,7 +47,7 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("------------ Clockwork ------------")
         Clockwork.log.notice("/clockWork toggle         -- Turn Clockwork On [Blush]/Off")
         Clockwork.log.notice("/clockWork tne            -- Target Nearest Enemy : On/Off")
-        Clockwork.log.notice("/clockWork route ...      -- Parcours : new, use, rename, delete, loop, reverse, list, export, import")
+        Clockwork.log.notice("/clockWork route ...      -- Parcours : new, use, rename, delete, loop, reverse, list, export, import, carte")
         Clockwork.log.notice("/clockWork wp add|undo|clear -- Points du parcours actif")
         Clockwork.log.notice("/clockWork aggro          -- Aggro : On/Off")
         Clockwork.log.notice("/clockWork fish           -- Pêche automatique : On/Off")
@@ -106,13 +106,14 @@ function Clockwork:routeCommand(argument)
     elseif action == 'reverse' then Clockwork.reverseRoute()
     elseif action == 'export' then Clockwork.showTextWindow(Clockwork.exportRoute() or "Aucun parcours actif")
     elseif action == 'import' then Clockwork.importRoute(name)
+    elseif action == 'carte' then Clockwork.reportRouteMap()
     elseif action == 'list' then
         for _, routeName in ipairs(Clockwork.routeNames()) do
             local route = CLOCKWORK_ROUTES[routeName]
             Clockwork.log.notice((routeName == Clockwork.activeRouteName() and "> " or "  ") .. routeName .. " : " .. #route.points .. " point(s)")
         end
     else
-        Clockwork.log.notice("/clk route new <nom> | use <nom> | rename <nom> | delete | loop | reverse | list | export | import <texte>")
+        Clockwork.log.notice("/clk route new <nom> | use <nom> | rename <nom> | delete | loop | reverse | list | export | import <texte> | carte")
     end
 end
 
