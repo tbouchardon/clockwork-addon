@@ -1,5 +1,4 @@
 Clockwork.DEBUG_MOD = false
-Clockwork.CHECK_ACTIONS_CAST = true
 Clockwork.CASTING = false;
 
 Clockwork.UPDATE_INTERVAL = 0.2 -- 200ms
@@ -25,12 +24,6 @@ Clockwork.player.GUID = nil
 Clockwork.pet = {}
 Clockwork.pet.GUID = nil
 
-Clockwork.targets = {}
-Clockwork.targets.list = {}
-Clockwork.targets.count = 0
-Clockwork.targets.multiTargetMod = false
-Clockwork.targets.multiTargetModTrigger = 3
-
 ---@class Dot: Frame , {}
 ---comment
 ---@param name any
@@ -50,49 +43,6 @@ function Clockwork:createDot(name, xPos, yPos)
     dotFrame.texture:SetColorTexture(0, 0, 0, 1)
 
     return dotFrame
-end
-
----comment
----@param T table
----@return integer
-function Clockwork.tableLength(T)
-    if T == nil then
-        return 0
-    end
-    local count = 0
-    for _ in pairs(T) do
-        count = count + 1
-    end
-    return count
-end
-
----comment
----@param s any
----@return boolean
-function Clockwork.emptyOrNil(s)
-    if s == nil then
-        return true
-    end
-    if s == "" then
-        return true
-    end
-    if s == 0 then
-        return true
-    end
-    return false
-end
-
----comment
----@param condition boolean
----@param if_true any
----@param if_false any
----@return any
-function Clockwork.ternary(condition, if_true, if_false)
-    if condition then
-        return if_true
-    else
-        return if_false
-    end
 end
 
 ---comment

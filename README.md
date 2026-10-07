@@ -40,16 +40,14 @@ pêche, identifiant de cible, ressource de classe) et les raccourcis clavier ne 
 └──────────────────────────┘   clavier   └───────────────────────────┘
 ```
 
-Deux modes de décision coexistent :
+**L'addon ne décide rien.** Il décrit l'état de *toutes* les touches (prête, à portée, temps de recharge, dernier
+lancement…), du joueur, de la cible et du groupe ; le cerveau Java applique les règles YAML de la rotation du personnage,
+ou à défaut la recommandation de Blizzard.
 
-| Mode | Qui décide ? | Grille utilisée |
-|---|---|---|
-| **Historique (v1)** | L'addon : chaque rotation Lua (`rotation_<classe>.lua`) allume la case de la touche à appuyer, avec une priorité. | Cases « touche à appuyer » (lignes 4 et 5). |
-| **Cerveau Java (v2 à v4)** | Le Java : l'addon décrit l'état de *toutes* les touches (prête, à portée, temps de recharge, dernier lancement…) et du groupe, le Java applique les règles de `rotation.yaml`. | Cases d'état, d'historique et de sort de chaque touche, dans les quatre blocs ; membres du groupe dans le bloc 2. |
-
-Depuis la 12.x, la plupart des valeurs de combat sont **secrètes** pour les addons (voir plus bas). Les rotations Lua ne
-peuvent plus comparer la vie ou les temps de recharge. Le mode cerveau Java contourne le problème : l'addon passe ces
-valeurs secrètes directement à l'affichage, sans les lire, et c'est le Java qui les lit à l'écran.
+Depuis la 12.x, la plupart des valeurs de combat sont **secrètes** pour les addons (voir plus bas) : une rotation écrite
+en Lua ne peut plus comparer la vie ou les temps de recharge. Les anciennes rotations Lua et leur mode « touche à
+appuyer » (grille v1) ont donc été retirés. L'addon passe les valeurs secrètes directement à l'affichage, sans les lire,
+et c'est le Java qui les lit à l'écran.
 
 ---
 
@@ -71,7 +69,6 @@ enregistre les événements et démarre la boucle.
 SavedVariables (écrites par WoW sur le disque à chaque `/reload` ou déconnexion, dans
 `WTF/Account/<COMPTE>/SavedVariables/ClockWork.lua`) :
 
-- `CLOCKWORK_ROTATIONS` : réglages des rotations Lua ;
 - `CLOCKWORK_SETTINGS` : position et épinglage du menu, modes mémorisés.
 
 Les noms des sorts ne passent pas par l'addon : la grille ne transmet que des identifiants, et le Java les traduit avec
@@ -94,13 +91,13 @@ Un petit menu, déplaçable par sa barre de titre, réunit les commandes :
   (« épinglé » s'affiche), un autre le libère ;
 - une pastille verte ou grise montre l'état de chaque mode, toujours à jour, y compris après une commande `/clk` ; celle
   du titre indique si ClockWork est actif ;
-- groupes : **Combat** (activation, aggro, rotation assistée, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ramassage, ajout et
+- groupes : **Combat** (activation, aggro, multi-cibles, mode soigneur, ciblage auto), **Déplacement** (pilote, boucle, ramassage, ajout et
   effacement de points), **Pêche**, **Outils** (débogage, `testsecret`, erreurs) ;
 - sous la pêche : **statistiques de la session** (prises sur lancers, poissons échappés, faux clics), d'après le résultat
   de chaque lancer (voir *Pêche : résultat de chaque lancer*) ;
 - en bas : spécialisation détectée, version de la grille et blocs en erreur ;
 - le **compartiment d'addons** de Blizzard (bouton près de la minicarte) l'affiche ou le masque ;
-- position, épinglage et modes (aggro, multi-cibles, rotation assistée, ciblage auto, boucle, débogage) sont **mémorisés** d'une
+- position, épinglage et modes (aggro, multi-cibles, ciblage auto, boucle, débogage) sont **mémorisés** d'une
   session à l'autre (SavedVariable `CLOCKWORK_SETTINGS`). L'activation, le pilote et la pêche repartent éteints, par
   prudence.
 
@@ -118,7 +115,6 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 |---|---|
 | `toggle` | Active ou désactive l'addon. Désactivé, la case (2,13) est éteinte et le Java ne fait rien. |
 | `aggro` | Active ou désactive le mode aggro. |
-| `assisted` | Active ou désactive la rotation assistée de Blizzard (`C_AssistedCombat`) dans les rotations Lua. |
 | `tne` | *Target Nearest Enemy* : le Java appuie sur `Tab` quand il n'a rien à faire. |
 | `addwp` / `clearwp` | Ajoute la position actuelle au parcours / vide le parcours (pilote automatique). |
 | `05,21-63,30;…` | Ajoute une liste de points de passage (coordonnées de carte). |
@@ -128,7 +124,7 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java appuie sur la touche d'interaction sur place, puis après un seul petit pas en avant : le butin d'un cadavre à portée est ramassé, un cadavre plus loin est laissé. L'option « Activer la touche d'interaction » (Options > Contrôles) doit être cochée. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
-| `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |
+| `list actions` / `list bindings` | Rapports sur les barres d'action et les raccourcis (mode débogage). |
 | `testsecret` | **Carte de ce que le client autorise** sur les valeurs secrètes (sections A à G). À lancer en combat contre un mannequin, puis hors combat pour comparer. |
 | `errors` / `errors reset` | Blocs de mise à jour de la grille qui ont échoué (voir *Robustesse*). |
 
@@ -149,34 +145,29 @@ Sinon, le bot n'agit que hors combat, ou quand le joueur *et* la cible sont en c
 |---|---|
 | `core.lua` | Création de la table globale `Clockwork`. |
 | `core_functions.lua` | Constantes (`UPDATE_INTERVAL` = 0,2 s, modes) et `createDot`, qui crée une case de la grille. |
-| `init_addon.lua` | Grille historique (fond, cases), échelle des pixels, événements, boucle `OnUpdate`. |
+| `init_addon.lua` | Fond et premières cases de la grille, échelle des pixels, événements, boucle `OnUpdate`. |
 | `qrcode_v2.lua` | **Grille v4** : quatre blocs de touches, codage des sorts, historique des lancements. |
 | `group.lua` | Membres du groupe ou du raid (bloc 2), mode soigneur, boutons sécurisés de ciblage des membres. |
 | `loot.lua` | Ramassage du butin : ennemis ciblés récemment (GUID retenus) devenus des cadavres avec du butin pour le joueur. |
 | `fishing.lua` | Résultat de chaque lancer de pêche (prise, échappé, faux clic, rien) et statistiques du menu. |
-| `rotations_functions.lua` | `rotation()` (appelle la rotation de la spécialisation, puis l'assistée), `updateUIStatus()` qui remplit la grille, fonctions d'aide sur la cible. |
-| `rotation_<classe>.lua` | Rotations Lua historiques, par spécialisation. |
-| `rotation_assisted.lua` | Rotation qui suit la recommandation de Blizzard (`C_AssistedCombat.GetNextCastSpell`). |
-| `keys_functions.lua` | Correspondance sort → emplacement de barre → raccourci clavier, et allumage d'une touche (mode v1). |
+| `status.lua` | `updateGrid()` : état du joueur et de la cible (vie, ressource, combat, réaction), puis la grille v4 ; repas en cours (pilote automatique). |
+| `keys_functions.lua` | Correspondance emplacement de barre → raccourci clavier, pour décrire chaque touche. |
 | `coordinates_functions.lua` | Coordonnées de carte du joueur en binaire (pilote automatique). |
-| `bindings.lua`, `Bindings.xml` | Raccourcis clavier du joueur (activation, pêche, mode soigneur…) et anciens raccourcis internes (mode v1). Le ciblage des membres est dans `group.lua`. |
+| `bindings.lua`, `Bindings.xml` | Raccourcis clavier du joueur (activation, pêche, mode soigneur…) et raccourcis du bot posés en surcharge (course automatique, interaction). Le ciblage des membres est dans `group.lua`. |
 | `menu.lua` | Petit menu en jeu (boutons On/Off, Aggro…). |
 | `guard.lua` | `Clockwork.guard` : isole chaque bloc de mise à jour (voir *Robustesse*). |
 | `secret_tests.lua` | `/clk testsecret`. |
-| `spells.lua`, `specializations.lua`, `localization.lua` | Données : sorts, spécialisations, traductions. |
-| `logger.lua`, `debug_functions.lua`, `tests.lua` | Journal et outils de débogage. |
+| `logger.lua`, `debug_functions.lua` | Journal et outils de débogage. |
 
 ---
 
 ## Cycle de mise à jour
 
-1. `OnUpdate` est appelé à chaque image. Toutes les **200 ms** (`UPDATE_INTERVAL`), l'addon lance `Clockwork:rotation()`.
-2. `rotation()` appelle d'abord `updateUIStatus()`, qui repeint toutes les cases d'état (vie, cible, combat…) puis
-   la grille v4 (`updateQrCodeV2`, membres du groupe compris).
-3. Il éteint ensuite les touches du mode v1. Si le joueur n'incante pas, n'est pas monté et a le droit d'agir (mode
-   aggro, ou joueur et cible en combat, ou hors combat), il lance la rotation Lua de la spécialisation puis la rotation
-   assistée. Chacune peut allumer une touche.
-4. Les événements complètent l'état :
+1. `OnUpdate` est appelé à chaque image. Toutes les **200 ms** (`UPDATE_INTERVAL`), si ClockWork est actif (ou la
+   pêche demandée), l'addon lance `Clockwork:updateGrid()`.
+2. `updateGrid()` appelle `updateUIStatus()`, qui repeint toutes les cases d'état (vie, cible, combat…) puis la grille v4
+   (`updateQrCodeV2`, membres du groupe, ramassage et pêche compris).
+3. Les événements complètent l'état :
    - `UNIT_SPELLCAST_SUCCEEDED` (joueur) mémorise l'heure et la cible de chaque lancement (`recordOwnCast`), d'où
      l'historique par touche ;
    - `UPDATE_BINDINGS` recalcule la correspondance raccourci → emplacement ;
@@ -283,12 +274,6 @@ dernière utilisation / 60. Une **macro** est décrite par le sort ou l'objet qu
 | (4,1) | **Enchantement temporaire de la main droite** (leurre sur la canne à pêche) : `R` = actif, `G` = temps restant / 30 min (`GetWeaponEnchantInfo`). |
 | bords (ligne 1, colonne 14, ligne 14, colonne 1) | Libres depuis la v4 (anciennement la vie des membres du groupe), sauf (3,1) à (8,1). |
 
-### Cases « touche à appuyer » (mode v1)
-
-Lignes 4 (`Q D R T F G`, x = 2 à 7) et 5 (`1` à `=`, x = 2 à 13). Une touche allumée par une rotation Lua contient :
-`R` = modificateur (1 = Ctrl, 2 = Alt, 4 = Maj), `G` = priorité (0 = éteinte), `B` = durée d'appui / 30 s. Le Java
-appuie sur la touche allumée de plus haute priorité. Le cerveau Java ignore ces cases.
-
 ---
 
 ## Groupe, raid et mode soigneur
@@ -391,6 +376,6 @@ vient de `Blizzard_APIDocumentationGenerated` (dépôt `wow-ui-source`, branche 
   opération interdite sur un secret) n'arrête pas le reste de la grille. Elle est signalée **une seule fois** dans le
   chat, puis comptée (`/clk errors`).
 - **Compteur de mises à jour** (11,2) : le Java ignore une grille figée depuis plus de 1,5 s.
-- **Version** (8,13) : un Java récent face à une grille v1 retombe sur le mode historique et le signale.
+- **Version** (8,13) : face à une grille v1 (addon trop ancien), le Java n'agit pas et le signale.
 - Si l'addon ne se charge pas, vérifier le nom du dossier (`ClockWork`, comme le `.toc`). `ADDON_LOADED` compare au nom
   réel fourni par WoW (`local ADDON_NAME = ...`).

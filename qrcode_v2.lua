@@ -464,7 +464,7 @@ function Clockwork:updateQrCodeV2()
     end)
 
     Clockwork.guard("safety", function()
-        -- Le Java n'agit pas mort, en monture, ni contre une cible déjà marquée par un autre joueur (comme rotation())
+        -- Le Java n'agit pas mort, en monture, ni contre une cible déjà marquée par un autre joueur
         local dead = UnitIsDeadOrGhost("player") and 1 or 0
         local tapDenied = UnitExists("target") and UnitIsTapDenied("target") and 1 or 0
         local mounted = IsMounted() and 1 or 0

@@ -54,10 +54,6 @@ function Clockwork:commandHandler(msg)
         self:reportActionButtons()
     elseif (msg == 'list bindings') then
         self:reportBindings()
-    elseif (msg == 'gen spells' or msg == 'list spells') then
-        self:reportAllSpells()
-    elseif (msg == 'assisted') then
-        self:clickAssisted()
     elseif (msg == 'testsecret') then
         Clockwork.testSecrets()
     elseif (msg == 'errors') then
@@ -79,15 +75,12 @@ function Clockwork:commandHandler(msg)
         Clockwork.log.notice("/clockWork drive          -- Start Autopilote")
         Clockwork.log.notice("/clockWork loot           -- Ramassage du butin après combat : On/Off")
         Clockwork.log.notice("/clockWork loop           -- Loop through waypoints")
-        Clockwork.log.notice("/clockWork update actions -- Update action buttons")
         Clockwork.log.notice("/clockWork debug          -- Debug Mod : On/Off")
-        Clockwork.log.notice("/clockWork assisted       -- Rotation assistée (recommandation de Blizzard) : On/Off")
         Clockwork.log.notice("/clockWork testsecret     -- Tester les valeurs secrètes (à lancer en combat)")
         Clockwork.log.notice("/clockWork errors [reset] -- Blocs du QR code en erreur")
         Clockwork.log.notice("Debug : ")
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list actions   -- List all actions slots") end
         if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork list bindings  -- List all bindings") end
-        if Clockwork.DEBUG_MOD then Clockwork.log.notice("/clockWork gen spells     -- Generate spells.lua content for the current class") end
     end
 end
 

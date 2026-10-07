@@ -9,12 +9,6 @@
 -- Nom réel de l'addon (celui du dossier et du .toc, ex. "ClockWork"), transmis par WoW à chaque fichier chargé
 local ADDON_NAME = ...
 
-function Clockwork.addonLoaded()
-    if Clockwork_ROTATIONS == nil then
-        Clockwork_ROTATIONS = {};
-    end
-end
-
 --- Règle l'échelle de la grille pour qu'un point de l'addon fasse exactement un pixel à l'écran.
 --- WoW dessine l'interface dans un espace de 768 unités de haut, étiré à la hauteur réelle de la zone de jeu
 --- (ex. 1009 px en fenêtré agrandi : x1,31, le QR code ferait 21x21 px) ; le Java lit le QR code pixel par pixel.
@@ -84,7 +78,6 @@ function Clockwork:playerEnteringWorld()
     self.playerHealth = self:createDot("clockWork_health", 12, -2)
     self.playerMana = self:createDot("clockWork_mana", 13, -2)
     self.numberOfTargets = self:createDot("clockWork_numberOfTargets", 2, -3)
-    self.targets.count = 0
     self.targetReaction = self:createDot("clockWork_target_reaction", 11, -3)
     self.targetHealth = self:createDot("clockWork_target_health", 12, -3)
     self.targetMana = self:createDot("clockWork_target_mana", 13, -3)
@@ -102,10 +95,8 @@ function Clockwork:playerEnteringWorld()
         self.debug.texture:SetColorTexture(1, 0, 0, 1)
     end
 
-    self:initKeys()
     self:initQrCodeV2()
     self:initCoords()
-    self:initLocalization()
 
     self:resetCombat()
 end
@@ -124,7 +115,7 @@ function Clockwork:onUpdate()
             if (bestMap ~= nil) then
                 self:updatePositionCoordinates()
             end
-            self:rotation()
+            self:updateGrid()
         elseif Clockwork.FISH_MOD then
             -- Pêche demandée, ClockWork éteint : la grille décrit quand même les touches (leurre, appât) et l'état
             self:updateUIStatus()
@@ -155,31 +146,6 @@ function Clockwork:onUpdate()
 
         self.nextUpdate = now + Clockwork.UPDATE_INTERVAL;
     end
-end
-
-function Clockwork:updateNumberOfTargets()
-    if self.targets.list ~= nil then
-        for i, t in pairs(self.targets.list) do
-            if (GetTime() - t > 5) then
-                self.targets.list[i] = nil
-            end
-        end
-        Clockwork.log.debug(tostring(Clockwork.tableLength(self.targets.list)))
-        Clockwork.log.debug(tostring(Clockwork.tableLength(self.targets.list) / 255))
-        self.targets.count = Clockwork.tableLength(self.targets.list)
-        self.numberOfTargets.texture:SetColorTexture(self.targets.count / 255, 0, 0, 1)
-    else
-        self.targets.count = 0
-        self.numberOfTargets.texture:SetColorTexture(0, 0, 0, 1)
-    end
-
-    local multiTarget = self.targets.count >= self.targets.multiTargetModTrigger
-
-    if (self.targets.multiTargetMod ~= multiTarget) then
-        Clockwork.log.debug(Clockwork.ternary(multiTarget, "Multi targets mod", "Single target mod"))
-    end
-
-    self.targets.multiTargetMod = multiTarget
 end
 
 --[[---------------------------------------------------------------------------
@@ -222,7 +188,6 @@ local function handleAddonLoaded(self, addonName)
     if addonName == ADDON_NAME then
         Clockwork.log.debug(addonName .. " Loaded")
         self:playerEnteringWorld()
-        self:addonLoaded()
         self:resetCombat()
         -- Réglages mémorisés (position du menu, modes) : SavedVariables disponibles et grille créée
         Clockwork.guard("applySettings", Clockwork.applySettings)

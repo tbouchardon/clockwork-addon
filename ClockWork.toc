@@ -4,7 +4,7 @@
 ## Notes: My Smart Addon
 ## Category: Combat
 ## DefaultState: Enabled
-## SavedVariables: CLOCKWORK_ROTATIONS, CLOCKWORK_SETTINGS
+## SavedVariables: CLOCKWORK_SETTINGS
 ## AddonCompartmentFunc: Clockwork_OnAddonCompartmentClick
 ## IconTexture: Interface\Icons\INV_Misc_Gear_01
 
@@ -15,10 +15,6 @@ menu.lua
 logger.lua
 guard.lua
 core_functions.lua
-localization.lua
-spells.lua
-specializations.lua
-spells_and_actions_functions.lua
 coordinates_functions.lua
 debug_functions.lua
 secret_tests.lua
@@ -27,15 +23,7 @@ qrcode_v2.lua
 group.lua
 fishing.lua
 loot.lua
-rotations_functions.lua
-rotation_assisted.lua
-rotation_warlock.lua
-rotation_warrior.lua
-rotation_shaman.lua
-rotation_mage.lua
-rotation_druid.lua
-rotation_priest.lua
+status.lua
 command_handler.lua
 bindings.lua
 init_addon.lua
-tests.lua
