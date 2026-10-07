@@ -125,7 +125,7 @@ Ils font la même chose que les boutons du menu et les commandes `/clk` (`Bindin
 | `drive` / `loop` | Pilote automatique : suit le parcours, une fois ou en boucle. Attend la fin d'un repas (buffs Nourriture, Boisson, Rafraîchissement, dans la langue du client). |
 | `multi` | Mode multi-cibles (aussi dans le menu) : les rotations répartissent leurs DoT et utilisent leurs sorts de zone. |
 | `healer` | Mode soigneur (aussi dans le menu) : le cerveau Java soigne aussi les autres membres. Allumé d'office quand la spécialisation est de soin. |
-| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java appuie sur la touche d'interaction sur place : le butin d'un cadavre à tes pieds est ramassé, un cadavre plus loin est laissé. L'option « Activer la touche d'interaction » (Options > Contrôles) doit être cochée. |
+| `loot` | Ramassage du butin (aussi dans le menu, désactivé par défaut) : après un combat, le Java appuie sur la touche d'interaction sur place, puis après un seul petit pas en avant : le butin d'un cadavre à portée est ramassé, un cadavre plus loin est laissé. L'option « Activer la touche d'interaction » (Options > Contrôles) doit être cochée. |
 | `fish` | Pêche automatique (aussi dans le menu) : le Java pêche tant que la case (12,4) est allumée. |
 | `debug` | Mode débogage (journal détaillé dans le chat). |
 | `list actions` / `list bindings` / `list spells` | Rapports sur les barres d'action, les raccourcis et les sorts. |

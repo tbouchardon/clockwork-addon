@@ -133,7 +133,7 @@ toggle("Pilote automatique", "Suivre le parcours de points de passage (/clk driv
     function() return Clockwork.DRIVE_MOD end, function() Clockwork:clickDrive() end)
 toggle("Boucle", "Recommencer le parcours une fois terminé (/clk loop).",
     function() return Clockwork.DRIVE_LOOP end, function() Clockwork:clickLoop() end)
-toggle("Ramassage", "Après un combat, ramasser le butin d'un cadavre à portée, sans se déplacer (/clk loot). Demande « Activer la touche d'interaction » (Options > Contrôles).",
+toggle("Ramassage", "Après un combat, ramasser le butin d'un cadavre à portée, au plus un petit pas en avant (/clk loot). Demande « Activer la touche d'interaction » (Options > Contrôles).",
     function() return Clockwork.LOOT_MOD end, function() Clockwork:clickLoot() end)
 actions({
     { "+ Point", "Ajouter la position actuelle au parcours (/clk addwp).", function() Clockwork:clickAddWp() end },
