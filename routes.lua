@@ -362,7 +362,9 @@ end
 --- Le parcours actif dessiné sur la carte du monde : points et tracé (premier point en vert), sur la carte du parcours
 --- comme sur une carte qui la contient (continent) ou qu'elle contient (sous-zone).
 --- La carte du monde peut être chargée après l'addon : tout est créé une fois Blizzard_WorldMap prêt. Les tuiles de la
---- carte sont des cadres enfants du canevas : dessiner sur le canevas lui-même les cacherait, d'où un calque au-dessus.
+--- carte sont des cadres enfants du canevas : dessiner sur le canevas lui-même les cacherait, d'où un calque au-dessus,
+--- au niveau des épingles de sites de fouilles : au-dessus du brouillard et des zones explorées (vers 2000), sous les
+--- points d'intérêt et le joueur.
 --- La carte appelle le fournisseur par secureexecuterange, qui tait les erreurs : elles sont signalées ici, une fois.
 local provider
 local layer
@@ -420,7 +422,7 @@ local function installMapProvider()
             layer = CreateFrame("Frame", nil, canvas)
             layer:SetAllPoints(canvas)
         end
-        layer:SetFrameLevel(canvas:GetFrameLevel() + 500)
+        layer:SetFrameLevel(map:GetPinFrameLevelsManager():GetValidFrameLevel("PIN_FRAME_LEVEL_DIG_SITE"))
         layer:Show()
         local width, height = canvas:GetSize()
         local scale = 1 / map:GetCanvasScale()
